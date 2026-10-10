@@ -1,0 +1,10 @@
+dado,titular,finalidade,base_lgpd,base_gdpr,condicao_art9,sensivel,crianca,retencao,operadores,papel,colunas
+nome e email do anfitrião,cliente,criar e manter a conta,contrato,contract,,nao,nao,até excluir a conta + 30 dias,Supabase; Resend,controlador,users.email; users.name
+fuso horário e preferências,cliente,mostrar a agenda no horário certo,contrato,contract,,nao,nao,até excluir a conta,Supabase,controlador,users.timezone
+agenda e horários livres,cliente,mostrar os horários disponíveis,contrato,contract,,nao,nao,até excluir a conta,Supabase; Google APIs,controlador,event_types.*
+dados de pagamento e assinatura,cliente,cobrar a assinatura,contrato,contract,,nao,nao,enquanto durar a assinatura,Stripe,controlador,subscriptions.*
+notas fiscais,cliente,cumprir a obrigação fiscal,obrigacao_legal,legitimate_interests,,nao,nao,5 anos,Supabase,controlador,
+registros de acesso (IP e data),cliente e convidado,cumprir o Marco Civil e proteger a conta,obrigacao_legal,legitimate_interests,,nao,nao,6 meses,Vercel; Supabase,controlador,access_logs.*
+erros da aplicação,cliente,encontrar e corrigir falhas,legitimo_interesse,legitimate_interests,,nao,nao,90 dias,Sentry,controlador,
+nome e email do convidado,convidado do cliente,confirmar a reserva e mandar lembretes pelo cliente,,,,nao,nao,12 meses depois do compromisso,Supabase; Resend,operador,bookings.guest_name; bookings.guest_email; bookings.guest_timezone
+respostas do formulário de reserva,convidado do cliente,dar contexto ao cliente,,,,nao,nao,12 meses depois do compromisso,Supabase,operador,bookings.answers

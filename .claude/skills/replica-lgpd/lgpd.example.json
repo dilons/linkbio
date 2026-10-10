@@ -1,0 +1,25 @@
+{
+  "_sobre": "Configuração de privacidade do seu app, lida por lgpd.py. Troque os valores de exemplo: a verificação acusa erro enquanto eles estiverem aqui. publico: br, ue. mecanismo_br: adequacao (só UE/EEE), clausulas_padrao, clausulas_especificas, normas_corporativas, consentimento, contrato, a_confirmar. mecanismo_ue: adequacao, dpf (só EUA), sccs, bcrs, derrogacao, a_confirmar. dpa: true só depois que o usuário aceitou o contrato do fornecedor. 'a_confirmar' conta como erro até alguém confirmar. representante_ue: nome e contato, ou \"dispensado: <motivo>\". dpa_para_clientes: true quando você já oferece contrato de tratamento aos clientes (precisa se houver linhas com papel=operador). 'apelidos' liga outros nomes ao mesmo operador. colunas_ignoradas: colunas do schema que parecem dado pessoal mas não são.",
+  "controlador": {
+    "nome": "Sua Empresa Ltda",
+    "cnpj": "00.000.000/0001-00",
+    "endereco": "Rua Exemplo, 100, São Paulo, SP",
+    "contato": "contato@seuapp.com.br"
+  },
+  "publico": ["br", "ue"],
+  "pequeno_porte": true,
+  "encarregado": {"nome": "", "email": ""},
+  "canal_titular": "privacidade@seuapp.com.br",
+  "representante_ue": "",
+  "politica_url": "https://seuapp.com.br/privacidade",
+  "dpa_para_clientes": "a_confirmar",
+  "colunas_ignoradas": ["event_types.title"],
+  "operadores": [
+    {"nome": "Supabase", "servico": "banco de dados e login", "pais": "US", "regiao": "São Paulo", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"},
+    {"nome": "Vercel", "servico": "hospedagem", "pais": "US", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"},
+    {"nome": "Resend", "servico": "email transacional", "pais": "US", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"},
+    {"nome": "Stripe", "servico": "pagamentos", "pais": "US", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"},
+    {"nome": "Google APIs", "apelidos": ["Google Calendar"], "servico": "integração com a agenda", "pais": "US", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"},
+    {"nome": "Sentry", "servico": "monitoramento de erros", "pais": "US", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"}
+  ]
+}

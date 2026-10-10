@@ -1,0 +1,45 @@
+feature,area,priority,original,clone,notes
+Cadastro e login por email,onboarding,must,yes,no,
+Confirmação de email,onboarding,must,yes,no,
+Recuperar senha,onboarding,must,yes,no,
+Escolher o username que vira a URL,onboarding,must,yes,no,checagem ao vivo; reservados (admin; api; ajuda...)
+Adicionar editar e excluir link,editor,must,yes,no,
+Reordenar links arrastando,editor,must,yes,no,acessível pelo teclado também
+Ligar e desligar link sem excluir,editor,must,yes,no,
+Perfil com foto título e bio,editor,must,yes,no,
+Ícones de redes sociais no topo ou no rodapé,editor,must,yes,no,
+Prévia ao vivo da página no editor,editor,must,yes,no,
+Página pública responsiva em /username,pagina publica,must,yes,no,404 para perfil inexistente ou excluído
+Temas prontos,aparencia,must,yes,no,
+Contagem de views e cliques,insights,must,yes,no,robôs e pré-visualizações de redes não contam
+Formulário de captura de email na página,audiencia,must,yes,no,consentimento e finalidade na hora da coleta (LGPD)
+Ver inscritos e exportar CSV,audiencia,must,yes,no,original manda link por email com senha
+Plano pago com assinatura e cancelamento,plano,must,yes,no,cancelar em um clique
+Tirar a marca do rodapé no plano pago,plano,must,yes,no,principal motivo para pagar
+Excluir perfil ou conta,conta,must,yes,no,username e email bloqueados por 14 dias no original
+Login com Google,onboarding,should,yes,no,
+Modelo de página pela categoria da conta,onboarding,should,yes,no,
+Tema customizável (fundo botões fonte cores),aparencia,should,yes,no,contraste checado
+Fundo com imagem,aparencia,should,yes,no,
+Miniatura no link,editor,should,yes,no,
+Agendar link para aparecer e sumir com fuso,editor,should,yes,no,pago no original (Starter ou acima)
+Views e cliques únicos e taxa de clique,insights,should,yes,no,único sem rastrear além do necessário
+Ranking dos links mais clicados,insights,should,yes,no,
+Fontes de tráfego e locais (país e cidade),insights,should,yes,no,
+Escolher o período dos insights,insights,should,yes,no,período maior nos planos pagos
+QR code da página,compartilhamento,should,yes,no,
+Aviso de conteúdo sensível e trava de idade,pagina publica,should,yes,no,18+ 21+ 25+ ou sensível; data de nascimento
+Trocar username,conta,should,yes,no,uma vez a cada 7 dias no original
+Coleções para agrupar links,editor,could,yes,no,
+Destacar ou animar um link,editor,could,yes,no,pago no original
+Vídeo do YouTube tocando na página,editor,could,yes,no,
+Fundo com vídeo,aparencia,could,yes,no,
+Layouts de header (clássico e destaque),aparencia,could,yes,no,
+Vários perfis por conta,conta,could,yes,no,
+Integração com ferramenta de email (Mailchimp e similares),audiencia,could,yes,no,Pro e Premium no original
+QR code personalizado (cor e logo),compartilhamento,could,yes,no,pago no original
+Marketplace de apps de parceiros,integracoes,could,yes,skip,é a rede de parceiros deles (Spotify; TikTok; Bandsintown...)
+Loja e afiliados e venda de produtos,vendas,could,yes,skip,fora da fatia escolhida
+App mobile iOS e Android,plataforma,could,yes,skip,plataforma escolhida é web
+Recursos de IA para conteúdo,ia,could,yes,skip,fora do núcleo; não confirmado
+Quadros de stickers (2026),aparencia,could,yes,skip,fora do núcleo; não confirmado
