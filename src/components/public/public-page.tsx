@@ -39,7 +39,7 @@ export function PublicPage({
 }) {
   const Raiz = principal ? "main" : "div";
   return (
-    <div data-theme={tema} className="min-h-full bg-t-bg">
+    <div data-theme={tema} className="min-h-full flex-1 bg-t-bg">
       <Raiz
         className="mx-auto flex flex-col gap-6 py-10"
         style={{ maxWidth: "var(--layout-public-max)", paddingInline: "var(--layout-public-gutter)" }}
