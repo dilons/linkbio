@@ -20,14 +20,28 @@ original.
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000/design mostra o design system
+npm run dev          # http://localhost:3000
 npm run tokens       # depois de mudar replica/design/tokens.json
 npm run typecheck && npm run lint && npm run build
 ```
 
-Next.js 16 (App Router), React 19, Tailwind 4, TypeScript. O `AGENTS.md` aponta
-para a documentação do Next que vem em `node_modules/next/dist/docs/`: esta
-versão mudou APIs, então leia lá antes de escrever código.
+Em desenvolvimento o app sobe com um Postgres dentro do processo (PGlite, em
+`.data/pglite`) e uma conta demo: `demo@linkbio.test` / `linkbio-demo-2026`,
+página em `/doces.da.ana`. É provisório: a `/replica-backend` troca por
+Supabase. `/design` mostra o design system.
+
+Teste ponta a ponta da fatia vertical (num banco novo):
+
+```bash
+npm run build
+LINKBIO_DB_DIR=/tmp/linkbio-e2e LINKBIO_DEMO=1 npx next start -p 3123 &
+npm run e2e          # CHROMIUM_PATH=... se o Chromium do Playwright não estiver baixado
+```
+
+Next.js 16 (App Router, Cache Components), React 19, Tailwind 4, TypeScript.
+O `AGENTS.md` aponta para a documentação do Next que vem em
+`node_modules/next/dist/docs/`: esta versão mudou APIs, então leia lá antes de
+escrever código.
 
 ## Andamento
 
@@ -36,8 +50,8 @@ versão mudou APIs, então leia lá antes de escrever código.
 | `/replica-recon` | feito: `replica/recon.md`, `replica/features.csv` (faltam screenshots) |
 | `/replica-architect` | feito: `replica/architecture.md`, `replica/schema.sql` (testado no PGlite) |
 | `/replica-design` | feito: `replica/design/` (tokens, componentes, contraste 0 falhas, capturas) e a rota `/design` |
-| `/replica-build` | próximo |
-| `/replica-backend` | |
+| `/replica-build` | etapa 1 (fatia vertical) feita: `replica/build-log.md`, `replica/clone-screens/`, `tests/e2e/` |
+| `/replica-backend` | próximo: o banco e o login ainda são provisórios |
 | `/replica-lgpd` | |
 | `/replica-test` | |
 | `/replica-diff` | |
