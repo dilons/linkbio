@@ -1,0 +1,358 @@
+{
+ "_about": "Temas do linkbio para o reviews.py da replica-entrepreneur: os da skill adaptados a link na bio, com as palavras em português e inglês. Use com --themes replica/temas.json.",
+ "request_patterns": [
+  "\\bi wish\\b",
+  "\\bplease add\\b",
+  "\\bwould be (nice|great|good|helpful)\\b",
+  "\\bwould love\\b",
+  "\\bneeds? (a|an|the|to|more)\\b",
+  "\\bno way to\\b",
+  "\\bthere'?s no (way|option)\\b",
+  "\\b(can'?t|cannot|unable to) (even )?(add|change|edit|set|choose|export|import|customi[sz]e|connect|undo|delete|turn off)\\b",
+  "\\b(missing|lacks|lacking)\\b",
+  "\\bdoesn'?t (have|support|let|allow)\\b",
+  "\\bif only\\b",
+  "\\bfeature request\\b",
+  "\\bwhy (can'?t|isn'?t|doesn'?t)\\b",
+  "\\bqueria que\\b",
+  "\\bpoderia(m)? (ter|adicionar|colocar)\\b",
+  "\\bseria (bom|ótimo|legal|bacana)\\b",
+  "\\bfalta(m)?\\b",
+  "\\bnão (tem|dá|consigo) (como|para|pra)?\\b",
+  "\\bpor favor (adicionem|coloquem)\\b",
+  "\\bsugiro\\b",
+  "\\bsugestão\\b",
+  "\\bdeveria(m)?\\b",
+  "\\bpor que não\\b"
+ ],
+ "themes": [
+  {
+   "id": "preco",
+   "label": "Preço, plano pago e cobrança em dólar",
+   "kind": "complaint",
+   "patterns": [
+    "\\bexpensive\\b",
+    "\\boverpriced\\b",
+    "\\bpric(e|es|ey|ing)\\b",
+    "\\bpaywall",
+    "\\bsubscription\\b",
+    "\\bper month\\b",
+    "\\bfree (plan|tier|version)\\b",
+    "\\bupgrade\\b",
+    "\\bpro plan\\b",
+    "\\bpremium\\b",
+    "\\bnot worth\\b",
+    "\\bcaro\\b",
+    "\\bpreço",
+    "\\bassinatura\\b",
+    "\\bplano (pago|pro|grátis|gratuito)\\b",
+    "\\bpago\\b",
+    "\\bdólar",
+    "\\bmensalidade\\b",
+    "\\bvale a pena\\b"
+   ]
+  },
+  {
+   "id": "cobranca",
+   "label": "Cobrança, cancelamento e reembolso",
+   "kind": "complaint",
+   "patterns": [
+    "\\bcharged\\b",
+    "\\brefund",
+    "\\bcancel",
+    "\\bauto.?renew",
+    "\\bbilling\\b",
+    "\\bscam\\b",
+    "\\bcredit card\\b",
+    "\\bcobra(do|ram|nça)\\b",
+    "\\breembolso\\b",
+    "\\bestorno\\b",
+    "\\bcancelar\\b",
+    "\\bcancelamento\\b",
+    "\\bcartão\\b",
+    "\\bgolpe\\b",
+    "\\bfraude\\b"
+   ]
+  },
+  {
+   "id": "conta_suspensa",
+   "label": "Conta suspensa, banida ou removida sem aviso",
+   "kind": "complaint",
+   "patterns": [
+    "\\bsuspend",
+    "\\bbann?ed\\b",
+    "\\bban\\b",
+    "\\bdeactivat",
+    "\\bremoved my (account|page|links?)\\b",
+    "\\bterminat",
+    "\\bflagged\\b",
+    "\\bviolat",
+    "\\bconta (suspensa|banida|bloqueada|desativada|removida)\\b",
+    "\\bsuspens",
+    "\\bbanid",
+    "\\bbloquead"
+   ]
+  },
+  {
+   "id": "login",
+   "label": "Login, verificação e acesso à conta",
+   "kind": "complaint",
+   "patterns": [
+    "\\blog ?in\\b",
+    "\\bsign ?in\\b",
+    "\\bpassword\\b",
+    "\\blocked out\\b",
+    "\\bverif",
+    "\\bcaptcha\\b",
+    "\\bpuzzle\\b",
+    "\\b2fa\\b",
+    "\\bentrar\\b",
+    "\\bsenha\\b",
+    "\\bverificação\\b",
+    "\\bcódigo\\b",
+    "\\bquebra.?cabeça\\b",
+    "\\bnão consigo (entrar|acessar|logar)\\b"
+   ]
+  },
+  {
+   "id": "suporte",
+   "label": "Suporte que não responde",
+   "kind": "complaint",
+   "patterns": [
+    "\\bcustomer (service|support)\\b",
+    "\\bsupport\\b",
+    "\\bno (response|reply)\\b",
+    "\\bnever (replied|responded|heard back)\\b",
+    "\\bticket\\b",
+    "\\bchat ?bot\\b",
+    "\\bsuporte\\b",
+    "\\batendimento\\b",
+    "\\bnão respond",
+    "\\bninguém respond",
+    "\\bsem resposta\\b"
+   ]
+  },
+  {
+   "id": "bugs",
+   "label": "Bugs, erros e travamentos",
+   "kind": "complaint",
+   "patterns": [
+    "\\bcrash",
+    "\\bbugs?\\b",
+    "\\bbuggy\\b",
+    "\\bglitch",
+    "\\bfreez",
+    "\\bbroken\\b",
+    "\\b(doesn'?t|does not|stopped) work",
+    "\\bnot working\\b",
+    "\\berror\\b",
+    "\\btrava",
+    "\\berro\\b",
+    "\\bnão funciona",
+    "\\bparou de funcionar\\b",
+    "\\bfecha sozinho\\b",
+    "\\bnão (abre|carrega|salva)\\b"
+   ]
+  },
+  {
+   "id": "lento",
+   "label": "Lento ou pesado",
+   "kind": "complaint",
+   "patterns": [
+    "\\bslow\\b",
+    "\\blag",
+    "\\btakes forever\\b",
+    "\\bsluggish\\b",
+    "\\blento\\b",
+    "\\bdemora",
+    "\\bpesado\\b",
+    "\\bcarregando\\b"
+   ]
+  },
+  {
+   "id": "links_bloqueados",
+   "label": "Link bloqueado ou marcado pelo Instagram, TikTok e outros",
+   "kind": "complaint",
+   "patterns": [
+    "\\binstagram (blocked|flagged|removed|won'?t)\\b",
+    "\\b(link|url) (is )?(blocked|flagged|broken)\\b",
+    "\\bshadow.?ban",
+    "\\bspam link\\b",
+    "\\blink (bloqueado|quebrado|marcado)\\b",
+    "\\binstagram (bloqueou|não deixa|removeu)\\b"
+   ]
+  },
+  {
+   "id": "editor",
+   "label": "Editor confuso ou difícil",
+   "kind": "complaint",
+   "patterns": [
+    "\\bconfus",
+    "\\bhard to (use|find|navigate|understand)\\b",
+    "\\bcomplicated\\b",
+    "\\bcluttered\\b",
+    "\\bunintuitive\\b",
+    "\\bclunky\\b",
+    "\\btoo many (steps|clicks|taps)\\b",
+    "\\bcan'?t find\\b",
+    "\\bdifícil\\b",
+    "\\bcomplicado\\b",
+    "\\bconfuso\\b",
+    "\\bnão (acho|encontro)\\b"
+   ]
+  },
+  {
+   "id": "atualizacao",
+   "label": "Uma atualização piorou",
+   "kind": "complaint",
+   "patterns": [
+    "\\b(new|latest|recent) (update|version|design)\\b",
+    "\\bredesign",
+    "\\bused to be\\b",
+    "\\bbring back\\b",
+    "\\bsince the update\\b",
+    "\\batualização\\b",
+    "\\bversão nova\\b",
+    "\\bera melhor\\b",
+    "\\bvoltem\\b"
+   ]
+  },
+  {
+   "id": "marca",
+   "label": "Marca do Linktree na página e domínio próprio",
+   "kind": "request",
+   "patterns": [
+    "\\b(remove|hide) (the )?(linktree )?(logo|branding)\\b",
+    "\\bbranding\\b",
+    "\\bwhite.?label\\b",
+    "\\bcustom domain\\b",
+    "\\bown domain\\b",
+    "\\blogo do linktree\\b",
+    "\\bmarca d.?água\\b",
+    "\\bdomínio (próprio|personalizado)\\b",
+    "\\btirar a marca\\b"
+   ]
+  },
+  {
+   "id": "personalizacao",
+   "label": "Personalização: temas, fontes, cores e fundo",
+   "kind": "request",
+   "patterns": [
+    "\\bcustomi[sz]",
+    "\\btheme",
+    "\\bfont",
+    "\\bbackground\\b",
+    "\\bcolou?rs?\\b",
+    "\\blayout\\b",
+    "\\btemplates?\\b",
+    "\\bdesign\\b",
+    "\\bpersonaliz",
+    "\\btema",
+    "\\bfonte",
+    "\\bfundo\\b",
+    "\\bcores?\\b",
+    "\\bmodelos?\\b"
+   ]
+  },
+  {
+   "id": "metricas",
+   "label": "Métricas e insights",
+   "kind": "request",
+   "patterns": [
+    "\\banalytics\\b",
+    "\\binsights?\\b",
+    "\\bstats\\b",
+    "\\bstatistics\\b",
+    "\\bclicks?\\b",
+    "\\bviews\\b",
+    "\\btraffic\\b",
+    "\\bmétricas\\b",
+    "\\bestatísticas\\b",
+    "\\bcliques\\b",
+    "\\bvisitas\\b",
+    "\\bacessos\\b"
+   ]
+  },
+  {
+   "id": "audiencia",
+   "label": "Captura de email, contatos e exportação",
+   "kind": "request",
+   "patterns": [
+    "\\bemail (list|capture|signup|sign.?up)\\b",
+    "\\bnewsletter\\b",
+    "\\bsubscribers?\\b",
+    "\\bmailchimp\\b",
+    "\\bexport\\b",
+    "\\bcsv\\b",
+    "\\blista de (emails?|contatos)\\b",
+    "\\binscritos\\b",
+    "\\bexportar\\b",
+    "\\bcontatos\\b",
+    "\\bleads?\\b"
+   ]
+  },
+  {
+   "id": "brasil",
+   "label": "Brasil: Pix, reais, português e WhatsApp",
+   "kind": "request",
+   "patterns": [
+    "\\bpix\\b",
+    "\\bboleto\\b",
+    "\\breais\\b",
+    "\\bR\\$",
+    "\\bem real\\b",
+    "\\bportuguês\\b",
+    "\\btradução\\b",
+    "\\bem inglês\\b",
+    "\\bwhats(app)?\\b",
+    "\\bzap\\b"
+   ]
+  },
+  {
+   "id": "app",
+   "label": "App do celular",
+   "kind": "request",
+   "patterns": [
+    "\\bmobile (app|version)\\b",
+    "\\bthe app\\b",
+    "\\bipad\\b",
+    "\\bandroid\\b",
+    "\\bpelo celular\\b",
+    "\\bno celular\\b",
+    "\\baplicativo\\b"
+   ]
+  },
+  {
+   "id": "loja",
+   "label": "Vender, receber pagamento e afiliados",
+   "kind": "request",
+   "patterns": [
+    "\\bsell\\b",
+    "\\bshop\\b",
+    "\\bstore\\b",
+    "\\bpayments?\\b",
+    "\\bcheckout\\b",
+    "\\baffiliate",
+    "\\bvender\\b",
+    "\\bvendas\\b",
+    "\\bloja\\b",
+    "\\breceber pagamento"
+   ]
+  },
+  {
+   "id": "privacidade",
+   "label": "Privacidade e rastreamento",
+   "kind": "complaint",
+   "patterns": [
+    "\\bprivacy\\b",
+    "\\btracking\\b",
+    "\\bsell(s|ing)? (my )?data\\b",
+    "\\bcookies?\\b",
+    "\\bprivacidade\\b",
+    "\\brastre",
+    "\\bmeus dados\\b",
+    "\\blgpd\\b"
+   ]
+  }
+ ]
+}
