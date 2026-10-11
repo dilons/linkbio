@@ -1,22 +1,29 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cache, Suspense } from "react";
 import { TelaDeAviso } from "@/components/public/gate-screen";
 import { PublicPage } from "@/components/public/public-page";
 import { estadoDoAviso, rotuloDaPagina } from "@/lib/data/aviso";
 import { urlDaFoto } from "@/lib/data/fotos";
-import { paginaPublica } from "@/lib/data/perfis";
+import { enderecoNovo, paginaPublica } from "@/lib/data/perfis";
 import { ContaVisita } from "./conta-visita";
 
 // metadata e página pedem o mesmo perfil: uma consulta só por requisição
 const carregar = cache(paginaPublica);
 
+/** Endereço livre: 404; trocado há menos de 14 dias: vai para o novo (S13). */
+async function semPagina(username: string): Promise<never> {
+  const novo = await enderecoNovo(username);
+  if (novo) redirect(`/${novo}`);
+  notFound();
+}
+
 export async function generateMetadata({ params }: PageProps<"/[username]">): Promise<Metadata> {
   const { username } = await params;
   const pagina = await carregar(username);
   // Robôs de prévia (WhatsApp, Facebook) esperam os metadados antes de qualquer
-  // byte: daqui o 404 sai com status 404 de verdade.
-  if (!pagina) notFound();
+  // byte: daqui o 404 sai com status 404 de verdade (e o redirecionamento, 307).
+  if (!pagina) return semPagina(username);
   const nome = pagina.perfil.title || pagina.perfil.username;
   // com aviso de conteúdo, a prévia nas redes não mostra a bio
   const comAviso = rotuloDaPagina(pagina.perfil.sensitive_label) !== null;
@@ -41,7 +48,7 @@ export default function PaginaDoPerfil({ params, searchParams }: PageProps<"/[us
 async function Conteudo({ params, searchParams }: Pick<PageProps<"/[username]">, "params" | "searchParams">) {
   const { username } = await params;
   const pagina = await carregar(username);
-  if (!pagina) notFound();
+  if (!pagina) return semPagina(username);
   const { perfil } = pagina;
   // S16: com aviso na página, os links só saem depois da resposta (e a visita
   // só conta quando a página aparece)

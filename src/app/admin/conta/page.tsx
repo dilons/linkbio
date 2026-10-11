@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { fazerLogout, sairDeTodos } from "@/app/acoes";
 import { Button } from "@/components/ui/button";
-import { perfilDaConta } from "@/lib/data/perfis";
+import { perfilDaConta, proximaTroca } from "@/lib/data/perfis";
 import { exigirConta } from "@/lib/sessao";
+import { TrocarEndereco } from "./endereco";
 import { ExcluirConta, ExcluirPagina } from "./excluir";
 import { MARCA } from "@/lib/marca";
 
 export const metadata: Metadata = { title: "Conta" };
 
-// S13 (troca de endereço e exportação dos dados chegam na etapa 6 e na /replica-lgpd)
+// S13 (a exportação dos dados chega com a /replica-lgpd)
 export default function Conta() {
   return (
     <div className="flex max-w-2xl flex-col gap-6">
@@ -24,8 +25,15 @@ export default function Conta() {
 async function Dados() {
   const sessao = await exigirConta();
   const perfil = await perfilDaConta(sessao.userId);
+  const libera = perfil && proximaTroca(perfil.username_changed_at);
   return (
     <>
+      {perfil && (
+        <TrocarEndereco
+          atual={perfil.username}
+          liberaEm={libera ? libera.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : null}
+        />
+      )}
       <section aria-labelledby="t-acesso" className="flex flex-col gap-3 rounded-lg border border-border bg-bg p-4 shadow-card">
         <h2 id="t-acesso" className="text-lg font-semibold text-fg">
           Acesso

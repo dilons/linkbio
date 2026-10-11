@@ -14,10 +14,11 @@ import { definirFoto } from "@/lib/data/fotos";
 import { adicionarFormulario, editarFormulario, formularioSchema, removerInscrito } from "@/lib/data/formularios";
 import { dentroDosLimites } from "@/lib/data/limites";
 import { adicionarLink, alternarLink, editarLink, excluirLink, reordenarLinks } from "@/lib/data/links";
-import { AVISOS_DA_PAGINA, atualizarCabecalho, criarPerfil, definirAvisoDaPagina, perfilDaConta } from "@/lib/data/perfis";
+import { AVISOS_DA_PAGINA, atualizarCabecalho, criarPerfil, definirAvisoDaPagina, perfilDaConta, trocarUsername } from "@/lib/data/perfis";
 import { IDS_DAS_REDES, normalizarRede, posicionarRedes, removerRede, reordenarRedes, salvarRede } from "@/lib/data/redes";
 import { cabecalhoSchema, credenciaisSchema, lerAgenda, linkSchema, travaSchema } from "@/lib/data/validacao";
 import { exigirConta, exigirPerfil } from "@/lib/sessao";
+import { MARCA } from "@/lib/marca";
 import { ipAtual, origemDoPedido } from "@/lib/visitante";
 
 export type Estado = {
@@ -165,7 +166,7 @@ export async function escolherUsername(_: Estado, form: FormData): Promise<Estad
   const sessao = await exigirConta();
   if (await perfilDaConta(sessao.userId)) redirect("/admin");
   const r = await criarPerfil(sessao.userId, String(form.get("username") ?? ""));
-  if (!r.ok) return { erros: { username: r.erro } };
+  if (!r.ok) return { erros: { username: r.erro }, valores: valoresDe(form, ["username"]) };
   redirect("/admin");
 }
 
@@ -385,4 +386,15 @@ export async function salvarAvisoDaPagina(_: Estado, form: FormData): Promise<Es
   if (!(await definirAvisoDaPagina(sessao.userId, perfil.id, aviso.data))) return { erro: "Não deu para salvar. Tente de novo." };
   refresh();
   return { ok: true, aviso: aviso.data === "none" ? "Pronto, a página abre sem aviso." : "Pronto, quem abrir a página vê o aviso antes." };
+}
+
+/** S13: troca o endereço da página (uma vez a cada 7 dias). */
+export async function trocarEndereco(_: Estado, form: FormData): Promise<Estado> {
+  const { sessao, perfil } = await exigirPerfil();
+  const valores = valoresDe(form, ["username"]);
+  if (!(await dentroDosLimites([["troca:conta", sessao.userId, 10, 3600]]))) return { erro: MUITAS_TENTATIVAS, valores };
+  const r = await trocarUsername(sessao.userId, perfil.id, String(form.get("username") ?? ""));
+  if (!r.ok) return { erros: { username: r.erro }, valores };
+  refresh();
+  return { ok: true, aviso: `Pronto, sua página agora está em ${MARCA.dominio}/${r.username}.` };
 }

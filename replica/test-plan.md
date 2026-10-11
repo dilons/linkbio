@@ -28,9 +28,9 @@ sobre o esqueleto e os Tabs passavam antes de haver um link. Agora o
 
 | | casos | passaram | falharam |
 | --- | --- | --- | --- |
-| ponta a ponta (Playwright) | 100 | 100 | 0 |
-| backend (node:test) | 48 | 48 | 0 |
-| bloqueados (fluxo não construído) | 5 | | |
+| ponta a ponta (Playwright) | 106 | 106 | 0 |
+| backend (node:test) | 51 | 51 | 0 |
+| bloqueados (fluxo não construído) | 4 | | |
 | manuais (precisam de conta real) | 7 | | pendentes |
 
 Na primeira rodada, 12 de 61 falharam: 6 por defeito do app (BUG-002 a
@@ -56,7 +56,7 @@ no `Dialog`).
 | case | flow | type | o que verifica | auto | result |
 | --- | --- | --- | --- | --- | --- |
 | F01-H1 | cria a página e compartilha | feliz | cadastro, confirmação por email, endereço, primeiro link e URL copiada | e2e `f01-cria-pagina.spec.ts` | passou |
-| F01-E1 | cria a página e compartilha | borda | endereço em uso, reservado ou inválido avisa enquanto digita e não é aceito | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E1 | cria a página e compartilha | borda | endereço em uso, reservado ou inválido avisa enquanto digita e não é aceito; depois de recusado, digitar outro tira o erro | e2e `f01-cria-pagina.spec.ts` | passou (estendido: achou BUG-012) |
 | F01-E2 | cria a página e compartilha | borda | email que já tem conta: mesma tela de quem não tem, e o dono recebe o caminho para entrar | e2e `f01-cria-pagina.spec.ts` | passou (achou BUG-007) |
 | F01-E3 | cria a página e compartilha | borda | abandona depois de confirmar e volta: entrar leva a escolher o endereço | e2e `f01-cria-pagina.spec.ts` | passou |
 | F01-E4 | cria a página e compartilha | borda | dois cliques seguidos em Criar minha conta: uma conta, tela de confirmação | e2e `f01-cria-pagina.spec.ts` | passou |
@@ -143,6 +143,12 @@ no `Dialog`).
 | F11-E5 | marca como sensível | borda | só teclado, a 390 px: escolher o aviso na S12 e passar por ele na página | e2e `f11-aviso.spec.ts` | passou |
 | F11-E6 | marca como sensível | borda | a prévia no WhatsApp de uma página com aviso não mostra a bio | e2e `f11-aviso.spec.ts` | passou |
 | F11-N1 | marca como sensível | negativo | a rota do aviso recusa alvo inválido e não grava nada para página sem aviso | e2e `f11-aviso.spec.ts` | passou |
+| F10-H3 | troca o endereço | feliz | trocar o endereço: a página vai para o novo, o antigo redireciona (307, também para robô) e os links seguem funcionando | e2e `f10-endereco.spec.ts` | passou |
+| F10-E4 | troca o endereço | borda | uma troca a cada 7 dias: na mesma semana o formulário some e o servidor recusa | e2e `f10-endereco.spec.ts` | passou |
+| F10-E6 | troca o endereço | borda | o antigo fica guardado 14 dias: outra conta não pega; depois disso, fica livre | e2e `f10-endereco.spec.ts` | passou (achou BUG-012) |
+| F10-E7 | troca o endereço | borda | a própria conta retoma o endereço antigo (depois dos 7 dias), sem sobrar linha guardada | e2e `f10-endereco.spec.ts` | passou |
+| F10-E8 | troca o endereço | negativo | o mesmo endereço, um reservado ou um inválido: avisa e não troca | e2e `f10-endereco.spec.ts` | passou |
+| F10-E9 | troca o endereço | borda | só teclado, a 390 px: troca o endereço | e2e `f10-endereco.spec.ts` | passou |
 | F12-H1 | acesso (derivado) | feliz | entrar e sair deste aparelho | e2e `f12-acesso.spec.ts` | passou (achou BUG-008) |
 | F12-E1 | acesso (derivado) | borda | recuperar a senha: resposta neutra, link abre em outro navegador, senha nova vale e avisa por email | e2e `f12-acesso.spec.ts` | passou |
 | F12-E2 | acesso (derivado) | borda | sair de todos os aparelhos derruba a outra sessão na hora | e2e `f12-acesso.spec.ts` | passou |
@@ -173,7 +179,6 @@ outra conta não pega o endereço guardado e a dona retoma; redes sociais
 | F03-E5 | | imagem de fundo pesada é recusada (5 MB) |
 | F03-E6 | | tema pago no plano grátis |
 | F06-E4 | acompanha os resultados | escolher o período e o limite do plano |
-| F10-E4 | troca o username | uma vez a cada 7 dias; o antigo segurado por 14 dias |
 
 Construído e ainda sem caso: lista grande na Audiência (mais de 1000: a tela
 mostra os 1000 mais novos e o CSV traz todos).

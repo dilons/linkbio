@@ -63,6 +63,11 @@ test.describe("F01 cria a página e compartilha", () => {
     await expect(page.getByText("Alguém já usa esse endereço")).toBeVisible();
     await expect(page).toHaveURL(/\/comecar$/);
     await capturar(page, "S03-erro");
+    // BUG-012: depois do envio recusado, digitar outro endereço tira o erro antigo
+    const livre = `bia.${sufixo()}`;
+    await campo.fill(livre);
+    await expect(page.getByText(`${MARCA.dominio}/${livre} está livre.`)).toBeVisible();
+    await expect(page.getByText("Alguém já usa esse endereço")).toHaveCount(0);
   });
 
   test("F01-E2 email que já tem conta: mesma tela de quem não tem, e o dono recebe o caminho para entrar", async ({ page }) => {

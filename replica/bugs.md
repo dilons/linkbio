@@ -9,7 +9,7 @@ aqui o que foi reproduzido; o resto está em "A conferir", no fim.
 | S1 | 1 | 1 |
 | S2 | 0 | 0 |
 | S3 | 7 | 7 |
-| S4 | 3 | 1 (1 não vai ser corrigido, 1 aberto) |
+| S4 | 4 | 2 (1 não vai ser corrigido, 1 aberto) |
 
 Nenhum S1 aberto.
 
@@ -196,6 +196,24 @@ Actual: "Muitas tentativas em pouco tempo" por 15 minutos.
 Evidence: F12-N3 falhou 4 de 4 antes da correção.
 Suspected cause: o limite de login era só por email, valendo para qualquer IP.
 Status: fixed in 9666c81 (limite por email e IP; a força bruta segue limitada por IP e pelo Auth)
+
+### BUG-012: depois de um endereço recusado, digitar outro não tira o erro antigo
+
+- Severity: S4
+- Flow / case: F01 / F01-E1 (S03) e F10 / F10-E6 (S13)
+- Screen: S03, S13
+- Build: 7367e68  Browser / device: Chromium 141, 1440 px
+
+Steps
+1. Na S03 (ou na troca de endereço da S13), mandar um endereço em uso.
+2. Ver "Alguém já usa esse endereço".
+3. Digitar outro endereço, livre.
+
+Expected: o aviso de "está livre" do endereço novo.
+Actual: o erro do envio anterior continua no campo e esconde a checagem nova, até mandar de novo.
+Evidence: F10-E6 com o campo em "guarda.726ee60b" e o erro antigo depois de o endereço ter sido liberado; F01-E1 estendido falha sem a correção ("está livre" não aparece).
+Suspected cause: o erro devolvido pela ação tinha prioridade sobre a checagem ao vivo, sem olhar se a pessoa tinha mexido no campo.
+Status: fixed (o erro do envio vale até a pessoa editar o campo), com o F01-E1 falhando antes da correção.
 
 ## A conferir (não reproduzido)
 

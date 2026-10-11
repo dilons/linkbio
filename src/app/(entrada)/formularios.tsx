@@ -3,7 +3,7 @@
 import { MailCheck } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import {
   cadastrar,
   entrarComGoogle,
@@ -14,6 +14,7 @@ import {
   salvarSenhaNova,
   type Estado,
 } from "@/app/acoes";
+import { useChecagemDeUsername } from "@/components/app/checagem-username";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/field";
 import { semQuebrar } from "@/lib/acao-segura";
@@ -258,32 +259,19 @@ export function FormSenhaNova() {
   );
 }
 
-type Checagem = { livre: boolean; username: string; motivo?: string } | null;
-
 /** S03: escolher o endereço, com checagem enquanto digita. */
 export function FormUsername() {
-  const [estado, acao, enviando] = useActionState(acoes.escolherUsername, {});
   const [valor, setValor] = useState("");
-  const [checagem, setChecagem] = useState<Checagem>(null);
-
-  useEffect(() => {
-    const u = valor.trim();
-    if (u.length < 3) return;
-    const ctrl = new AbortController();
-    const t = setTimeout(() => {
-      fetch(`/api/username?u=${encodeURIComponent(u)}`, { signal: ctrl.signal })
-        .then((r) => (r.ok ? r.json() : null))
-        .then((c) => c && setChecagem(c))
-        .catch(() => {});
-    }, 300);
-    return () => {
-      clearTimeout(t);
-      ctrl.abort();
-    };
-  }, [valor]);
-
-  const atual = valor.trim().length >= 3 ? checagem : null;
-  const erro = estado.erros?.username ?? (atual && !atual.livre ? atual.motivo : undefined);
+  // o erro do envio vale até a pessoa mexer no campo; depois, vale a checagem nova (BUG-012)
+  const [editou, setEditou] = useState(false);
+  const [estado, acao, enviando] = useActionState(async (anterior: Estado, form: FormData) => {
+    const r = await acoes.escolherUsername(anterior, form);
+    setEditou(false);
+    return r;
+  }, {});
+  const atual = useChecagemDeUsername(valor);
+  const erroDoEnvio = editou ? undefined : estado.erros?.username;
+  const erro = erroDoEnvio ?? (atual && !atual.livre ? atual.motivo : undefined);
   const dica = atual?.livre ? `${MARCA.dominio}/${atual.username} está livre.` : "Letras, números, ponto e sublinhado.";
 
   return (
@@ -298,7 +286,10 @@ export function FormUsername() {
         spellCheck={false}
         required
         value={valor}
-        onChange={(e) => setValor(e.target.value)}
+        onChange={(e) => {
+          setValor(e.target.value);
+          setEditou(true);
+        }}
         hint={<span aria-live="polite">{dica}</span>}
         error={erro}
       />

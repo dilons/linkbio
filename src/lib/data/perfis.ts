@@ -1,7 +1,8 @@
 import { and, asc, eq, gt, inArray, isNotNull, isNull, lte, or } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { eDonoDoPerfil } from "@/lib/authz";
 import { assinaturaDaConta, ehPro } from "@/lib/billing";
-import { db, violouUnico } from "@/lib/db";
+import { db, violouUnico, type Banco } from "@/lib/db";
 import { appearances, forms, links, profiles, reservedUsernames, socialLinks } from "@/lib/db/schema";
 import { pedeNome, type ConfigFormulario } from "./formularios";
 import { TIPOS_NA_LISTA } from "./links";
@@ -17,6 +18,8 @@ export type Perfil = {
   social_position: "top" | "bottom";
   sensitive_label: "none" | "sensitive" | "18" | "21" | "25";
   timezone: string;
+  /** a última troca de endereço (uma a cada 7 dias) */
+  username_changed_at: string | null;
 };
 
 export type LinkPublico = {
@@ -48,6 +51,7 @@ const COLUNAS = {
   social_position: profiles.socialPosition,
   sensitive_label: profiles.sensitiveLabel,
   timezone: profiles.timezone,
+  username_changed_at: profiles.usernameChangedAt,
 };
 
 export type Disponibilidade = { livre: boolean; username: string; motivo?: string };
@@ -57,11 +61,13 @@ export type Disponibilidade = { livre: boolean; username: string; motivo?: strin
  * página excluída fica guardado 14 dias; nesse tempo só a conta que era dona
  * pode retomá-lo (`accountId`).
  */
-export async function verificarUsername(bruto: string, accountId?: string): Promise<Disponibilidade> {
+export async function verificarUsername(bruto: string, accountId?: string, leitor?: Pick<Banco, "select">): Promise<Disponibilidade> {
   const username = normalizarUsername(bruto);
   const problema = problemaNoUsername(username);
   if (problema) return { livre: false, username, motivo: problema };
-  const conn = await db();
+  // dentro de uma transação, a mesma conexão: pedir outra ao pool com esta
+  // presa pode travar o pool quando várias chegam juntas
+  const conn = leitor ?? (await db());
   const [reservado, usado] = await Promise.all([
     conn.select({ u: reservedUsernames.username }).from(reservedUsernames).where(eq(reservedUsernames.username, username)).limit(1),
     conn
@@ -129,6 +135,77 @@ export async function atualizarCabecalho(
     .where(eDonoDoPerfil(accountId, profileId))
     .returning({ id: profiles.id });
   return r.length > 0;
+}
+
+const DIA = 86_400_000;
+/** Troca de endereço: uma a cada 7 dias; o antigo fica guardado 14 dias. */
+export const TROCA_A_CADA_DIAS = 7;
+export const ENDERECO_GUARDADO_DIAS = 14;
+
+/** Quando a próxima troca fica liberada (null: já pode trocar). */
+export function proximaTroca(trocadoEm: string | null, agora = Date.now()): Date | null {
+  if (!trocadoEm) return null;
+  const libera = Date.parse(trocadoEm) + TROCA_A_CADA_DIAS * DIA;
+  return libera > agora ? new Date(libera) : null;
+}
+
+const dataBr = (d: Date) => d.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit" });
+
+/**
+ * S13: troca o endereço da página. O antigo vira uma linha já excluída da
+ * mesma conta, como na exclusão: guardado 14 dias, só ela retoma, e quem
+ * abrir o endereço antigo nesse tempo vai para o novo (moved_to).
+ */
+export async function trocarUsername(
+  accountId: string,
+  profileId: string,
+  bruto: string,
+): Promise<{ ok: true; username: string } | { ok: false; erro: string }> {
+  const conn = await db();
+  try {
+    return await conn.transaction(async (tx) => {
+      // a linha travada: duas trocas ao mesmo tempo viram uma de cada vez
+      const [p] = await tx
+        .select({ username: profiles.username, trocadoEm: profiles.usernameChangedAt })
+        .from(profiles)
+        .where(and(eDonoDoPerfil(accountId, profileId), isNull(profiles.deletedAt)))
+        .for("update");
+      if (!p) return { ok: false as const, erro: "Essa página não existe mais." };
+      const proxima = proximaTroca(p.trocadoEm);
+      if (proxima) return { ok: false as const, erro: `Você já trocou o endereço esta semana. A próxima troca fica liberada em ${dataBr(proxima)}.` };
+      const novo = normalizarUsername(bruto);
+      if (novo === p.username) return { ok: false as const, erro: "Esse já é o endereço da sua página." };
+      const check = await verificarUsername(novo, accountId, tx);
+      if (!check.livre) return { ok: false as const, erro: check.motivo ?? "Endereço indisponível." };
+      const agora = new Date().toISOString();
+      // o endereço que esta conta tinha guardado (de uma troca ou exclusão) sai antes
+      await tx
+        .delete(profiles)
+        .where(and(eq(profiles.username, novo), eq(profiles.accountId, accountId), isNotNull(profiles.deletedAt)));
+      await tx.update(profiles).set({ username: novo, usernameChangedAt: agora, updatedAt: agora }).where(eq(profiles.id, profileId));
+      await tx.insert(profiles).values({ accountId, username: p.username, deletedAt: agora, movedTo: profileId });
+      return { ok: true as const, username: novo };
+    });
+  } catch (e) {
+    if (violouUnico(e)) return { ok: false, erro: "Alguém acabou de pegar esse endereço. Tente outro." };
+    throw e;
+  }
+}
+
+/** Endereço trocado há menos de 14 dias: o endereço atual da página (para redirecionar). */
+export async function enderecoNovo(bruto: string): Promise<string | null> {
+  const username = normalizarUsername(bruto);
+  if (problemaNoUsername(username)) return null;
+  const conn = await db();
+  const atual = alias(profiles, "atual");
+  const limite = new Date(Date.now() - ENDERECO_GUARDADO_DIAS * DIA).toISOString();
+  const [r] = await conn
+    .select({ username: atual.username })
+    .from(profiles)
+    .innerJoin(atual, eq(atual.id, profiles.movedTo))
+    .where(and(eq(profiles.username, username), isNotNull(profiles.deletedAt), gt(profiles.deletedAt, limite), isNull(atual.deletedAt)))
+    .limit(1);
+  return r?.username ?? null;
 }
 
 export const AVISOS_DA_PAGINA = ["none", "sensitive", "18", "21", "25"] as const;

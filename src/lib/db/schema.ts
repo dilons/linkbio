@@ -1,6 +1,6 @@
 // Gerado por `npm run db:types` a partir do banco migrado (supabase/migrations).
 // Não edite à mão: mude o SQL numa migração nova e gere de novo.
-import { pgTable, index, foreignKey, unique, check, uuid, timestamp, text, integer, jsonb, bigint, char, date, uniqueIndex, boolean, smallint, primaryKey, customType, pgSchema } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, uuid, timestamp, index, check, text, integer, unique, jsonb, bigint, char, date, uniqueIndex, boolean, smallint, primaryKey, customType, pgSchema } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 // Tipos que o drizzle-kit não reconhece sozinho.
@@ -11,40 +11,6 @@ const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () =>
 export const users = pgSchema("auth").table("users", { id: uuid().primaryKey() });
 
 
-
-export const profiles = pgTable("profiles", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	accountId: uuid("account_id"),
-	username: citext("username").notNull(),
-	usernameChangedAt: timestamp("username_changed_at", { withTimezone: true, mode: 'string' }),
-	title: text(),
-	bio: text(),
-	avatarPath: text("avatar_path"),
-	headerLayout: text("header_layout").default('classic').notNull(),
-	socialPosition: text("social_position").default('top').notNull(),
-	sensitiveLabel: text("sensitive_label").default('none').notNull(),
-	timezone: text().default('America/Sao_Paulo').notNull(),
-	category: text(),
-	deletedAt: timestamp("deleted_at", { withTimezone: true, mode: 'string' }),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-}, (table) => [
-	index("profiles_account_idx").using("btree", table.accountId.asc().nullsLast().op("uuid_ops")),
-	index("profiles_deleted_idx").using("btree", table.deletedAt.asc().nullsLast().op("timestamptz_ops")).where(sql`(deleted_at IS NOT NULL)`),
-	foreignKey({
-			columns: [table.accountId],
-			foreignColumns: [accounts.id],
-			name: "profiles_account_id_fkey"
-		}).onDelete("set null"),
-	unique("profiles_username_key").on(table.username),
-	check("profiles_bio_check", sql`char_length(bio) <= 160`),
-	check("profiles_header_layout_check", sql`header_layout = ANY (ARRAY['classic'::text, 'hero'::text])`),
-	check("profiles_sem_dono_so_excluido", sql`(account_id IS NOT NULL) OR (deleted_at IS NOT NULL)`),
-	check("profiles_sensitive_label_check", sql`sensitive_label = ANY (ARRAY['none'::text, 'sensitive'::text, '18'::text, '21'::text, '25'::text])`),
-	check("profiles_social_position_check", sql`social_position = ANY (ARRAY['top'::text, 'bottom'::text])`),
-	check("profiles_title_check", sql`char_length(title) <= 60`),
-	check("profiles_username_check", sql`(username ~ '^[a-z0-9._]{3,30}$'::citext) AND (username !~ '^[._]|[._]$'::citext)`),
-]);
 
 export const accounts = pgTable("accounts", {
 	id: uuid().primaryKey().notNull(),
@@ -327,6 +293,47 @@ export const links = pgTable("links", {
 	check("links_url_check", sql`(url IS NULL) OR (url ~ '^https?://[^\s]+$'::text)`),
 	check("links_url_needed", sql`(kind <> ALL (ARRAY['link'::text, 'video'::text])) OR (url IS NOT NULL)`),
 	check("links_window", sql`(ends_at IS NULL) OR (starts_at IS NULL) OR (ends_at > starts_at)`),
+]);
+
+export const profiles = pgTable("profiles", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	accountId: uuid("account_id"),
+	username: citext("username").notNull(),
+	usernameChangedAt: timestamp("username_changed_at", { withTimezone: true, mode: 'string' }),
+	title: text(),
+	bio: text(),
+	avatarPath: text("avatar_path"),
+	headerLayout: text("header_layout").default('classic').notNull(),
+	socialPosition: text("social_position").default('top').notNull(),
+	sensitiveLabel: text("sensitive_label").default('none').notNull(),
+	timezone: text().default('America/Sao_Paulo').notNull(),
+	category: text(),
+	deletedAt: timestamp("deleted_at", { withTimezone: true, mode: 'string' }),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	movedTo: uuid("moved_to"),
+}, (table) => [
+	index("profiles_account_idx").using("btree", table.accountId.asc().nullsLast().op("uuid_ops")),
+	index("profiles_deleted_idx").using("btree", table.deletedAt.asc().nullsLast().op("timestamptz_ops")).where(sql`(deleted_at IS NOT NULL)`),
+	foreignKey({
+			columns: [table.accountId],
+			foreignColumns: [accounts.id],
+			name: "profiles_account_id_fkey"
+		}).onDelete("set null"),
+	foreignKey({
+			columns: [table.movedTo],
+			foreignColumns: [table.id],
+			name: "profiles_moved_to_fkey"
+		}).onDelete("set null"),
+	unique("profiles_username_key").on(table.username),
+	check("profiles_bio_check", sql`char_length(bio) <= 160`),
+	check("profiles_header_layout_check", sql`header_layout = ANY (ARRAY['classic'::text, 'hero'::text])`),
+	check("profiles_moved_to_so_excluido", sql`(moved_to IS NULL) OR (deleted_at IS NOT NULL)`),
+	check("profiles_sem_dono_so_excluido", sql`(account_id IS NOT NULL) OR (deleted_at IS NOT NULL)`),
+	check("profiles_sensitive_label_check", sql`sensitive_label = ANY (ARRAY['none'::text, 'sensitive'::text, '18'::text, '21'::text, '25'::text])`),
+	check("profiles_social_position_check", sql`social_position = ANY (ARRAY['top'::text, 'bottom'::text])`),
+	check("profiles_title_check", sql`char_length(title) <= 60`),
+	check("profiles_username_check", sql`(username ~ '^[a-z0-9._]{3,30}$'::citext) AND (username !~ '^[._]|[._]$'::citext)`),
 ]);
 
 export const rateLimits = pgTable("rate_limits", {
