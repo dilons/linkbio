@@ -268,6 +268,7 @@ alter table data_requests enable row level security;
 -- ------------------------------------------------------------------ dados fixos
 
 insert into reserved_usernames (username) values
-  ('admin'), ('api'), ('app'), ('ajuda'), ('blog'), ('cadastro'), ('conta'),
-  ('entrar'), ('linkbio'), ('login'), ('planos'), ('precos'), ('privacidade'),
-  ('r'), ('sair'), ('suporte'), ('termos'), ('www');
+  ('admin'), ('api'), ('app'), ('ajuda'), ('blog'), ('cadastro'), ('comecar'),
+  ('confirmar'), ('conta'), ('design'), ('entrar'), ('linkbio'), ('login'),
+  ('planos'), ('precos'), ('privacidade'), ('r'), ('sair'), ('suporte'),
+  ('termos'), ('www');

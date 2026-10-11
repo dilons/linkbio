@@ -22,3 +22,6 @@ __pycache__/
 *.pem
 npm-debug.log*
 .vercel
+
+# banco local de desenvolvimento (PGlite)
+/.data/
