@@ -1,8 +1,10 @@
-import { and, asc, eq, gt, isNull, lte, or } from "drizzle-orm";
+import { and, asc, eq, gt, inArray, isNull, lte, or } from "drizzle-orm";
 import { eDonoDoPerfil } from "@/lib/authz";
 import { assinaturaDaConta, ehPro } from "@/lib/billing";
 import { db, violouUnico } from "@/lib/db";
-import { appearances, links, profiles, reservedUsernames, socialLinks } from "@/lib/db/schema";
+import { appearances, forms, links, profiles, reservedUsernames, socialLinks } from "@/lib/db/schema";
+import { pedeNome, type ConfigFormulario } from "./formularios";
+import { TIPOS_NA_LISTA } from "./links";
 import { normalizarUsername, problemaNoUsername } from "./validacao";
 
 export type Perfil = {
@@ -16,7 +18,15 @@ export type Perfil = {
   sensitive_label: "none" | "sensitive" | "18" | "21" | "25";
 };
 
-export type LinkPublico = { id: string; title: string; highlight: string; lock: string; lock_min_age: number | null };
+export type LinkPublico = {
+  id: string;
+  title: string;
+  highlight: string;
+  lock: string;
+  lock_min_age: number | null;
+  /** preenchido nos blocos de formulário de email */
+  formulario: ConfigFormulario | null;
+};
 export type RedePublica = { platform: string; url: string };
 export type PaginaPublica = {
   perfil: Perfil;
@@ -120,13 +130,24 @@ export async function paginaPublica(bruto: string): Promise<PaginaPublica | null
   const agora = new Date().toISOString();
   const [ls, redes, assinatura] = await Promise.all([
     conn
-      .select({ id: links.id, title: links.title, highlight: links.highlight, lock: links.lock, lock_min_age: links.lockMinAge })
+      .select({
+        id: links.id,
+        title: links.title,
+        highlight: links.highlight,
+        lock: links.lock,
+        lock_min_age: links.lockMinAge,
+        kind: links.kind,
+        campos: forms.fields,
+        consentimento: forms.consentText,
+        sucesso: forms.successMessage,
+      })
       .from(links)
+      .leftJoin(forms, eq(forms.linkId, links.id))
       .where(
         and(
           eq(links.profileId, linha.id),
           eq(links.enabled, true),
-          eq(links.kind, "link"),
+          inArray(links.kind, TIPOS_NA_LISTA),
           or(isNull(links.startsAt), lte(links.startsAt, agora)),
           or(isNull(links.endsAt), gt(links.endsAt, agora)),
         ),
@@ -141,5 +162,9 @@ export async function paginaPublica(bruto: string): Promise<PaginaPublica | null
   ]);
   const { theme, ...perfil } = linha;
   const tema = !theme || theme === "padrao" ? "papel" : theme;
-  return { perfil: perfil as Perfil, pro: ehPro(assinatura), tema, links: ls, redes };
+  const publicos = ls.map(({ kind, campos, consentimento, sucesso, ...l }) => ({
+    ...l,
+    formulario: kind === "form" ? { pedirNome: pedeNome(campos), consentimento: consentimento ?? "", sucesso: sucesso ?? "" } : null,
+  }));
+  return { perfil: perfil as Perfil, pro: ehPro(assinatura), tema, links: publicos, redes };
 }

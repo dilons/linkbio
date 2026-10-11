@@ -1,9 +1,17 @@
 import type { ReactNode } from "react";
+import { FormBlock } from "./form-block";
 import { PublicLinkButton, type Forma, type Preenchimento } from "./link-button";
 import { ProfileHeader } from "./profile-header";
 import { SocialRow, type Rede } from "./social-row";
 
-export type LinkPublico = { id: string; titulo: string; destaque?: boolean; travado?: boolean };
+export type LinkPublico = {
+  id: string;
+  titulo: string;
+  destaque?: boolean;
+  travado?: boolean;
+  /** bloco de formulário de email no lugar do botão */
+  formulario?: { pedirNome: boolean; consentimento: string; sucesso: string } | null;
+};
 
 /**
  * A página que o visitante vê: uma coluna central com cabeçalho, redes, links
@@ -50,7 +58,17 @@ export function PublicPage({
           <ul className="flex flex-col gap-3">
             {links.map((l) => (
               <li key={l.id}>
-                <PublicLinkButton id={l.id} titulo={l.titulo} destaque={l.destaque} travado={l.travado} forma={forma} preenchimento={preenchimento} />
+                {l.formulario ? (
+                  <FormBlock
+                    linkId={l.id}
+                    titulo={l.titulo}
+                    pedirNome={l.formulario.pedirNome}
+                    consentimento={l.formulario.consentimento}
+                    mensagemSucesso={l.formulario.sucesso}
+                  />
+                ) : (
+                  <PublicLinkButton id={l.id} titulo={l.titulo} destaque={l.destaque} travado={l.travado} forma={forma} preenchimento={preenchimento} />
+                )}
               </li>
             ))}
           </ul>

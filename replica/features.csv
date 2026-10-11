@@ -12,7 +12,7 @@ Prévia ao vivo da página no editor,editor,must,yes,partial,no computador reage
 Página pública responsiva em /username,pagina publica,must,yes,yes,404 para perfil inexistente ou excluído: robôs de prévia recebem status 404; navegador recebe a página de 404 com noindex (limite do streaming)
 Temas prontos,aparencia,must,yes,yes,5 temas (papel; noite; areia; oceano; alto contraste); todos passam no axe; prévia muda na hora; todos grátis por enquanto
 Contagem de views e cliques,insights,must,yes,yes,sem cookie e sem guardar IP; robôs (isbot) não contam; visita contada pelo navegador; clique por /r/ sem JavaScript
-Formulário de captura de email na página,audiencia,must,yes,no,consentimento e finalidade na hora da coleta (LGPD)
+Formulário de captura de email na página,audiencia,must,yes,yes,email e nome opcional; o criador escreve o consentimento e ele fica gravado com cada inscrição (LGPD); campo isca e limite por visitante; o mesmo email não duplica; telefone ainda não
 Ver inscritos e exportar CSV,audiencia,must,yes,no,original manda link por email com senha
 Plano pago com assinatura e cancelamento,plano,must,yes,partial,Asaas: Pix; cartão; boleto na página do Asaas; webhook idempotente; cancelar em um clique (Pro até o fim do período). Testado contra um Asaas falso: falta validar no sandbox com a conta do dono
 Tirar a marca do rodapé no plano pago,plano,must,yes,yes,some com o Pro ativo e até o fim do período pago depois de cancelar

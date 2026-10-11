@@ -11,6 +11,7 @@ import { criarConta, entrar, pedirNovaSenha, reenviarConfirmacao, sair, trocarSe
 import { definirTema, IDS_DOS_TEMAS } from "@/lib/data/aparencia";
 import { excluirConta } from "@/lib/data/conta";
 import { definirFoto } from "@/lib/data/fotos";
+import { adicionarFormulario, editarFormulario, formularioSchema, removerInscrito } from "@/lib/data/formularios";
 import { dentroDosLimites } from "@/lib/data/limites";
 import { adicionarLink, alternarLink, editarLink, excluirLink, reordenarLinks } from "@/lib/data/links";
 import { atualizarCabecalho, criarPerfil, perfilDaConta } from "@/lib/data/perfis";
@@ -271,6 +272,44 @@ export async function escolherTema(tema: unknown): Promise<boolean> {
   const escolhido = z.enum(IDS_DOS_TEMAS).safeParse(tema);
   if (!escolhido.success) return false;
   const ok = await definirTema(sessao.userId, perfil.id, escolhido.data);
+  refresh();
+  return ok;
+}
+
+// ------------------------------------------------------------------ formulário de email
+
+/** S06: põe um formulário de email no topo da página, com textos padrão. */
+export async function novoFormulario(): Promise<boolean> {
+  const { sessao, perfil } = await exigirPerfil();
+  const id = await adicionarFormulario(sessao.userId, perfil.id, perfil.title || perfil.username);
+  refresh();
+  return id !== null;
+}
+
+/** S11: título, nome opcional, consentimento e mensagem de sucesso. */
+export async function salvarFormulario(_: Estado, form: FormData): Promise<Estado> {
+  const { sessao } = await exigirPerfil();
+  const valores = valoresDe(form, ["titulo", "consentimento", "sucesso", "pedirNome"]);
+  const dados = formularioSchema.safeParse({
+    titulo: form.get("titulo") ?? "",
+    pedirNome: form.get("pedirNome") === "on",
+    consentimento: form.get("consentimento") ?? "",
+    sucesso: form.get("sucesso") ?? "",
+  });
+  if (!dados.success) return { erros: errosDe(dados.error.issues), valores };
+  const id = idSchema.safeParse(form.get("id"));
+  const ok = id.success && (await editarFormulario(sessao.userId, id.data, dados.data));
+  if (!ok) return { erro: "Esse formulário não existe mais." };
+  refresh();
+  return { ok: true };
+}
+
+/** S10: tira uma pessoa da lista de inscritos. */
+export async function tirarDaLista(id: unknown): Promise<boolean> {
+  const { sessao } = await exigirPerfil();
+  const inscrito = idSchema.safeParse(id);
+  if (!inscrito.success) return false;
+  const ok = await removerInscrito(sessao.userId, inscrito.data);
   refresh();
   return ok;
 }

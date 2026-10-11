@@ -5,6 +5,7 @@ import { after, before, test } from "node:test";
 import { fecharBanco } from "@/lib/db";
 import { definirTema } from "@/lib/data/aparencia";
 import { totais } from "@/lib/data/eventos";
+import { adicionarFormulario, editarFormulario, listarInscritos, removerInscrito } from "@/lib/data/formularios";
 import { adicionarLink, alternarLink, editarLink, excluirLink, listarLinks, reordenarLinks } from "@/lib/data/links";
 import { atualizarCabecalho, criarPerfil, perfilDaConta } from "@/lib/data/perfis";
 import { apagarUsuarioDeTeste, criarUsuario, sufixo } from "./ajuda";
@@ -62,6 +63,26 @@ test("outra conta não muda o cabeçalho nem vê os insights", async () => {
 test("outra conta não troca o tema", async () => {
   assert.equal(await definirTema(bia.id, perfilAna, "noite"), false);
   assert.equal(await definirTema(ana.id, perfilAna, "areia"), true);
+});
+
+test("outra conta não cria, edita nem lê formulários e inscritos", async () => {
+  assert.equal(await adicionarFormulario(bia.id, perfilAna, "Ana"), null);
+  const form = await adicionarFormulario(ana.id, perfilAna, "Ana");
+  assert.ok(form);
+  const dados = { titulo: "Invadido", pedirNome: false, consentimento: "Texto trocado por outra conta, não pode", sucesso: "x" };
+  assert.equal(await editarFormulario(bia.id, form, dados), false);
+  const { db } = await import("@/lib/db");
+  const { submissions } = await import("@/lib/db/schema");
+  const [i] = await (await db())
+    .insert(submissions)
+    .values({ profileId: perfilAna, linkId: form, email: "fa@exemplo.com", consentText: "Aceito" })
+    .returning({ id: submissions.id });
+  assert.deepEqual(await listarInscritos(bia.id, perfilAna), []);
+  assert.equal(await removerInscrito(bia.id, i.id), false);
+  assert.equal((await listarInscritos(ana.id, perfilAna)).length, 1);
+  assert.equal(await removerInscrito(ana.id, i.id), true);
+  assert.equal(await excluirLink(bia.id, form), false);
+  assert.equal(await excluirLink(ana.id, form), true);
 });
 
 test("o dono consegue tudo", async () => {

@@ -49,7 +49,7 @@ async function Conteudo({ params }: { params: PageProps<"/[username]">["params"]
         comMarca={!pagina.pro}
         redes={pagina.redes.map((r) => ({ plataforma: r.platform, url: r.url }))}
         redesNoTopo={perfil.social_position === "top"}
-        links={pagina.links.map((l) => ({ id: l.id, titulo: l.title }))}
+        links={pagina.links.map((l) => ({ id: l.id, titulo: l.title, formulario: l.formulario }))}
       />
       <ContaVisita perfil={perfil.id} />
     </>

@@ -1,8 +1,19 @@
 "use client";
 
-import { Check, Copy, ExternalLink, Pencil } from "lucide-react";
+import { Check, Copy, ExternalLink, Mail, Pencil } from "lucide-react";
 import { useActionState, useState } from "react";
-import { apagarLink, ligarDesligarLink, mudarOrdem, novoLink, salvarCabecalho, salvarFoto, salvarLink, type Estado } from "@/app/acoes";
+import {
+  apagarLink,
+  ligarDesligarLink,
+  mudarOrdem,
+  novoFormulario,
+  novoLink,
+  salvarCabecalho,
+  salvarFormulario,
+  salvarFoto,
+  salvarLink,
+  type Estado,
+} from "@/app/acoes";
 import { PublicPage } from "@/components/public/public-page";
 import type { Rede } from "@/components/public/social-row";
 import { Button } from "@/components/ui/button";
@@ -15,11 +26,13 @@ import { SortableList } from "@/components/ui/sortable-list";
 import { useToast } from "@/components/ui/toast";
 import { SEM_CONEXAO, semQuebrar, tentar } from "@/lib/acao-segura";
 
-export type LinkEditor = { id: string; titulo: string; url: string; ativo: boolean };
+export type ConfigFormulario = { pedirNome: boolean; consentimento: string; sucesso: string };
+export type LinkEditor = { id: string; titulo: string; url: string; ativo: boolean; formulario: ConfigFormulario | null };
 
 const novoLinkSeguro = semQuebrar(novoLink);
 const salvarLinkSeguro = semQuebrar(salvarLink);
 const salvarCabecalhoSeguro = semQuebrar(salvarCabecalho);
+const salvarFormularioSeguro = semQuebrar(salvarFormulario);
 
 type Props = {
   username: string;
@@ -88,7 +101,7 @@ export function Editor(props: Props) {
               onReorder={reordenar}
               render={(link, alca, arrastando) => (
                 <LinkCard
-                  link={link}
+                  link={{ ...link, url: link.formulario ? undefined : link.url, selo: link.formulario ? "Formulário de email" : undefined }}
                   alca={alca}
                   arrastando={arrastando}
                   onToggle={(ativo) => alternar(link, ativo)}
@@ -111,18 +124,29 @@ export function Editor(props: Props) {
               bio={props.bio}
               avatarUrl={props.avatarUrl}
               redes={props.redes}
-              links={itens.filter((l) => l.ativo).map((l) => ({ id: l.id, titulo: l.titulo }))}
+              links={itens.filter((l) => l.ativo).map((l) => ({ id: l.id, titulo: l.titulo, formulario: l.formulario }))}
             />
           </PhonePreview>
         </div>
       </aside>
 
-      {editando && <EditarLink link={editando} onFechar={() => setEditando(null)} />}
+      {editando &&
+        (editando.formulario ? (
+          <EditarFormulario link={editando} formulario={editando.formulario} onFechar={() => setEditando(null)} />
+        ) : (
+          <EditarLink link={editando} onFechar={() => setEditando(null)} />
+        ))}
       <Dialog
         open={excluindo !== null}
         onOpenChange={(v) => !v && setExcluindo(null)}
         title="Excluir este link?"
-        description={excluindo ? `"${excluindo.titulo}" sai da sua página. Os cliques que ele já teve continuam nos insights.` : undefined}
+        description={
+          excluindo
+            ? excluindo.formulario
+              ? `"${excluindo.titulo}" sai da sua página. Quem já se inscreveu continua na Audiência.`
+              : `"${excluindo.titulo}" sai da sua página. Os cliques que ele já teve continuam nos insights.`
+            : undefined
+        }
       >
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={() => setExcluindo(null)}>
@@ -289,12 +313,85 @@ function NovoLink() {
           error={estado.erros?.url}
         />
       </div>
-      <div>
+      <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" loading={enviando}>
           Adicionar
         </Button>
+        <NovoFormulario />
       </div>
     </form>
+  );
+}
+
+/** Põe um bloco de formulário de email no topo da página (F05). */
+function NovoFormulario() {
+  const toast = useToast();
+  const [criando, setCriando] = useState(false);
+  async function criar() {
+    setCriando(true);
+    const ok = await tentar(() => novoFormulario(), null);
+    setCriando(false);
+    if (ok) toast("Formulário adicionado. Toque em editar para ajustar os textos.");
+    else toast(ok === null ? SEM_CONEXAO : "Não deu para adicionar o formulário.", "erro");
+  }
+  return (
+    <Button type="button" variant="secondary" loading={criando} onClick={criar}>
+      <Mail aria-hidden className="size-4" />
+      Adicionar formulário de email
+    </Button>
+  );
+}
+
+/** S11: textos e campos do formulário de email. */
+function EditarFormulario({ link, formulario, onFechar }: { link: LinkEditor; formulario: ConfigFormulario; onFechar: () => void }) {
+  const [estado, acao, enviando] = useActionState(async (anterior: Estado, form: FormData) => {
+    const r = await salvarFormularioSeguro(anterior, form);
+    if (r.ok) onFechar();
+    return r;
+  }, {});
+  const [consentimento, setConsentimento] = useState(formulario.consentimento);
+  return (
+    <Dialog open onOpenChange={(v) => !v && onFechar()} title="Formulário de email" description="Quem visitar sua página deixa o email para receber suas novidades.">
+      <form action={acao} className="flex flex-col gap-4" noValidate>
+        <input type="hidden" name="id" value={link.id} />
+        <TextField label="Título" name="titulo" maxLength={100} defaultValue={estado.valores?.titulo ?? link.titulo} error={estado.erros?.titulo} />
+        <label className="flex items-start gap-2 text-sm text-fg">
+          <input
+            type="checkbox"
+            name="pedirNome"
+            defaultChecked={estado.valores ? estado.valores.pedirNome === "on" : formulario.pedirNome}
+            className="mt-0.5 size-4 accent-accent"
+          />
+          <span>Pedir o nome também (opcional para quem se inscreve)</span>
+        </label>
+        <TextArea
+          label="Texto de consentimento"
+          name="consentimento"
+          maxLength={300}
+          value={consentimento}
+          onChange={(e) => setConsentimento(e.target.value)}
+          hint="Diz para que o email vai ser usado. A pessoa marca que aceita, e o texto fica guardado com a inscrição."
+          error={estado.erros?.consentimento}
+        />
+        <TextField
+          label="Mensagem depois do envio"
+          name="sucesso"
+          maxLength={200}
+          defaultValue={estado.valores?.sucesso ?? formulario.sucesso}
+          error={estado.erros?.sucesso}
+        />
+        {estado.erro && (
+          <p role="alert" className="text-sm font-medium text-danger">
+            {estado.erro}
+          </p>
+        )}
+        <div className="flex justify-end">
+          <Button type="submit" loading={enviando}>
+            Salvar
+          </Button>
+        </div>
+      </form>
+    </Dialog>
   );
 }
 

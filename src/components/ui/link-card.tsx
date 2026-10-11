@@ -13,6 +13,8 @@ export type LinkResumo = {
   ativo: boolean;
   agendado?: string;
   travado?: string;
+  /** tipo do bloco, quando não é um link (ex.: "Formulário de email") */
+  selo?: string;
 };
 
 /** Um link na lista do editor: alça de arrastar, título, URL, liga e desliga, editar e excluir. */
@@ -51,6 +53,7 @@ export function LinkCard({
         <p className={cn("truncate text-sm font-semibold", link.ativo ? "text-fg" : "text-muted")}>{link.titulo}</p>
         {link.url && <p className="truncate text-xs text-muted">{link.url}</p>}
         <div className="mt-1 flex flex-wrap gap-1.5">
+          {link.selo && <Badge tom="info">{link.selo}</Badge>}
           {!link.ativo && <Badge>Desligado</Badge>}
           {link.agendado && (
             <Badge tom="info">

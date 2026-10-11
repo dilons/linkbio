@@ -1,7 +1,8 @@
 import { and, asc, eq, inArray, min } from "drizzle-orm";
 import { donoDoPerfil, perfisDaConta } from "@/lib/authz";
 import { db } from "@/lib/db";
-import { links } from "@/lib/db/schema";
+import { forms, links } from "@/lib/db/schema";
+import { pedeNome, type ConfigFormulario } from "./formularios";
 
 export type Link = {
   id: string;
@@ -13,7 +14,12 @@ export type Link = {
   ends_at: string | null;
   lock: string;
   lock_min_age: number | null;
+  /** preenchido nos blocos de formulário de email */
+  formulario: ConfigFormulario | null;
 };
+
+/** Os tipos que aparecem na lista do editor e na página (cabeçalho e vídeo vêm depois). */
+export const TIPOS_NA_LISTA = ["link", "form"];
 
 const COLUNAS = {
   id: links.id,
@@ -32,11 +38,16 @@ const COLUNAS = {
 
 export async function listarLinks(accountId: string, profileId: string): Promise<Link[]> {
   const conn = await db();
-  return conn
-    .select(COLUNAS)
+  const linhas = await conn
+    .select({ ...COLUNAS, kind: links.kind, campos: forms.fields, consentimento: forms.consentText, sucesso: forms.successMessage })
     .from(links)
-    .where(and(eq(links.profileId, profileId), eq(links.kind, "link"), inArray(links.profileId, perfisDaConta(conn, accountId))))
+    .leftJoin(forms, eq(forms.linkId, links.id))
+    .where(and(eq(links.profileId, profileId), inArray(links.kind, TIPOS_NA_LISTA), inArray(links.profileId, perfisDaConta(conn, accountId))))
     .orderBy(asc(links.position));
+  return linhas.map(({ kind, campos, consentimento, sucesso, ...l }) => ({
+    ...l,
+    formulario: kind === "form" ? { pedirNome: pedeNome(campos), consentimento: consentimento ?? "", sucesso: sucesso ?? "" } : null,
+  }));
 }
 
 /** O link novo entra no topo da lista. */
@@ -53,7 +64,7 @@ export async function adicionarLink(
       .insert(links)
       .values({ profileId, title: dados.titulo, url: dados.url, position: (topo ?? 1) - 1 })
       .returning(COLUNAS);
-    return novo;
+    return { ...novo, formulario: null };
   });
 }
 
@@ -65,7 +76,7 @@ export async function editarLink(accountId: string, linkId: string, dados: { tit
   const r = await conn
     .update(links)
     .set({ title: dados.titulo, url: dados.url, updatedAt: new Date().toISOString() })
-    .where(doDono(conn, accountId, linkId))
+    .where(and(doDono(conn, accountId, linkId), eq(links.kind, "link")))
     .returning({ id: links.id });
   return r.length > 0;
 }
@@ -92,7 +103,7 @@ export async function reordenarLinks(accountId: string, profileId: string, ids: 
   return conn.transaction(async (tx) => {
     if (!(await donoDoPerfil(tx, accountId, profileId))) return false;
     const atuais = new Set(
-      (await tx.select({ id: links.id }).from(links).where(and(eq(links.profileId, profileId), eq(links.kind, "link")))).map((l) => l.id),
+      (await tx.select({ id: links.id }).from(links).where(and(eq(links.profileId, profileId), inArray(links.kind, TIPOS_NA_LISTA)))).map((l) => l.id),
     );
     if (atuais.size !== ids.length || !ids.every((id) => atuais.has(id))) return false;
     const agora = new Date().toISOString();
