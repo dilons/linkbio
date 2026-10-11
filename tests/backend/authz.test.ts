@@ -7,7 +7,7 @@ import { definirTema } from "@/lib/data/aparencia";
 import { totais } from "@/lib/data/eventos";
 import { adicionarFormulario, editarFormulario, listarInscritos, removerInscrito } from "@/lib/data/formularios";
 import { adicionarLink, alternarLink, editarLink, excluirLink, listarLinks, reordenarLinks } from "@/lib/data/links";
-import { atualizarCabecalho, criarPerfil, perfilDaConta } from "@/lib/data/perfis";
+import { atualizarCabecalho, criarPerfil, perfilDaConta, verificarUsername } from "@/lib/data/perfis";
 import { listarRedes, posicionarRedes, removerRede, reordenarRedes, salvarRede } from "@/lib/data/redes";
 import { apagarUsuarioDeTeste, criarUsuario, sufixo } from "./ajuda";
 
@@ -119,4 +119,30 @@ test("o dono consegue tudo", async () => {
   assert.equal((await listarLinks(ana.id, perfilAna))[0].id, linkAna);
   assert.equal(await reordenarLinks(ana.id, perfilAna, [linkAna]), false, "lista incompleta é recusada");
   assert.equal(await excluirLink(ana.id, outro.id), true);
+});
+
+test("página excluída: o endereço fica guardado; outra conta não pega, a dona retoma", async () => {
+  const cris = await criarUsuario("cris");
+  try {
+    const nome = `cris_${sufixo()}`;
+    const r = await criarPerfil(cris.id, nome);
+    assert.ok(r.ok);
+    await adicionarLink(cris.id, r.perfil.id, { titulo: "Loja", url: "https://exemplo.com.br/" });
+    // o que excluirPagina faz no banco (lib/data/conta.ts, que só roda no servidor do Next)
+    const { db } = await import("@/lib/db");
+    const { sql } = await import("drizzle-orm");
+    await (await db()).execute(sql`select public.apagar_perfil(${r.perfil.id}::uuid)`);
+
+    assert.equal(await perfilDaConta(cris.id), null, "a conta fica sem página");
+    assert.equal((await verificarUsername(nome)).livre, false, "o endereço fica guardado");
+    assert.equal((await verificarUsername(nome, bia.id)).livre, false, "outra conta não pega");
+    assert.equal((await criarPerfil(bia.id, nome)).ok, false);
+    assert.equal((await verificarUsername(nome, cris.id)).livre, true, "a dona pode retomar");
+    const deNovo = await criarPerfil(cris.id, nome);
+    assert.ok(deNovo.ok);
+    assert.notEqual(deNovo.perfil.id, r.perfil.id, "página nova, sem nada da antiga");
+    assert.deepEqual(await listarLinks(cris.id, deNovo.perfil.id), []);
+  } finally {
+    await apagarUsuarioDeTeste(cris.id);
+  }
 });

@@ -16,7 +16,7 @@ Formulário de captura de email na página,audiencia,must,yes,yes,email e nome o
 Ver inscritos e exportar CSV,audiencia,must,yes,yes,tabela com os 1000 mais novos e tirar da lista; CSV baixado direto (BOM; ponto e vírgula; fórmulas neutralizadas) no lugar do link por email com senha do original
 Plano pago com assinatura e cancelamento,plano,must,yes,partial,Asaas: Pix; cartão; boleto na página do Asaas; webhook idempotente; cancelar em um clique (Pro até o fim do período). Testado contra um Asaas falso: falta validar no sandbox com a conta do dono
 Tirar a marca do rodapé no plano pago,plano,must,yes,yes,some com o Pro ativo e até o fim do período pago depois de cancelar
-Excluir perfil ou conta,conta,must,yes,partial,excluir a conta: apaga na hora; cancela a assinatura; apaga fotos; segura o username 14 dias; confirma por email. Excluir só a página (sem a conta) ainda sem tela
+Excluir perfil ou conta,conta,must,yes,yes,excluir a conta: apaga na hora; cancela a assinatura; apaga fotos; confirma por email. Excluir só a página: apaga tudo dela; a conta e o Pro continuam; confirma por email. Nos dois o endereço fica guardado 14 dias (só a mesma conta retoma)
 Login com Google,onboarding,should,yes,partial,código e configuração prontos (escopos email e profile); precisa do app OAuth do dono; não testado
 Modelo de página pela categoria da conta,onboarding,should,yes,no,
 Tema customizável (fundo botões fonte cores),aparencia,should,yes,no,contraste checado

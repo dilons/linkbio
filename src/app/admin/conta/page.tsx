@@ -4,7 +4,7 @@ import { fazerLogout, sairDeTodos } from "@/app/acoes";
 import { Button } from "@/components/ui/button";
 import { perfilDaConta } from "@/lib/data/perfis";
 import { exigirConta } from "@/lib/sessao";
-import { ExcluirConta } from "./excluir";
+import { ExcluirConta, ExcluirPagina } from "./excluir";
 
 export const metadata: Metadata = { title: "Conta · linkbio" };
 
@@ -45,6 +45,20 @@ async function Dados() {
           </form>
         </div>
       </section>
+      {perfil && (
+        <section aria-labelledby="t-pagina" className="flex flex-col gap-3 rounded-lg border border-danger/40 bg-bg p-4 shadow-card">
+          <h2 id="t-pagina" className="text-lg font-semibold text-fg">
+            Excluir só a página
+          </h2>
+          <p className="text-sm text-muted">
+            Apaga <strong className="break-all text-fg">linkbio.com.br/{perfil.username}</strong> e tudo o que está nela. Sua conta continua, e
+            você pode criar outra página depois.
+          </p>
+          <div>
+            <ExcluirPagina username={perfil.username} />
+          </div>
+        </section>
+      )}
       <section aria-labelledby="t-perigo" className="flex flex-col gap-3 rounded-lg border border-danger/40 bg-bg p-4 shadow-card">
         <h2 id="t-perigo" className="text-lg font-semibold text-fg">
           Excluir a conta

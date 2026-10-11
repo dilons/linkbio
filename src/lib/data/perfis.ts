@@ -1,4 +1,4 @@
-import { and, asc, eq, gt, inArray, isNull, lte, or } from "drizzle-orm";
+import { and, asc, eq, gt, inArray, isNotNull, isNull, lte, or } from "drizzle-orm";
 import { eDonoDoPerfil } from "@/lib/authz";
 import { assinaturaDaConta, ehPro } from "@/lib/billing";
 import { db, violouUnico } from "@/lib/db";
@@ -50,18 +50,28 @@ const COLUNAS = {
 
 export type Disponibilidade = { livre: boolean; username: string; motivo?: string };
 
-/** Checa formato, lista de reservados e se alguém já usa (inclusive perfil excluído há menos de 14 dias). */
-export async function verificarUsername(bruto: string): Promise<Disponibilidade> {
+/**
+ * Checa formato, lista de reservados e se alguém já usa. O endereço de uma
+ * página excluída fica guardado 14 dias; nesse tempo só a conta que era dona
+ * pode retomá-lo (`accountId`).
+ */
+export async function verificarUsername(bruto: string, accountId?: string): Promise<Disponibilidade> {
   const username = normalizarUsername(bruto);
   const problema = problemaNoUsername(username);
   if (problema) return { livre: false, username, motivo: problema };
   const conn = await db();
   const [reservado, usado] = await Promise.all([
     conn.select({ u: reservedUsernames.username }).from(reservedUsernames).where(eq(reservedUsernames.username, username)).limit(1),
-    conn.select({ id: profiles.id }).from(profiles).where(eq(profiles.username, username)).limit(1),
+    conn
+      .select({ id: profiles.id, dono: profiles.accountId, excluido: profiles.deletedAt })
+      .from(profiles)
+      .where(eq(profiles.username, username))
+      .limit(1),
   ]);
   if (reservado.length) return { livre: false, username, motivo: "Esse endereço é reservado. Tente outro." };
-  if (usado.length) return { livre: false, username, motivo: "Alguém já usa esse endereço. Tente outro." };
+  const [u] = usado;
+  if (u && u.excluido && accountId && u.dono === accountId) return { livre: true, username };
+  if (u) return { livre: false, username, motivo: "Alguém já usa esse endereço. Tente outro." };
   return { livre: true, username };
 }
 
@@ -69,11 +79,15 @@ export async function criarPerfil(
   accountId: string,
   bruto: string,
 ): Promise<{ ok: true; perfil: Perfil } | { ok: false; erro: string }> {
-  const check = await verificarUsername(bruto);
+  const check = await verificarUsername(bruto, accountId);
   if (!check.livre) return { ok: false, erro: check.motivo ?? "Endereço indisponível." };
   const conn = await db();
   try {
     const perfil = await conn.transaction(async (tx) => {
+      // a página excluída desta conta que guardava o endereço (já vazia) sai antes
+      await tx
+        .delete(profiles)
+        .where(and(eq(profiles.username, check.username), eq(profiles.accountId, accountId), isNotNull(profiles.deletedAt)));
       const [p] = await tx
         .insert(profiles)
         .values({ accountId, username: check.username, title: check.username })

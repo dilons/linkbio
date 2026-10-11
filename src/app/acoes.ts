@@ -9,7 +9,7 @@ import { cancelarAssinatura, iniciarAssinatura, type Forma } from "@/lib/billing
 import { documentoValido } from "@/lib/billing/cpf";
 import { criarConta, entrar, pedirNovaSenha, reenviarConfirmacao, sair, trocarSenha, urlLoginGoogle } from "@/lib/data/auth";
 import { definirTema, IDS_DOS_TEMAS } from "@/lib/data/aparencia";
-import { excluirConta } from "@/lib/data/conta";
+import { excluirConta, excluirPagina } from "@/lib/data/conta";
 import { definirFoto } from "@/lib/data/fotos";
 import { adicionarFormulario, editarFormulario, formularioSchema, removerInscrito } from "@/lib/data/formularios";
 import { dentroDosLimites } from "@/lib/data/limites";
@@ -148,6 +148,17 @@ export async function excluirMinhaConta(_: Estado, form: FormData): Promise<Esta
   if (!r.ok) return { erro: r.erro };
   await sair("local").catch(() => undefined);
   redirect("/entrar?aviso=conta-excluida");
+}
+
+/** S13: exclui só a página; a conta e a assinatura continuam. Confirma pelo endereço. */
+export async function excluirMinhaPagina(_: Estado, form: FormData): Promise<Estado> {
+  const { sessao, perfil } = await exigirPerfil();
+  if (String(form.get("confirmacao") ?? "").trim().toLowerCase() !== perfil.username) {
+    return { erros: { confirmacao: `Digite ${perfil.username} para confirmar.` } };
+  }
+  const r = await excluirPagina(sessao.userId, sessao.email, perfil.id);
+  if (!r.ok) return { erro: r.erro };
+  redirect("/comecar?aviso=pagina-excluida");
 }
 
 export async function escolherUsername(_: Estado, form: FormData): Promise<Estado> {

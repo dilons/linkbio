@@ -144,6 +144,9 @@ const AVISOS: Record<string, { texto: string; erro?: boolean }> = {
   google: { texto: "Não deu para entrar com o Google. Tente de novo ou use email e senha.", erro: true },
   "saiu-de-todos": { texto: "Pronto: você saiu de todos os aparelhos." },
   "conta-excluida": { texto: "Sua conta foi excluída. Mandamos a confirmação para o seu email." },
+  "pagina-excluida": {
+    texto: "Sua página foi excluída e mandamos a confirmação para o seu email. Quando quiser, escolha um endereço para começar outra.",
+  },
 };
 
 /** Recado que vem na URL (?aviso=...) de outra tela: link vencido, conta excluída. */

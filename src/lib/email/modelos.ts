@@ -82,4 +82,11 @@ export const modelos = {
       "O endereço da página fica reservado por 14 dias, para ninguém se passar por você, e depois fica livre. Se você tinha o Pro, a assinatura foi cancelada e não haverá novas cobranças.",
       "Se não foi você que pediu, responda este email.",
     ]),
+
+  paginaExcluida: (para: string, username: string) =>
+    montar(para, "Sua página do linkbio foi excluída", [
+      `Como você pediu, excluímos a página linkbio.com.br/${username}. Links, redes, inscritos, estatísticas, foto e textos foram apagados agora.`,
+      `Sua conta continua: entre quando quiser para criar outra página. O endereço ${username} fica guardado por 14 dias, e nesse tempo só você pode usá-lo de novo. Se você tem o Pro, a assinatura continua; para cancelar, abra Plano no painel.`,
+      "Se não foi você que pediu, troque sua senha e responda este email.",
+    ]),
 };

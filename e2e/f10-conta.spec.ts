@@ -1,9 +1,9 @@
-// F10 Criador exclui a conta (S13). A troca de endereço ainda não foi construída.
+// F10 Criador exclui a conta ou só a página (S13). A troca de endereço ainda não foi construída.
 import { ASAAS, capturar, contaPronta, emailPara, entrar, entrarNoPainel, expect, semViolacoes, sql, test } from "./apoio";
 
 const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
 
-test.describe("F10 exclui a conta", () => {
+test.describe("F10 exclui a conta ou a página", () => {
   test("F10-H1 excluir: confirmação forte, tudo apagado na hora, email, endereço segurado", async ({ page, request }) => {
     const c = await contaPronta("sai", [["Loja", "https://exemplo.com.br"]]);
     await entrarNoPainel(page, c);
@@ -85,5 +85,70 @@ test.describe("F10 exclui a conta", () => {
     await page.waitForURL("**/comecar");
     await page.getByLabel("Seu endereço").fill(c.username);
     await expect(page.getByText("Alguém já usa esse endereço")).toBeVisible();
+  });
+  test("F10-H2 excluir só a página: tudo dela apagado, a conta continua e o endereço pode ser retomado", async ({ page, request }) => {
+    const c = await contaPronta("sopag", [["Loja", "https://exemplo.com.br"]]);
+    await sql`insert into social_links (profile_id, platform, url, position) values (${c.perfil}, 'instagram', 'https://www.instagram.com/sopag', 0)`;
+    const [l] = await sql`insert into links (profile_id, kind, title, position) values (${c.perfil}, 'form', 'Lista', -1) returning id`;
+    await sql`insert into forms (link_id, consent_text) values (${l.id}, 'Aceito receber novidades por email.')`;
+    await sql`insert into submissions (profile_id, link_id, email, consent_text) values (${c.perfil}, ${l.id}, 'fa@exemplo.com', 'Aceito receber novidades por email.')`;
+    await entrarNoPainel(page, c);
+    await page.goto("/admin/conta");
+    await semViolacoes(page, "S13 com excluir a página");
+    await capturar(page, "S13");
+
+    await page.getByRole("button", { name: "Excluir a página" }).click();
+    const dlg = page.getByRole("dialog", { name: "Excluir só a página?" });
+    await expect(dlg.getByText("Baixe o CSV na Audiência antes")).toBeVisible();
+    const campo = dlg.getByLabel(`Para confirmar, digite ${c.username}`);
+    await campo.fill("outra.coisa");
+    await dlg.getByRole("button", { name: "Excluir a página" }).click();
+    await expect(dlg.getByText(`Digite ${c.username} para confirmar.`)).toBeVisible();
+    expect(await sql`select 1 from links where profile_id = ${c.perfil}`).toHaveLength(2);
+    await capturar(page, "S13-excluir-pagina");
+    await campo.fill(c.username);
+    await dlg.getByRole("button", { name: "Excluir a página" }).click();
+    await page.waitForURL("**/comecar?aviso=pagina-excluida");
+    await expect(page.getByText("Sua página foi excluída")).toBeVisible();
+
+    await emailPara(c.email, "Sua página do linkbio foi excluída");
+    const [p] = await sql`select account_id, title, deleted_at from profiles where id = ${c.perfil}`;
+    expect(p.account_id).toBe(c.id);
+    expect(p.title).toBeNull();
+    expect(p.deleted_at).not.toBeNull();
+    for (const tabela of ["links", "social_links", "submissions", "events"]) {
+      expect(await sql`select 1 from ${sql(tabela)} where profile_id = ${c.perfil}`, tabela).toHaveLength(0);
+    }
+    const [pedido] = await sql`select kind, notes, completed_at from data_requests where requester_email = ${c.email}`;
+    expect(pedido).toMatchObject({ kind: "delete" });
+    expect(pedido.notes).toContain("só a página");
+    expect(pedido.completed_at).not.toBeNull();
+    expect(await sql`select 1 from auth.users where id = ${c.id}`).toHaveLength(1);
+    expect((await request.get(`/${c.username}`, { headers: { "user-agent": "WhatsApp/2.23" } })).status()).toBe(404);
+
+    // a conta continua: /admin manda para criar outra página, e o endereço guardado é dela
+    await page.goto("/admin");
+    await page.waitForURL("**/comecar");
+    await page.getByLabel("Seu endereço").fill(c.username);
+    await expect(page.getByText(`linkbio.com.br/${c.username} está livre.`)).toBeVisible();
+    await page.getByRole("button", { name: "Continuar" }).click();
+    await page.waitForURL("**/admin");
+    await expect(page.getByText("Sua página ainda não tem links.")).toBeVisible();
+  });
+
+  test("F10-E4 com o Pro ativo, excluir só a página não mexe na assinatura", async ({ page }) => {
+    const c = await contaPronta("sopro");
+    const sub = `sub_pagina_${c.perfil.slice(0, 8)}`;
+    await sql`insert into subscriptions (account_id, provider_customer_id, provider_subscription_id, plan, billing_type, status, price_cents, current_period_end)
+              values (${c.id}, 'cus_teste', ${sub}, 'pro', 'pix', 'active', 1900, now() + interval '20 days')`;
+    await entrarNoPainel(page, c);
+    await page.goto("/admin/conta");
+    await page.getByRole("button", { name: "Excluir a página" }).click();
+    await page.getByLabel(`Para confirmar, digite ${c.username}`).fill(c.username);
+    await page.getByRole("dialog").getByRole("button", { name: "Excluir a página" }).click();
+    await page.waitForURL("**/comecar?aviso=pagina-excluida");
+    const pedidos: Array<{ metodo: string; caminho: string }> = await (await fetch(`${ASAAS}/__pedidos`)).json();
+    expect(pedidos.some((p) => p.caminho.includes(sub))).toBe(false);
+    expect((await sql`select status from subscriptions where provider_subscription_id = ${sub}`)[0].status).toBe("active");
   });
 });

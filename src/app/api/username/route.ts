@@ -11,5 +11,5 @@ export async function GET(req: Request) {
     return Response.json({ erro: "Calma: muitas checagens seguidas." }, { status: 429 });
   }
   const u = new URL(req.url).searchParams.get("u") ?? "";
-  return Response.json(await verificarUsername(u.slice(0, 60)), { headers: { "cache-control": "no-store" } });
+  return Response.json(await verificarUsername(u.slice(0, 60), sessao.userId), { headers: { "cache-control": "no-store" } });
 }
