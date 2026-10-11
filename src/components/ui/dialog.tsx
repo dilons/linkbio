@@ -2,9 +2,13 @@
 
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
+import { cn } from "@/lib/cn";
 
-/** Modal acessível: prende o foco, fecha no Esc e devolve o foco ao botão que abriu. */
+/**
+ * Modal acessível: prende o foco, fecha no Esc e devolve o foco ao botão que
+ * abriu. `cheia` ocupa a tela toda (a prévia da página no celular).
+ */
 export function Dialog({
   trigger,
   title,
@@ -12,6 +16,7 @@ export function Dialog({
   children,
   open,
   onOpenChange,
+  cheia = false,
 }: {
   trigger?: ReactNode;
   title: string;
@@ -19,14 +24,33 @@ export function Dialog({
   children: ReactNode;
   open?: boolean;
   onOpenChange?: (v: boolean) => void;
+  cheia?: boolean;
 }) {
+  // Sem `trigger` (modal aberto pelo estado), o Radix não sabe para onde devolver
+  // o foco ao fechar: guardamos quem estava com o foco quando o modal abriu.
+  const quemAbriu = useRef<HTMLElement | null>(null);
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
       {trigger && <RadixDialog.Trigger asChild>{trigger}</RadixDialog.Trigger>}
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="fixed inset-0 z-40 bg-fg/40" />
-        <RadixDialog.Content className="fixed top-1/2 left-1/2 z-50 w-[min(92vw,440px)] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-bg p-6 shadow-pop">
-          <div className="mb-4 flex items-start justify-between gap-4">
+        <RadixDialog.Content
+          onOpenAutoFocus={() => {
+            quemAbriu.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+          }}
+          onCloseAutoFocus={(e) => {
+            if (trigger || !quemAbriu.current?.isConnected) return;
+            e.preventDefault();
+            quemAbriu.current.focus();
+          }}
+          className={cn(
+            "fixed z-50 bg-bg",
+            cheia
+              ? "inset-0 flex flex-col"
+              : "top-1/2 left-1/2 max-h-[92dvh] w-[min(92vw,440px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lg p-6 shadow-pop",
+          )}
+        >
+          <div className={cn("flex items-start justify-between gap-4", cheia ? "border-b border-border px-4 py-3" : "mb-4")}>
             <div>
               <RadixDialog.Title className="text-lg font-semibold text-fg">{title}</RadixDialog.Title>
               {description ? (
@@ -39,7 +63,7 @@ export function Dialog({
               <X aria-hidden className="size-5" />
             </RadixDialog.Close>
           </div>
-          {children}
+          {cheia ? <div className="min-h-0 flex-1 overflow-y-auto">{children}</div> : children}
         </RadixDialog.Content>
       </RadixDialog.Portal>
     </RadixDialog.Root>

@@ -15,6 +15,7 @@ import { adicionarFormulario, editarFormulario, formularioSchema, removerInscrit
 import { dentroDosLimites } from "@/lib/data/limites";
 import { adicionarLink, alternarLink, editarLink, excluirLink, reordenarLinks } from "@/lib/data/links";
 import { atualizarCabecalho, criarPerfil, perfilDaConta } from "@/lib/data/perfis";
+import { IDS_DAS_REDES, normalizarRede, posicionarRedes, removerRede, reordenarRedes, salvarRede } from "@/lib/data/redes";
 import { cabecalhoSchema, credenciaisSchema, linkSchema } from "@/lib/data/validacao";
 import { exigirConta, exigirPerfil } from "@/lib/sessao";
 import { ipAtual, origemDoPedido } from "@/lib/visitante";
@@ -310,6 +311,51 @@ export async function tirarDaLista(id: unknown): Promise<boolean> {
   const inscrito = idSchema.safeParse(id);
   if (!inscrito.success) return false;
   const ok = await removerInscrito(sessao.userId, inscrito.data);
+  refresh();
+  return ok;
+}
+
+// ------------------------------------------------------------------ redes sociais
+
+const plataformaSchema = z.enum(IDS_DAS_REDES);
+
+/** S06: põe uma rede na fileira de ícones ou troca o endereço dela. */
+export async function salvarRedeSocial(_: Estado, form: FormData): Promise<Estado> {
+  const { sessao, perfil } = await exigirPerfil();
+  const valores = valoresDe(form, ["plataforma", "endereco"]);
+  const plataforma = plataformaSchema.safeParse(form.get("plataforma"));
+  if (!plataforma.success) return { erros: { plataforma: "Escolha a rede." }, valores };
+  const endereco = normalizarRede(plataforma.data, String(form.get("endereco") ?? ""));
+  if (!endereco.ok) return { erros: { endereco: endereco.erro }, valores };
+  const ok = await salvarRede(sessao.userId, perfil.id, plataforma.data, endereco.url);
+  if (!ok) return { erro: "Não deu para salvar. Tente de novo.", valores };
+  refresh();
+  return { ok: true };
+}
+
+export async function tirarRede(plataforma: unknown): Promise<boolean> {
+  const { sessao, perfil } = await exigirPerfil();
+  const p = plataformaSchema.safeParse(plataforma);
+  if (!p.success) return false;
+  const ok = await removerRede(sessao.userId, perfil.id, p.data);
+  refresh();
+  return ok;
+}
+
+export async function ordemDasRedes(plataformas: unknown): Promise<boolean> {
+  const { sessao, perfil } = await exigirPerfil();
+  const lista = z.array(plataformaSchema).max(IDS_DAS_REDES.length).safeParse(plataformas);
+  if (!lista.success) return false;
+  const ok = await reordenarRedes(sessao.userId, perfil.id, lista.data);
+  refresh();
+  return ok;
+}
+
+export async function lugarDasRedes(posicao: unknown): Promise<boolean> {
+  const { sessao, perfil } = await exigirPerfil();
+  const p = z.enum(["top", "bottom"]).safeParse(posicao);
+  if (!p.success) return false;
+  const ok = await posicionarRedes(sessao.userId, perfil.id, p.data);
   refresh();
   return ok;
 }

@@ -71,10 +71,13 @@ export async function semRolagemLateral(page: Page) {
   expect(sw, "sem rolagem lateral").toBeLessThanOrEqual(iw);
 }
 
-/** Captura para a /replica-diff (replica/clone-screens/<id>-<largura>.png). */
-export async function capturar(page: Page, id: string) {
+/**
+ * Captura para a /replica-diff (replica/clone-screens/<id>-<largura>.png).
+ * Página inteira, menos com um modal em tela cheia aberto (aí só a tela).
+ */
+export async function capturar(page: Page, id: string, { paginaInteira = true } = {}) {
   const w = page.viewportSize()?.width ?? 1440;
-  await page.screenshot({ path: `replica/clone-screens/${id}-${w}.png`, fullPage: true });
+  await page.screenshot({ path: `replica/clone-screens/${id}-${w}.png`, fullPage: paginaInteira });
 }
 
 // ------------------------------------------------------------ email

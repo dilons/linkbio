@@ -24,8 +24,16 @@ async function Dados() {
   const { sessao, perfil } = await exigirPerfil();
   const [links, pagina] = await Promise.all([listarLinks(sessao.userId, perfil.id), paginaPublica(perfil.username)]);
   const itens = links.map((l) => ({ id: l.id, titulo: l.title, url: l.url ?? "", ativo: l.enabled, formulario: l.formulario }));
+  const redes = (pagina?.redes ?? []).map((r) => ({ plataforma: r.platform, url: r.url }));
   // A chave muda quando os dados do servidor mudam: o editor recomeça do estado salvo.
-  const chave = itens.map((l) => `${l.id}:${l.ativo}:${l.titulo}:${l.url}:${JSON.stringify(l.formulario)}`).join("|") + `|${perfil.title}|${perfil.bio}|${perfil.avatar_path}`;
+  const chave = [
+    ...itens.map((l) => `${l.id}:${l.ativo}:${l.titulo}:${l.url}:${JSON.stringify(l.formulario)}`),
+    ...redes.map((r) => `${r.plataforma}:${r.url}`),
+    perfil.title,
+    perfil.bio,
+    perfil.avatar_path,
+    perfil.social_position,
+  ].join("|");
   return (
     <Editor
       key={chave}
@@ -34,7 +42,8 @@ async function Dados() {
       bio={perfil.bio ?? ""}
       avatarUrl={urlDaFoto(perfil.avatar_path)}
       tema={pagina?.tema ?? "papel"}
-      redes={(pagina?.redes ?? []).map((r) => ({ plataforma: r.platform, url: r.url }))}
+      redes={redes}
+      redesNoTopo={perfil.social_position === "top"}
       links={itens}
     />
   );

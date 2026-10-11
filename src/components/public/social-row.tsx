@@ -14,6 +14,17 @@ const ICONES: Record<string, SimpleIcon> = {
 
 export type Rede = { plataforma: keyof typeof ICONES | string; url: string };
 
+/** Ícone da plataforma (decorativo: quem usa dá o nome acessível). */
+export function IconeDaRede({ plataforma, className = "size-6" }: { plataforma: string; className?: string }) {
+  const icone = ICONES[plataforma];
+  if (!icone) return null;
+  return (
+    <svg aria-hidden viewBox="0 0 24 24" className={`${className} fill-current`}>
+      <path d={icone.path} />
+    </svg>
+  );
+}
+
 /** Fileira de ícones das redes, no topo ou no rodapé da página. Cada ícone tem nome acessível. */
 export function SocialRow({ redes }: { redes: Rede[] }) {
   if (redes.length === 0) return null;
@@ -25,9 +36,7 @@ export function SocialRow({ redes }: { redes: Rede[] }) {
           <li key={r.plataforma}>
             <a href={r.url} rel="noopener" aria-label={icone?.title ?? r.plataforma} className="block rounded-sm p-1 text-t-text hover:opacity-80">
               {icone ? (
-                <svg role="img" aria-hidden viewBox="0 0 24 24" className="size-6 fill-current">
-                  <path d={icone.path} />
-                </svg>
+                <IconeDaRede plataforma={r.plataforma} />
               ) : (
                 <span className="text-sm underline">{r.plataforma}</span>
               )}

@@ -8,6 +8,7 @@ import { totais } from "@/lib/data/eventos";
 import { adicionarFormulario, editarFormulario, listarInscritos, removerInscrito } from "@/lib/data/formularios";
 import { adicionarLink, alternarLink, editarLink, excluirLink, listarLinks, reordenarLinks } from "@/lib/data/links";
 import { atualizarCabecalho, criarPerfil, perfilDaConta } from "@/lib/data/perfis";
+import { listarRedes, posicionarRedes, removerRede, reordenarRedes, salvarRede } from "@/lib/data/redes";
 import { apagarUsuarioDeTeste, criarUsuario, sufixo } from "./ajuda";
 
 let ana: { id: string };
@@ -83,6 +84,29 @@ test("outra conta não cria, edita nem lê formulários e inscritos", async () =
   assert.equal(await removerInscrito(ana.id, i.id), true);
   assert.equal(await excluirLink(bia.id, form), false);
   assert.equal(await excluirLink(ana.id, form), true);
+});
+
+test("outra conta não põe, tira, reordena nem move as redes", async () => {
+  assert.equal(await salvarRede(bia.id, perfilAna, "instagram", "https://www.instagram.com/golpe"), false);
+  assert.equal(await salvarRede(ana.id, perfilAna, "instagram", "https://www.instagram.com/ana"), true);
+  assert.equal(await salvarRede(ana.id, perfilAna, "whatsapp", "https://wa.me/5511912345678"), true);
+  assert.deepEqual(await listarRedes(bia.id, perfilAna), []);
+  assert.equal(await removerRede(bia.id, perfilAna, "instagram"), false);
+  assert.equal(await reordenarRedes(bia.id, perfilAna, ["whatsapp", "instagram"]), false);
+  assert.equal(await posicionarRedes(bia.id, perfilAna, "bottom"), false);
+  assert.equal((await perfilDaConta(ana.id))?.social_position, "top");
+
+  assert.equal(await salvarRede(ana.id, perfilAna, "instagram", "https://www.instagram.com/ana.nova"), true, "a mesma rede troca o endereço");
+  assert.equal(await reordenarRedes(ana.id, perfilAna, ["whatsapp"]), false, "lista incompleta é recusada");
+  assert.equal(await reordenarRedes(ana.id, perfilAna, ["whatsapp", "instagram"]), true);
+  assert.deepEqual(await listarRedes(ana.id, perfilAna), [
+    { plataforma: "whatsapp", url: "https://wa.me/5511912345678" },
+    { plataforma: "instagram", url: "https://www.instagram.com/ana.nova" },
+  ]);
+  assert.equal(await posicionarRedes(ana.id, perfilAna, "bottom"), true);
+  assert.equal((await perfilDaConta(ana.id))?.social_position, "bottom");
+  assert.equal(await removerRede(ana.id, perfilAna, "instagram"), true);
+  assert.equal(await removerRede(ana.id, perfilAna, "whatsapp"), true);
 });
 
 test("o dono consegue tudo", async () => {

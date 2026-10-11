@@ -34,7 +34,7 @@ test.describe("F01 cria a página e compartilha", () => {
 
     await page.getByRole("textbox", { name: "Título" }).fill("Meu site");
     await page.getByRole("textbox", { name: "Endereço" }).fill("exemplo.com.br");
-    await page.getByRole("button", { name: "Adicionar" }).click();
+    await page.getByRole("button", { name: "Adicionar", exact: true }).click();
     await expect(page.getByRole("button", { name: "Mover Meu site" })).toBeVisible();
     await page.getByRole("button", { name: "Copiar" }).click();
     await expect(page.getByText("Copiado")).toBeVisible();

@@ -4,7 +4,7 @@ import { capturar, contaPronta, entrarNoPainel, expect, semRolagemLateral, semVi
 
 const titulo = (page: Page) => page.getByRole("textbox", { name: "Título" });
 const endereco = (page: Page) => page.getByRole("textbox", { name: "Endereço" });
-const adicionar = (page: Page) => page.getByRole("button", { name: "Adicionar" });
+const adicionar = (page: Page) => page.getByRole("button", { name: "Adicionar", exact: true });
 async function ordem(page: Page) {
   await page.getByRole("button", { name: /^Mover / }).first().waitFor();
   return page.getByRole("button", { name: /^Mover / }).evaluateAll((els) => els.map((e) => e.getAttribute("aria-label")!.slice(6)));

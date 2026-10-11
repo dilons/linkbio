@@ -1,21 +1,25 @@
 "use client";
 
-import { Check, Copy, ExternalLink, Mail, Pencil } from "lucide-react";
-import { useActionState, useState } from "react";
+import { Check, Copy, Eye, ExternalLink, GripVertical, Mail, Pencil, Plus, Trash2 } from "lucide-react";
+import { useActionState, useId, useState } from "react";
 import {
   apagarLink,
   ligarDesligarLink,
+  lugarDasRedes,
   mudarOrdem,
   novoFormulario,
   novoLink,
+  ordemDasRedes,
   salvarCabecalho,
   salvarFormulario,
   salvarFoto,
   salvarLink,
+  salvarRedeSocial,
+  tirarRede,
   type Estado,
 } from "@/app/acoes";
 import { PublicPage } from "@/components/public/public-page";
-import type { Rede } from "@/components/public/social-row";
+import { IconeDaRede, type Rede } from "@/components/public/social-row";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { TextArea, TextField } from "@/components/ui/field";
@@ -25,6 +29,8 @@ import { PhonePreview } from "@/components/ui/phone-preview";
 import { SortableList } from "@/components/ui/sortable-list";
 import { useToast } from "@/components/ui/toast";
 import { SEM_CONEXAO, semQuebrar, tentar } from "@/lib/acao-segura";
+import { cn } from "@/lib/cn";
+import { REDES, type Plataforma } from "@/lib/plataformas";
 
 export type ConfigFormulario = { pedirNome: boolean; consentimento: string; sucesso: string };
 export type LinkEditor = { id: string; titulo: string; url: string; ativo: boolean; formulario: ConfigFormulario | null };
@@ -33,6 +39,7 @@ const novoLinkSeguro = semQuebrar(novoLink);
 const salvarLinkSeguro = semQuebrar(salvarLink);
 const salvarCabecalhoSeguro = semQuebrar(salvarCabecalho);
 const salvarFormularioSeguro = semQuebrar(salvarFormulario);
+const salvarRedeSeguro = semQuebrar(salvarRedeSocial);
 
 type Props = {
   username: string;
@@ -41,6 +48,7 @@ type Props = {
   avatarUrl?: string;
   tema: string;
   redes: Rede[];
+  redesNoTopo: boolean;
   links: LinkEditor[];
 };
 
@@ -48,6 +56,9 @@ type Props = {
 export function Editor(props: Props) {
   const toast = useToast();
   const [itens, setItens] = useState(props.links);
+  const [redes, setRedes] = useState(props.redes);
+  const [redesNoTopo, setRedesNoTopo] = useState(props.redesNoTopo);
+  const [previaAberta, setPreviaAberta] = useState(false);
   const [editando, setEditando] = useState<LinkEditor | null>(null);
   const [excluindo, setExcluindo] = useState<LinkEditor | null>(null);
 
@@ -81,11 +92,25 @@ export function Editor(props: Props) {
     toast(ok === null ? SEM_CONEXAO : "Não deu para excluir.", "erro");
   }
 
+  const previa = (
+    <PublicPage
+      principal={false}
+      tema={props.tema}
+      titulo={props.titulo || props.username}
+      bio={props.bio}
+      avatarUrl={props.avatarUrl}
+      redes={redes}
+      redesNoTopo={redesNoTopo}
+      links={itens.filter((l) => l.ativo).map((l) => ({ id: l.id, titulo: l.titulo, formulario: l.formulario }))}
+    />
+  );
+
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto]">
       <div className="flex min-w-0 flex-col gap-6">
-        <Endereco username={props.username} />
+        <Endereco username={props.username} onPrevia={() => setPreviaAberta(true)} />
         <Cabecalho titulo={props.titulo} bio={props.bio} avatarUrl={props.avatarUrl} />
+        <Redes redes={redes} setRedes={setRedes} noTopo={redesNoTopo} setNoTopo={setRedesNoTopo} />
         <NovoLink />
         <section aria-labelledby="titulo-links" className="flex flex-col gap-3">
           <h2 id="titulo-links" className="text-lg font-semibold text-fg">
@@ -116,19 +141,22 @@ export function Editor(props: Props) {
 
       <aside aria-label="Prévia" className="hidden lg:block">
         <div className="sticky top-8">
-          <PhonePreview>
-            <PublicPage
-              principal={false}
-              tema={props.tema}
-              titulo={props.titulo || props.username}
-              bio={props.bio}
-              avatarUrl={props.avatarUrl}
-              redes={props.redes}
-              links={itens.filter((l) => l.ativo).map((l) => ({ id: l.id, titulo: l.titulo, formulario: l.formulario }))}
-            />
-          </PhonePreview>
+          <PhonePreview>{previa}</PhonePreview>
         </div>
       </aside>
+
+      {/* No celular a prévia abre em tela cheia (no computador ela fica ao lado). */}
+      <Dialog
+        cheia
+        open={previaAberta}
+        onOpenChange={setPreviaAberta}
+        title="Prévia da sua página"
+        description="Assim fica para quem visita. Aqui os links não abrem."
+      >
+        <div inert className="flex min-h-full flex-col">
+          {previa}
+        </div>
+      </Dialog>
 
       {editando &&
         (editando.formulario ? (
@@ -161,7 +189,7 @@ export function Editor(props: Props) {
   );
 }
 
-function Endereco({ username }: { username: string }) {
+function Endereco({ username, onPrevia }: { username: string; onPrevia: () => void }) {
   const [copiado, setCopiado] = useState(false);
   const caminho = `/${username}`;
   async function copiar() {
@@ -189,6 +217,10 @@ function Endereco({ username }: { username: string }) {
           <ExternalLink aria-hidden className="size-4" />
           Abrir
         </a>
+        <Button variant="secondary" size="sm" className="lg:hidden" onClick={onPrevia}>
+          <Eye aria-hidden className="size-4" />
+          Prévia
+        </Button>
       </div>
     </section>
   );
@@ -281,6 +313,232 @@ function Cabecalho({ titulo, bio, avatarUrl }: { titulo: string; bio: string; av
         </form>
       </Dialog>
     </section>
+  );
+}
+
+const nomeDaRede = (p: string) => REDES.find((r) => r.id === p)?.nome ?? p;
+
+/** S06: a fileira de ícones das redes: quais, em que ordem e onde aparecem na página. */
+function Redes({
+  redes,
+  setRedes,
+  noTopo,
+  setNoTopo,
+}: {
+  redes: Rede[];
+  setRedes: (r: Rede[]) => void;
+  noTopo: boolean;
+  setNoTopo: (v: boolean) => void;
+}) {
+  const toast = useToast();
+  const [editando, setEditando] = useState<{ plataforma?: Plataforma; url?: string } | null>(null);
+  const [tirando, setTirando] = useState<Rede | null>(null);
+  const livres = REDES.filter((r) => !redes.some((x) => x.plataforma === r.id));
+
+  // As três mudam a tela na hora (otimista) e voltam atrás se o servidor não confirmar.
+  async function reordenar(novas: Rede[]) {
+    const antes = redes;
+    setRedes(novas.map(({ plataforma, url }) => ({ plataforma, url })));
+    const ok = await tentar(() => ordemDasRedes(novas.map((r) => r.plataforma)), null);
+    if (ok) return toast("Ordem salva");
+    setRedes(antes);
+    toast(ok === null ? SEM_CONEXAO : "Não deu para salvar a ordem.", "erro");
+  }
+
+  async function tirar() {
+    if (!tirando) return;
+    const alvo = tirando;
+    const antes = redes;
+    setTirando(null);
+    setRedes(redes.filter((r) => r.plataforma !== alvo.plataforma));
+    const ok = await tentar(() => tirarRede(alvo.plataforma), null);
+    if (ok) return toast(`${nomeDaRede(alvo.plataforma)} saiu da página`);
+    setRedes(antes);
+    toast(ok === null ? SEM_CONEXAO : "Não deu para tirar.", "erro");
+  }
+
+  async function mudarLugar(topo: boolean) {
+    setNoTopo(topo);
+    const ok = await tentar(() => lugarDasRedes(topo ? "top" : "bottom"), null);
+    if (ok) return toast(topo ? "Ícones no topo" : "Ícones no rodapé");
+    setNoTopo(!topo);
+    toast(ok === null ? SEM_CONEXAO : "Não deu para salvar.", "erro");
+  }
+
+  return (
+    <section aria-labelledby="titulo-redes" className="flex flex-col gap-3 rounded-lg border border-border bg-bg p-4 shadow-card">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="titulo-redes" className="text-lg font-semibold text-fg">
+          Redes sociais
+        </h2>
+        {livres.length > 0 && (
+          <Button variant="secondary" size="sm" onClick={() => setEditando({})}>
+            <Plus aria-hidden className="size-4" />
+            Adicionar rede
+          </Button>
+        )}
+      </div>
+      {redes.length === 0 ? (
+        <p className="text-sm text-muted">Ponha os ícones do seu Instagram, WhatsApp e outras redes. Quem visita chega nelas com um toque.</p>
+      ) : (
+        <>
+          <SortableList
+            itens={redes.map((r) => ({ ...r, id: r.plataforma, titulo: nomeDaRede(r.plataforma) }))}
+            onReorder={reordenar}
+            render={(r, alca, arrastando) => (
+              <div
+                className={cn(
+                  "flex items-center gap-3 rounded-md border border-border bg-bg p-2",
+                  arrastando && "shadow-pop ring-2 ring-accent",
+                )}
+              >
+                <button
+                  type="button"
+                  aria-label={`Mover ${r.titulo}`}
+                  className="cursor-grab touch-none rounded-sm p-1 text-muted hover:bg-surface active:cursor-grabbing"
+                  {...alca}
+                >
+                  <GripVertical aria-hidden className="size-5" />
+                </button>
+                <IconeDaRede plataforma={r.plataforma} className="size-5 shrink-0 text-fg" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-fg">{r.titulo}</p>
+                  <p className="truncate text-xs text-muted">{r.url}</p>
+                </div>
+                <button
+                  type="button"
+                  aria-label={`Editar ${r.titulo}`}
+                  onClick={() => setEditando({ plataforma: r.plataforma as Plataforma, url: r.url })}
+                  className="rounded-sm p-2 text-muted hover:bg-surface"
+                >
+                  <Pencil aria-hidden className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Tirar ${r.titulo}`}
+                  onClick={() => setTirando(r)}
+                  className="rounded-sm p-2 text-danger hover:bg-surface"
+                >
+                  <Trash2 aria-hidden className="size-4" />
+                </button>
+              </div>
+            )}
+          />
+          <fieldset>
+            <legend className="mb-2 text-sm font-medium text-fg">Onde os ícones aparecem</legend>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {(
+                [
+                  [true, "No topo, abaixo da bio"],
+                  [false, "No rodapé"],
+                ] as const
+              ).map(([topo, rotulo]) => (
+                <label key={rotulo} className="flex items-center gap-2 text-sm text-fg">
+                  <input
+                    type="radio"
+                    name="lugar-das-redes"
+                    checked={noTopo === topo}
+                    onChange={() => mudarLugar(topo)}
+                    className="size-4 accent-accent"
+                  />
+                  {rotulo}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </>
+      )}
+
+      {editando && <EditarRede inicial={editando} livres={livres.map((r) => r.id)} onFechar={() => setEditando(null)} />}
+      <Dialog
+        open={tirando !== null}
+        onOpenChange={(v) => !v && setTirando(null)}
+        title="Tirar esta rede?"
+        description={tirando ? `O ícone do ${nomeDaRede(tirando.plataforma)} sai da sua página.` : undefined}
+      >
+        <div className="flex justify-end gap-2">
+          <Button variant="secondary" onClick={() => setTirando(null)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={tirar}>
+            Tirar
+          </Button>
+        </div>
+      </Dialog>
+    </section>
+  );
+}
+
+/** Escolhe a rede (ao adicionar) e o @, número ou endereço. O servidor monta o endereço final. */
+function EditarRede({
+  inicial,
+  livres,
+  onFechar,
+}: {
+  inicial: { plataforma?: Plataforma; url?: string };
+  livres: Plataforma[];
+  onFechar: () => void;
+}) {
+  const toast = useToast();
+  const idRede = useId();
+  const [estado, acao, enviando] = useActionState(async (anterior: Estado, form: FormData) => {
+    const r = await salvarRedeSeguro(anterior, form);
+    if (r.ok) {
+      toast("Rede salva");
+      onFechar();
+    }
+    return r;
+  }, {});
+  const [plataforma, setPlataforma] = useState<Plataforma>(inicial.plataforma ?? livres[0]);
+  const rede = REDES.find((r) => r.id === plataforma)!;
+  const trocando = inicial.plataforma !== undefined;
+  return (
+    <Dialog open onOpenChange={(v) => !v && onFechar()} title={trocando ? `Editar ${rede.nome}` : "Adicionar rede"}>
+      <form action={acao} className="flex flex-col gap-4" noValidate>
+        {trocando ? (
+          <input type="hidden" name="plataforma" value={plataforma} />
+        ) : (
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor={idRede} className="text-sm font-medium text-fg">
+              Rede
+            </label>
+            <select
+              id={idRede}
+              name="plataforma"
+              value={plataforma}
+              onChange={(e) => setPlataforma(e.target.value as Plataforma)}
+              className="h-11 rounded-md border border-input bg-bg px-3 text-base text-fg"
+            >
+              {livres.map((id) => (
+                <option key={id} value={id}>
+                  {nomeDaRede(id)}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        <TextField
+          key={plataforma}
+          label={rede.rotulo}
+          name="endereco"
+          placeholder={rede.exemplo}
+          autoComplete="off"
+          inputMode={plataforma === "whatsapp" ? "tel" : undefined}
+          defaultValue={estado.valores?.plataforma === plataforma ? estado.valores.endereco : inicial.url}
+          error={estado.valores?.plataforma === plataforma ? estado.erros?.endereco : undefined}
+        />
+        {estado.erro && (
+          <p role="alert" className="text-sm font-medium text-danger">
+            {estado.erro}
+          </p>
+        )}
+        <div className="flex justify-end">
+          <Button type="submit" loading={enviando}>
+            Salvar
+          </Button>
+        </div>
+      </form>
+    </Dialog>
   );
 }
 
