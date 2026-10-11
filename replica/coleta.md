@@ -1,5 +1,10 @@
 # Coleta de avaliações do Linktree
 
+Enquanto as reais não chegam, `replica/mock/` tem o caminho inteiro rodando
+com 60 avaliações fictícias (ver o `LEIA-ME.md` de lá). Mock não é pesquisa e
+não entra aqui: o script de coleta tira do `reviews.csv` qualquer linha
+`mock-*` ou com link `.invalid`.
+
 Para a `/replica-entrepreneur`: o que os usuários do Linktree reclamam e
 pedem, nas palavras deles, com o link de cada uma. Meta: **100 ou mais
 avaliações de pelo menos três fontes**, as mais recentes primeiro (até 18

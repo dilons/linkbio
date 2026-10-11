@@ -156,11 +156,22 @@ def reddit(consultas, limite_de_conversas):
     return linhas
 
 
+def e_mock(r):
+    """Linha do mock (replica/mock/): fonte mock-* ou link .invalid. Nunca entra nos dados reais."""
+    host = urllib.parse.urlparse(r.get("url", "")).hostname or ""
+    return r.get("source", "").startswith("mock") or host.endswith(".invalid")
+
+
 def juntar(caminho, novas):
     existentes = []
     if os.path.exists(caminho):
         with open(caminho, newline="", encoding="utf-8-sig") as f:
             existentes = [{k: (v or "") for k, v in r.items() if k in CAMPOS} for r in csv.DictReader(f)]
+    mock = [r for r in existentes if e_mock(r)]
+    if mock:
+        print(f"  {len(mock)} linhas do mock tiradas de {caminho}: avaliação inventada não entra nos dados reais", file=sys.stderr)
+        existentes = [r for r in existentes if not e_mock(r)]
+    novas = [r for r in novas if not e_mock(r)]
     vistas = {r["url"] for r in existentes}
     acrescentadas = 0
     for r in novas:

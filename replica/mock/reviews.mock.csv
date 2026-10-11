@@ -1,0 +1,63 @@
+source,url,date,rating,text
+mock-loja-ios,https://mock.invalid/avaliacao/001,2026-09-28,1,"Cobrança em dólar no cartão
+O plano pago vem em dólar e ainda tem IOF. Paguei bem mais do que o anunciado. Queria pagar com Pix."
+mock-loja-android,https://mock.invalid/avaliacao/002,2026-09-20,2,"Gosto do app, mas o plano pago é caro para quem está começando. Preço em reais por mês faria mais sentido do que em dólar."
+mock-loja-ios,https://mock.invalid/avaliacao/003,2026-09-12,1,"Conta suspensa sem aviso
+Minha página ficou fora do ar no meio de uma campanha. Nenhum email explicando o motivo e o suporte não responde."
+mock-loja-android,https://mock.invalid/avaliacao/004,2026-08-30,1,Não consigo entrar. O quebra-cabeça da verificação aparece toda vez e nunca aceita. Já tentei 10 vezes.
+mock-loja-ios,https://mock.invalid/avaliacao/005,2026-08-22,2,O suporte demora dias e responde com mensagem automática. Atendimento só em inglês.
+mock-loja-android,https://mock.invalid/avaliacao/006,2026-08-15,3,"Funciona bem, mas não tem como tirar a marca do app do rodapé sem pagar. Deveria ser opcional."
+mock-loja-ios,https://mock.invalid/avaliacao/007,2026-08-10,4,Muito prático para o Instagram. Seria ótimo ter mais fontes e poder mudar o fundo no plano grátis.
+mock-loja-android,https://mock.invalid/avaliacao/008,2026-08-02,2,"Depois da atualização o editor ficou confuso, não acho mais onde reordenar os links."
+mock-loja-ios,https://mock.invalid/avaliacao/009,2026-07-27,1,Tentei cancelar a assinatura pelo app e não tem opção. Fui cobrado de novo no mês seguinte.
+mock-loja-android,https://mock.invalid/avaliacao/010,2026-07-19,2,O Instagram marcou meu link como spam e o link ficou bloqueado na bio por uma semana.
+mock-loja-ios,https://mock.invalid/avaliacao/011,2026-07-11,3,"Bom, mas as métricas do plano grátis são muito básicas. Queria ver de onde vêm os cliques."
+mock-loja-android,https://mock.invalid/avaliacao/012,2026-07-03,1,Trava toda vez que tento salvar um link novo. Erro sem explicação.
+mock-loja-ios,https://mock.invalid/avaliacao/013,2026-06-25,2,"O app é lento demais no celular, demora para carregar a prévia."
+mock-loja-android,https://mock.invalid/avaliacao/014,2026-06-18,4,Uso para minha loja. Sugestão: botão de WhatsApp com mensagem pronta e catálogo.
+mock-loja-ios,https://mock.invalid/avaliacao/015,2026-06-10,5,Simples e resolve. Uso há dois anos.
+mock-loja-android,https://mock.invalid/avaliacao/016,2026-06-02,3,"Queria exportar a lista de emails que o formulário coleta direto, sem precisar de integração paga."
+mock-loja-ios,https://mock.invalid/avaliacao/017,2026-05-27,2,Tudo em inglês nos emails e na ajuda. Falta tradução para português.
+mock-loja-android,https://mock.invalid/avaliacao/018,2026-05-19,1,"Excluíram minha conta por ""violação"" e não disseram qual. Perdi todos os links e os contatos."
+mock-loja-ios,https://mock.invalid/avaliacao/019,2026-05-12,4,"Gosto, mas poderia ter domínio próprio sem precisar do plano mais caro."
+mock-loja-android,https://mock.invalid/avaliacao/020,2026-05-04,2,Não tem boleto nem Pix. Muita gente aqui não tem cartão internacional.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/021,2026-09-25,1,Charged for a full year after I cancelled. Support never replied to my ticket.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/022,2026-09-14,2,My account was suspended with no warning and no explanation. Months of traffic gone overnight.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/023,2026-09-02,3,"Great for getting started, but the free plan feels more limited every year. Analytics are basically locked behind the paywall."
+mock-site-avaliacoes,https://mock.invalid/avaliacao/024,2026-08-26,1,Customer support is a chatbot loop. No human ever answered.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/025,2026-08-18,4,Easy to set up. I wish I could remove the logo without upgrading.
+mock-forum,https://mock.invalid/avaliacao/026,2026-08-11,,Moved off it after they raised the price again. A static page on my own domain does the same job.
+mock-forum,https://mock.invalid/avaliacao/027,2026-08-05,,"The new editor is cluttered. It used to be one screen, now it's three tabs to change a link."
+mock-site-avaliacoes,https://mock.invalid/avaliacao/028,2026-07-29,2,Login keeps asking me to solve a puzzle and then says verification failed.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/029,2026-07-21,2,"Pages load slowly on mobile data, which is exactly where my visitors are."
+mock-forum,https://mock.invalid/avaliacao/030,2026-07-14,,Instagram started flagging the link as unsafe. Had to switch to my own domain.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/031,2026-07-07,3,Would be great to export subscribers as CSV without connecting a paid email tool.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/032,2026-06-29,1,"Billing is a mess. Couldn't find where to cancel, got charged twice."
+mock-forum,https://mock.invalid/avaliacao/033,2026-06-22,,"What I want: custom domain on the cheap plan, no branding, and a simple email signup. That's it."
+mock-site-avaliacoes,https://mock.invalid/avaliacao/034,2026-06-15,4,"Solid tool. Needs more themes and fonts, the free ones all look the same."
+mock-site-avaliacoes,https://mock.invalid/avaliacao/035,2026-06-08,2,Privacy policy says they track visitors with third-party cookies. Not great for my clients.
+mock-forum,https://mock.invalid/avaliacao/036,2026-06-01,,Their support took 9 days to answer about a broken link while my QR codes were already printed.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/037,2026-05-24,5,Does what it says. Clean pages.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/038,2026-05-17,1,Account got banned for 'spam' because I linked to my own shop. Appeal went nowhere.
+mock-forum,https://mock.invalid/avaliacao/039,2026-05-10,,The analytics only show the last week on the free plan. Can't compare months.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/040,2026-05-03,3,"Fine, but the app crashes when uploading a profile photo."
+mock-site-avaliacoes,https://mock.invalid/avaliacao/041,2026-04-26,1,Fui cobrado mesmo depois de cancelar e o reembolso nunca veio.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/042,2026-04-19,2,O suporte só responde em inglês e por email. Demorou uma semana.
+mock-forum,https://mock.invalid/avaliacao/043,2026-04-12,,Alguém conhece alternativa que aceite Pix? Pagar em dólar todo mês ficou caro.
+mock-forum,https://mock.invalid/avaliacao/044,2026-04-05,,"Minha conta foi desativada do nada, sem aviso. Tive que refazer tudo em outro serviço."
+mock-site-avaliacoes,https://mock.invalid/avaliacao/045,2026-03-29,3,"Bom, mas queria ver as métricas por período e saber de onde vem o acesso."
+mock-loja-android,https://mock.invalid/avaliacao/046,2026-03-22,2,A página demora para abrir no 4G. Meus clientes desistem.
+mock-forum,https://mock.invalid/avaliacao/047,2026-03-15,,Sugestão: formulário de email que já peça o consentimento da LGPD. Hoje tenho que remendar.
+mock-loja-ios,https://mock.invalid/avaliacao/048,2026-03-08,1,Ruim. Não recomendo.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/049,2026-03-01,1,"Terrible experience overall, wouldn't use again."
+mock-loja-android,https://mock.invalid/avaliacao/050,2026-02-22,4,Muito bom para o dia a dia. Falta só poder agendar link para sumir depois de uma promoção.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/051,2026-02-15,3,"Scheduling links is a paid feature, which is annoying for a simple promo."
+mock-forum,https://mock.invalid/avaliacao/052,2026-02-08,,Templates are nice but every creator page ends up looking identical.
+mock-loja-ios,https://mock.invalid/avaliacao/053,2025-12-20,2,Atualizaram e sumiu a opção de esconder um link sem apagar. Era melhor antes.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/054,2024-11-03,2,Price went up again this year. Not worth it for a single page.
+mock-loja-android,https://mock.invalid/avaliacao/055,2024-09-14,1,"Perdi o acesso à conta depois de trocar o celular. Sem código de recuperação, não consigo entrar."
+mock-forum,https://mock.invalid/avaliacao/056,2025-01-20,,No teams feature: my agency manages 30 client pages with 30 logins.
+mock-site-avaliacoes,https://mock.invalid/avaliacao/057,2025-06-11,3,Not built for agencies: no way to manage several client pages from one login.
+mock-loja-android,https://mock.invalid/avaliacao/058,2025-08-30,3,Pra quem tem loja pequena falta catálogo e botão de comprar pelo WhatsApp.
+mock-forum,https://mock.invalid/avaliacao/059,2025-09-17,,Musicians: no way to show tour dates without paying for an integration.
+mock-loja-ios,https://mock.invalid/avaliacao/060,2025-10-05,4,Ótimo app. Só queria modo escuro no painel.

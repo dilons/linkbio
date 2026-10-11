@@ -18,12 +18,13 @@
   "\\bpoderia(m)? (ter|adicionar|colocar)\\b",
   "\\bseria (bom|ótimo|legal|bacana)\\b",
   "\\bfalta(m)?\\b",
-  "\\bnão (tem|dá|consigo) (como|para|pra)?\\b",
   "\\bpor favor (adicionem|coloquem)\\b",
   "\\bsugiro\\b",
   "\\bsugestão\\b",
   "\\bdeveria(m)?\\b",
-  "\\bpor que não\\b"
+  "\\bpor que não\\b",
+  "\\bnão (tem|dá) (como|para|pra|opção)\\b",
+  "\\bsem (opção|como)\\b"
  ],
  "themes": [
   {
@@ -35,21 +36,19 @@
     "\\boverpriced\\b",
     "\\bpric(e|es|ey|ing)\\b",
     "\\bpaywall",
-    "\\bsubscription\\b",
     "\\bper month\\b",
     "\\bfree (plan|tier|version)\\b",
-    "\\bupgrade\\b",
+    "\\bupgrad",
     "\\bpro plan\\b",
     "\\bpremium\\b",
     "\\bnot worth\\b",
     "\\bcaro\\b",
     "\\bpreço",
-    "\\bassinatura\\b",
+    "\\bassinatura (cara|mais cara)\\b",
     "\\bplano (pago|pro|grátis|gratuito)\\b",
-    "\\bpago\\b",
     "\\bdólar",
     "\\bmensalidade\\b",
-    "\\bvale a pena\\b"
+    "\\bnão vale a pena\\b"
    ]
   },
   {
@@ -85,12 +84,12 @@
     "\\bdeactivat",
     "\\bremoved my (account|page|links?)\\b",
     "\\bterminat",
-    "\\bflagged\\b",
+    "\\baccount (was |got )?(flagged|closed|disabled)\\b",
     "\\bviolat",
-    "\\bconta (suspensa|banida|bloqueada|desativada|removida)\\b",
+    "\\bconta (foi )?(suspensa|banida|bloqueada|desativada|removida|excluída)\\b",
     "\\bsuspens",
-    "\\bbanid",
-    "\\bbloquead"
+    "\\bexcluíram (a )?minha conta\\b",
+    "\\bdesativaram\\b"
    ]
   },
   {
@@ -159,13 +158,13 @@
    "label": "Lento ou pesado",
    "kind": "complaint",
    "patterns": [
-    "\\bslow\\b",
-    "\\blag",
+    "\\bslow(ly)?\\b",
+    "\\blag(gy|s)?\\b",
     "\\btakes forever\\b",
     "\\bsluggish\\b",
     "\\blento\\b",
-    "\\bdemora",
-    "\\bpesado\\b",
+    "\\bdemora (para|pra|a) (carregar|abrir)\\b",
+    "\\bpesad[ao]\\b",
     "\\bcarregando\\b"
    ]
   },
@@ -174,12 +173,11 @@
    "label": "Link bloqueado ou marcado pelo Instagram, TikTok e outros",
    "kind": "complaint",
    "patterns": [
-    "\\binstagram (blocked|flagged|removed|won'?t)\\b",
-    "\\b(link|url) (is )?(blocked|flagged|broken)\\b",
+    "\\b(instagram|tiktok|facebook)\\b.{0,40}\\b(flag|spam|unsafe|block|bloque|marc|insegur)",
+    "\\b(link|url) (is |was )?(blocked|flagged|broken)\\b",
     "\\bshadow.?ban",
     "\\bspam link\\b",
-    "\\blink (bloqueado|quebrado|marcado)\\b",
-    "\\binstagram (bloqueou|não deixa|removeu)\\b"
+    "\\blink (ficou )?(bloqueado|quebrado|marcado)\\b"
    ]
   },
   {
@@ -251,7 +249,10 @@
     "\\bfonte",
     "\\bfundo\\b",
     "\\bcores?\\b",
-    "\\bmodelos?\\b"
+    "\\bmodelos?\\b",
+    "\\bdark mode\\b",
+    "\\bmodo escuro\\b",
+    "\\b(look|looks|parecem?) (all )?(the same|identical|iguais)\\b"
    ]
   },
   {
@@ -265,12 +266,13 @@
     "\\bstatistics\\b",
     "\\bclicks?\\b",
     "\\bviews\\b",
-    "\\btraffic\\b",
+    "\\btraffic (sources?|data)\\b",
     "\\bmétricas\\b",
     "\\bestatísticas\\b",
     "\\bcliques\\b",
     "\\bvisitas\\b",
-    "\\bacessos\\b"
+    "\\bacessos\\b",
+    "\\bde onde vem\\b"
    ]
   },
   {
@@ -282,12 +284,11 @@
     "\\bnewsletter\\b",
     "\\bsubscribers?\\b",
     "\\bmailchimp\\b",
-    "\\bexport\\b",
+    "\\bexport",
     "\\bcsv\\b",
     "\\blista de (emails?|contatos)\\b",
     "\\binscritos\\b",
-    "\\bexportar\\b",
-    "\\bcontatos\\b",
+    "\\bformulário de email\\b",
     "\\bleads?\\b"
    ]
   },
@@ -327,15 +328,15 @@
    "label": "Vender, receber pagamento e afiliados",
    "kind": "request",
    "patterns": [
-    "\\bsell\\b",
-    "\\bshop\\b",
-    "\\bstore\\b",
-    "\\bpayments?\\b",
+    "\\bsell(ing)?\\b",
     "\\bcheckout\\b",
+    "\\baccept payments\\b",
+    "\\bstorefront\\b",
     "\\baffiliate",
     "\\bvender\\b",
     "\\bvendas\\b",
-    "\\bloja\\b",
+    "\\bcatálogo\\b",
+    "\\bbotão de comprar\\b",
     "\\breceber pagamento"
    ]
   },
@@ -352,6 +353,33 @@
     "\\brastre",
     "\\bmeus dados\\b",
     "\\blgpd\\b"
+   ]
+  },
+  {
+   "id": "equipes",
+   "label": "Agências e equipes: várias páginas num login só",
+   "kind": "request",
+   "patterns": [
+    "\\bagenc(y|ies|ia|ias)\\b",
+    "\\bteams?\\b",
+    "\\bclient pages\\b",
+    "\\bclientes\\b.{0,30}\\bpáginas\\b",
+    "\\bvári[ao]s (perfis|páginas|contas)\\b",
+    "\\bmultiple (pages|profiles|accounts)\\b",
+    "\\bone login\\b",
+    "\\bum login só\\b"
+   ]
+  },
+  {
+   "id": "agendamento",
+   "label": "Agendar links (aparecer e sumir)",
+   "kind": "request",
+   "patterns": [
+    "\\bschedul",
+    "\\bagendar\\b",
+    "\\bagendamento\\b",
+    "\\bsumir depois\\b",
+    "\\bexpire\\b"
    ]
   }
  ]

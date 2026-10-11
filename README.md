@@ -73,7 +73,7 @@ escrever código.
 | `/replica-lgpd` | |
 | `/replica-test` | feito: 87 casos de ponta a ponta + 37 do backend (com os da segunda `/replica-build`), 11 bugs (1 S1 e 7 S3 corrigidos); `replica/test-plan.md`, `replica/bugs.md` |
 | `/replica-diff` | feito e atualizado: funcionalidades 64,2/100 (era 48,9), must-haves 17 de 18 (falta validar o Asaas no sandbox); layout contra o original sem medir (rede bloqueia linktr.ee); `replica/parity.md` |
-| `/replica-entrepreneur` | |
+| `/replica-entrepreneur` | mock: coleta pronta (`scripts/coletar_avaliacoes.py`, `replica/coleta.md`, `replica/temas.json`) e o caminho inteiro testado com 60 avaliações fictícias em `replica/mock/`; falta trazer as reais (a rede daqui bloqueia as fontes) |
 | `/replica-brand` | |
 | `/replica-inpi` | |
 | `/replica-launch` | |
