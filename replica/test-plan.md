@@ -28,9 +28,9 @@ sobre o esqueleto e os Tabs passavam antes de haver um link. Agora o
 
 | | casos | passaram | falharam |
 | --- | --- | --- | --- |
-| ponta a ponta (Playwright) | 110 | 110 | 0 |
-| backend (node:test) | 51 | 51 | 0 |
-| bloqueados (fluxo não construído) | 4 | | |
+| ponta a ponta (Playwright) | 114 | 114 | 0 |
+| backend (node:test) | 53 | 53 | 0 |
+| bloqueados (fluxo não construído) | 3 | | |
 | manuais (precisam de conta real) | 7 | | pendentes |
 
 Na primeira rodada, 12 de 61 falharam: 6 por defeito do app (BUG-002 a
@@ -107,9 +107,13 @@ no `Dialog`).
 | F05-E6 | visitante deixa o email | borda | muitos envios do mesmo visitante no mesmo formulário: o sexto espera | e2e `f05-formulario.spec.ts` | passou |
 | F05-E7 | visitante deixa o email | borda | textos do formulário são validados no editor (S11) | e2e `f05-formulario.spec.ts` | passou |
 | F05-E8 | visitante deixa o email | borda | a 390 px e só com teclado: o visitante se inscreve | e2e `f05-formulario.spec.ts` | passou (achou o envio antes da hidratação) |
-| F06-H1 | acompanha os resultados | feliz | a demo vê os totais da semana e o ranking dos links | e2e `f06-resultados.spec.ts` | passou |
+| F06-H1 | acompanha os resultados | feliz | a demo vê os totais, a série por dia e o ranking dos links | e2e `f06-resultados.spec.ts` | passou |
 | F06-E1 | acompanha os resultados | borda | sem dados ainda: zeros, taxa sem número, e convite quando não há links | e2e `f06-resultados.spec.ts` | passou |
 | F06-E2 | acompanha os resultados | borda | outra conta só vê os próprios números | e2e `f06-resultados.spec.ts` | passou |
+| F06-E4 | acompanha os resultados | borda | o período muda a janela e a série: 7 dias por dia, 90 por semana, 12 meses por mês; valor estranho vira 28 | e2e `f06-resultados.spec.ts` | passou |
+| F06-E5 | acompanha os resultados | borda | origens, aparelhos e país da demo; cidade vazia diz que não há dado | e2e `f06-resultados.spec.ts` | passou |
+| F06-E6 | acompanha os resultados | borda | a visita que veio pelo QR code aparece como origem "QR code" | e2e `f06-resultados.spec.ts` | passou |
+| F06-E7 | acompanha os resultados | borda | a 390 px: nada vaza e a tabela da série abre pelo teclado | e2e `f06-resultados.spec.ts` | passou |
 | F07-H1 | exporta os inscritos | feliz | a lista mostra os inscritos e o CSV vem certo (BOM, ponto e vírgula, sem fórmula) | e2e `f07-audiencia.spec.ts` | passou |
 | F07-E1 | exporta os inscritos | borda | lista vazia: convite para pôr o formulário e nenhum botão de CSV | e2e `f07-audiencia.spec.ts` | passou |
 | F07-E2 | exporta os inscritos | borda | tirar uma pessoa da lista: some da tela e do CSV | e2e `f07-audiencia.spec.ts` | passou |
@@ -182,7 +186,6 @@ outra conta não pega o endereço guardado e a dona retoma; redes sociais
 | F03-E4 | personaliza a aparência | tema customizado: cor com contraste ruim é recusada ou avisada |
 | F03-E5 | | imagem de fundo pesada é recusada (5 MB) |
 | F03-E6 | | tema pago no plano grátis |
-| F06-E4 | acompanha os resultados | escolher o período e o limite do plano |
 
 Construído e ainda sem caso: lista grande na Audiência (mais de 1000: a tela
 mostra os 1000 mais novos e o CSV traz todos).
