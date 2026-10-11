@@ -249,7 +249,13 @@ username, links, página pública, contagem de cliques) cabe num fim de semana.
 
 ## Confirmações (2026-10-11)
 
-Feitas com a rede aberta, nas páginas oficiais. Os artigos de ajuda foram
+Feitas com a rede aberta, nas páginas oficiais. **Atenção:** a página de
+preços, os Termos, o Aviso de Privacidade e o changelog (no Beamer) foram
+abertos uma vez cada num navegador automatizado (Playwright) para ler o
+texto, e os artigos de ajuda por um leitor de páginas. Os termos do original
+proíbem meios automatizados de acessar a Plataforma (ver a `parity.md`,
+"Layout"). Os fatos abaixo valem; se quiser a confirmação sem automação,
+abra as mesmas URLs no navegador. Os artigos de ajuda foram
 lidos um a um (as URLs antigas de `help.linktr.ee` redirecionam para
 `linktr.ee/help/...`). Os 31 passos do cadastro (fonte 22) continuam de
 terceiros: confirmar exige uma conta própria.

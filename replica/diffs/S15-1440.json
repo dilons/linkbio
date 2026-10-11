@@ -1,0 +1,49 @@
+{
+ "mode": "layout",
+ "original": {
+  "width": 1440,
+  "height": 900
+ },
+ "clone": {
+  "width": 1440,
+  "height": 900
+ },
+ "compared_at": {
+  "width": 480,
+  "height": 300
+ },
+ "height_delta_pct": 0.0,
+ "score": 28.3,
+ "verdict": "different",
+ "regions": [
+  {
+   "x": 360,
+   "y": 0,
+   "w": 720,
+   "h": 900,
+   "cells": 25,
+   "where": "middle centre"
+  },
+  {
+   "x": 1200,
+   "y": 720,
+   "w": 240,
+   "h": 180,
+   "cells": 4,
+   "where": "bottom right"
+  },
+  {
+   "x": 600,
+   "y": 480,
+   "w": 240,
+   "h": 120,
+   "cells": 2,
+   "where": "middle centre"
+  }
+ ],
+ "files": {
+  "original": "replica/screens/S15-1440.png",
+  "clone": "replica/clone-screens/S15-diff-1440.png"
+ },
+ "_nota": "Indicativo (2026-10-11): a captura do original foi feita com Playwright, o que os termos do original proíbem (seção sobre scripts e meios automatizados). A captura e a imagem do diff não estão no repositório. Refazer com captura manual no navegador."
+}

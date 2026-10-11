@@ -10,9 +10,9 @@ propósito na `/replica-brand`.
 
 | | nota | |
 | --- | --- | --- |
-| **geral** | **64,2** | só funcionalidades: o layout contra o original não foi medido |
+| **geral** | **64,2** | só funcionalidades; com o layout indicativo, 56,4 |
 | funcionalidades | 64,2 / 100 (era 48,9) | 39 contadas; must-haves **17 de 18** (eram 11) |
-| layout contra o original | não medido | a rede deste ambiente bloqueia `linktr.ee`; `replica/screens/` está vazio |
+| layout contra o original | 25,2 (indicativo) | só a S15, 2 larguras; captura automatizada, que os termos dele proíbem: refazer à mão (ver "Layout") |
 | regressão de layout do próprio clone | 99,4 a 100 | 6 telas no mesmo estado, antes e depois do backend e das correções |
 | bugs abertos | 0 S1, 0 S2, 0 S3 | 1 S4 aberto (BUG-010), ver `bugs.md` |
 
@@ -60,20 +60,43 @@ OAuth). Could-haves: os 8 da matriz (`features.csv`).
 
 ## Layout
 
-**Contra o original: não medido.** O diff de layout precisa das duas capturas
-no mesmo viewport (1440×900 e 390×844) e no mesmo estado, e as do Linktree não
-puderam ser tiradas daqui: a política de rede do ambiente bloqueia `linktr.ee`.
-Para medir, uma das duas:
+**Contra o original, 2026-10-11: 28,3 a 1440 e 22,2 a 390 ("different"),
+indicativo.** S15 (página pública), modo layout, contra a página de uma marca
+com 4 links; o clone no mesmo estado, com os mesmos 4 títulos
+(`replica/clone-screens/S15-diff-*.png`). Com o layout, o `parity.py
+--visual` dá **56,4** (funcionalidades 64,2, layout 25,2). A linha de
+lançamento continua sendo a das funcionalidades.
 
-- liberar `linktr.ee` na rede do ambiente (Network access, Allowed domains) e
-  eu capturo as páginas públicas (por exemplo `linktr.ee/linktree`) para a S15;
-- você salvar em `replica/screens/` capturas das telas do seu próprio painel,
-  se tiver conta (e se os termos dela permitirem esse uso), com os nomes
-  `S06-1440.png`, `S09-1440.png` e assim por diante.
+**Por que indicativo.** As capturas do original foram feitas com o
+Playwright, e os termos do original (em vigor desde 5 de julho de 2026)
+proíbem "scripts, bots, scraping tools or other automated means or processes
+to access [...] Linktree user profiles or the Platform", inclusive para quem
+só visita. Por isso a captura do original e a imagem do diff **não estão no
+repositório**, só os números (`replica/diffs/S15-*.json`). Para valer, você
+captura no seu navegador, à mão (1440x900 e, nas ferramentas do
+desenvolvedor, 390x844), salva em `replica/screens/S15-1440.png` e
+`S15-390.png`, e eu rodo o `imgdiff.py` de novo.
 
-Depois: `python3 $SKILL/imgdiff.py replica/screens/S15-390.png
-replica/clone-screens/S15-390.png --json > replica/diffs/S15-390.json` e o
-`parity.py --visual`.
+**O que difere** (a hierarquia é a mesma: foto, links, rodapé):
+
+- no topo, o original tem uma barra com o logo dele e um botão de
+  compartilhar; o clone não tem barra;
+- o original deixa mais espaço entre a foto e o primeiro link e, nessa
+  página, não mostra o título; o clone mostra o nome;
+- cada link do original tem miniatura e um menu "⋮" (compartilhar o link);
+  o clone tem botões sem miniatura;
+- a 1440, o original põe a página num cartão sobre fundo cinza; o clone usa
+  uma coluna sobre o fundo do tema.
+
+Nada disso é para copiar (é a cara dele, e a skill diz para não perseguir o
+visual). Dois pontos viram funcionalidade a considerar: o **botão de
+compartilhar** na página pública e a **miniatura** no link (esta já é
+should-have na `features.csv`).
+
+**Telas do painel (S06, S08, S09, S10): fora.** Os termos proíbem
+"Copying, reproducing [...] the Platform or any part of it" e o uso de meios
+automatizados; capturar o painel com uma conta própria para comparar com um
+concorrente cai nisso. Sem essas capturas.
 
 **Regressão do próprio clone** (modo layout e modo pixel, capturas da fatia
 vertical em `0fb4ae8` contra as atuais; imagens em `replica/diffs/regressao/`):
