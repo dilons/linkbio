@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Só a imagem do demo (Dockerfile) gera o servidor standalone.
+  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

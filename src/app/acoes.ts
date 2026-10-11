@@ -60,6 +60,7 @@ export async function cadastrar(_: Estado, form: FormData): Promise<Estado> {
   if (!(await dentroDosLimites([["cadastro:ip", await ipAtual(), 5, 3600]]))) return { erro: MUITAS_TENTATIVAS, valores };
   const r = await criarConta(dados.data.email, dados.data.senha, await origemDoPedido());
   if (!r.ok) return { erro: r.erro, valores };
+  if (r.logado) redirect("/comecar");
   return { ok: true, valores };
 }
 
