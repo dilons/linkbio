@@ -35,10 +35,7 @@ Testes:
 
 ```bash
 npm run test:backend              # 30 testes contra o banco local (node:test)
-node tests/asaas-falso.mjs &      # um Asaas de mentira na porta 4010
-npm run build && npx next start -p 3123 &
-npm run e2e                       # a fatia vertical, 40 checagens (1440 e 390 px, só teclado)
-node tests/e2e/backend.mjs        # backend no navegador, 36 checagens
+npm run build && npm run test:e2e # 64 casos no navegador (Playwright sobe o app e o Asaas falso)
 ```
 
 O `.env.local` de teste aponta `ASAAS_API_URL` para `http://127.0.0.1:4010/v3`.

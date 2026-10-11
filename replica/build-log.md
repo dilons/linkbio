@@ -5,7 +5,7 @@ Uma linha por tela. Estado: **feito**, **parcial** (funciona, falta parte),
 
 Etapa 1 da `architecture.md`, a fatia vertical: cadastro → endereço → link →
 página pública → clique contado → insights. Testada de ponta a ponta por
-`tests/e2e/fatia.mjs` (38 checagens na etapa 1, 40 depois do backend, a 1440 e 390 px, a de 390 só com teclado;
+`tests/e2e/fatia.mjs` (hoje dividido por fluxo em `e2e/`, ver `test-plan.md`; 38 checagens na etapa 1, 40 depois do backend, a 1440 e 390 px, a de 390 só com teclado;
 axe 0 violações em 17 telas; console sem erros). Capturas em
 `replica/clone-screens/`.
 

@@ -42,16 +42,16 @@ npm run db:types     # depois de uma migração nova: regera src/lib/db/schema.t
 npm run test:backend # 30 testes do backend contra o banco local
 ```
 
-Testes de ponta a ponta (app em produção local, Asaas falso na porta 4010):
+Testes de ponta a ponta (Playwright, um arquivo por fluxo em `e2e/`). O
+Playwright sobe o app em produção e o Asaas falso sozinho:
 
 ```bash
 npm run build
-node tests/asaas-falso.mjs &
-npx next start -p 3123 &
-npm run e2e                  # a fatia vertical (1440 e 390 px, só teclado)
-node tests/e2e/backend.mjs   # login, foto, assinatura, senha, exclusão
+npm run test:e2e     # 64 casos; plano e resultados em replica/test-plan.md
 # CHROMIUM_PATH=... se o Chromium do Playwright não estiver baixado
 ```
+
+Bugs achados e corrigidos: `replica/bugs.md`.
 
 O que precisa de conta e chave sua (Supabase, Resend, Asaas, Google, Vercel)
 está em `replica/backend.md`, passo a passo.
@@ -68,11 +68,11 @@ escrever código.
 | `/replica-recon` | feito: `replica/recon.md`, `replica/features.csv` (faltam screenshots) |
 | `/replica-architect` | feito: `replica/architecture.md`, `replica/schema.sql` (testado no PGlite) |
 | `/replica-design` | feito: `replica/design/` (tokens, componentes, contraste 0 falhas, capturas) e a rota `/design` |
-| `/replica-build` | etapa 1 (fatia vertical) feita: `replica/build-log.md`, `replica/clone-screens/`, `tests/e2e/` |
+| `/replica-build` | etapa 1 (fatia vertical) feita: `replica/build-log.md`, `replica/clone-screens/` |
 | `/replica-backend` | feito: Supabase (banco, login, Storage), Asaas, emails, jobs, limites; `replica/backend.md` |
 | `/replica-lgpd` | |
-| `/replica-test` | próximo |
-| `/replica-diff` | |
+| `/replica-test` | feito: 64 casos de ponta a ponta + 30 do backend, 11 bugs (1 S1 e 7 S3 corrigidos); `replica/test-plan.md`, `replica/bugs.md` |
+| `/replica-diff` | próximo |
 | `/replica-entrepreneur` | |
 | `/replica-brand` | |
 | `/replica-inpi` | |

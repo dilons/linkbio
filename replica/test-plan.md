@@ -1,0 +1,145 @@
+# Plano de teste: linkbio
+
+Build: as correções de `e14ae69` a `9666c81` (suíte escrita sobre `74e2040`).
+Data: 2026-10-11. Ambiente: build de produção local (`next start`), Supabase
+local (Postgres, Auth, Storage, Mailpit) com o seed, Asaas falso
+(`tests/asaas-falso.mjs`), Chromium 141.
+
+```bash
+npm run db:start && npm run db:reset && npm run build
+npm run test:e2e          # 64 casos, Playwright (e2e/)
+npm run test:backend      # 30 casos, node:test (tests/backend/)
+```
+
+Cada caso de ponta a ponta falha com erro no console ou resposta 5xx, roda o
+axe nas telas que visita e se apresenta com um IP próprio (os limites de uso
+são por IP). As quatro últimas rodadas da suíte inteira passaram sem falha.
+
+## Resultado
+
+| | casos | passaram | falharam |
+| --- | --- | --- | --- |
+| ponta a ponta (Playwright) | 64 | 64 | 0 |
+| backend (node:test) | 30 | 30 | 0 |
+| bloqueados (fluxo não construído) | 15 | | |
+| manuais (precisam de conta real) | 7 | | pendentes |
+
+Na primeira rodada, 12 de 61 falharam: 6 por defeito do app (BUG-002 a
+BUG-007) e 6 por erro do teste (espera curta, seletor, reenvio antes do
+intervalo do Auth), dois dos quais mostraram defeitos S4 (BUG-009 e BUG-010).
+BUG-008 apareceu na rodada seguinte, com os testes rodando em paralelo. Os
+casos F09-E8 e F12-N3 foram escritos depois, caçando um defeito suspeito
+(BUG-001 e BUG-011), e falharam antes da correção. Bugs em
+`replica/bugs.md`: 11 no total, todos os S1 a S3 corrigidos com o teste
+falhando antes.
+
+## Casos automatizados
+
+| case | flow | type | o que verifica | auto | result |
+| --- | --- | --- | --- | --- | --- |
+| F01-H1 | cria a página e compartilha | feliz | cadastro, confirmação por email, endereço, primeiro link e URL copiada | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E1 | cria a página e compartilha | borda | endereço em uso, reservado ou inválido avisa enquanto digita e não é aceito | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E2 | cria a página e compartilha | borda | email que já tem conta: mesma tela de quem não tem, e o dono recebe o caminho para entrar | e2e `f01-cria-pagina.spec.ts` | passou (achou BUG-007) |
+| F01-E3 | cria a página e compartilha | borda | abandona depois de confirmar e volta: entrar leva a escolher o endereço | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E4 | cria a página e compartilha | borda | dois cliques seguidos em Criar minha conta: uma conta, tela de confirmação | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E5 | cria a página e compartilha | borda | email com maiúsculas e +: a conta vale em minúsculas | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E6 | cria a página e compartilha | borda | duas abas escolhendo o endereço: a segunda vai para o painel, sem perfil duplicado | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E7 | cria a página e compartilha | borda | link de confirmação usado de novo: aviso, sem quebrar | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E8 | cria a página e compartilha | borda | recarregar a tela de confirmação e pedir o link de novo por /confirmar | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E9 | cria a página e compartilha | borda | só teclado, a 390 px: cadastro, endereço e primeiro link | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-E10 | cria a página e compartilha | borda | pedir o link de novo cedo demais: aviso para esperar, sem erro genérico | e2e `f01-cria-pagina.spec.ts` | passou |
+| F01-N1 | cria a página e compartilha | negativo | senha curta e email inválido: erros nos campos, nada criado | e2e `f01-cria-pagina.spec.ts` | passou |
+| F02-H1 | adiciona e organiza links | feliz | adicionar, editar, reordenar, desligar e excluir, com a prévia e a página pública acompanhando | e2e `f02-links.spec.ts` | passou |
+| F02-H2 | adiciona e organiza links | feliz | reordenar só com teclado (espaço, setas, espaço) | e2e `f02-links.spec.ts` | passou |
+| F02-E1 | adiciona e organiza links | borda | endereço sem https é completado; com espaços nas pontas, aparado | e2e `f02-links.spec.ts` | passou |
+| F02-E2 | adiciona e organiza links | borda | endereços inválidos ou perigosos são recusados | e2e `f02-links.spec.ts` | passou |
+| F02-E3 | adiciona e organiza links | borda | título vazio, só espaços ou longo demais é recusado; 100 caracteres passa | e2e `f02-links.spec.ts` | passou (achou BUG-010) |
+| F02-E4 | adiciona e organiza links | borda | emoji, acentos e HTML no título aparecem como texto na página pública | e2e `f02-links.spec.ts` | passou |
+| F02-E5 | adiciona e organiza links | borda | o mesmo endereço duas vezes vira dois links | e2e `f02-links.spec.ts` | passou |
+| F02-E6 | adiciona e organiza links | borda | cem links: painel e página pública abrem, e o último sobe para o topo | e2e `f02-links.spec.ts` | passou |
+| F02-E7 | adiciona e organiza links | borda | dois cliques seguidos em Adicionar criam um link só | e2e `f02-links.spec.ts` | passou |
+| F02-E8 | adiciona e organiza links | borda | sem rede: adicionar e ligar avisam e o painel continua de pé | e2e `f02-links.spec.ts` | passou (achou BUG-003) |
+| F02-E9 | adiciona e organiza links | borda | duas abas: excluído numa, editar na outra avisa que o link não existe mais | e2e `f02-links.spec.ts` | passou |
+| F02-E10 | adiciona e organiza links | borda | título e bio longos: limites respeitados e nada vaza a 390 px | e2e `f02-links.spec.ts` | passou (achou BUG-004) |
+| F02-N1 | adiciona e organiza links | negativo | sessão perdida no meio: salvar leva ao login sem perder o painel dos outros | e2e `f02-links.spec.ts` | passou (achou BUG-002) |
+| F04-H1 | visitante abre e clica | feliz | abre a página, a visita conta, o clique conta e leva ao destino | e2e `f04-visitante.spec.ts` | passou |
+| F04-E1 | visitante abre e clica | borda | endereço livre: 404 de verdade para robô de prévia, página de 404 com noindex no navegador | e2e `f04-visitante.spec.ts` | passou (achou BUG-009) |
+| F04-E2 | visitante abre e clica | borda | perfil excluído some (404) e o clique antigo não redireciona | e2e `f04-visitante.spec.ts` | passou |
+| F04-E3 | visitante abre e clica | borda | link desligado depois que a página abriu: o clique mostra uma página amigável, não um texto cru | e2e `f04-visitante.spec.ts` | passou (achou BUG-005) |
+| F04-E4 | visitante abre e clica | borda | robôs e prévias de redes não contam visita nem clique | e2e `f04-visitante.spec.ts` | passou |
+| F04-E5 | visitante abre e clica | borda | endereço com maiúsculas ou @ abre a mesma página | e2e `f04-visitante.spec.ts` | passou (achou BUG-006) |
+| F04-E6 | visitante abre e clica | borda | celular com rede lenta: a página abre, sem rolagem lateral | e2e `f04-visitante.spec.ts` | passou |
+| F04-E7 | visitante abre e clica | borda | /r/ com id inválido, inexistente ou de outro tipo não redireciona para lugar nenhum | e2e `f04-visitante.spec.ts` | passou |
+| F04-E8 | visitante abre e clica | borda | link agendado fora da janela não aparece nem redireciona | e2e `f04-visitante.spec.ts` | passou |
+| F04-E9 | visitante abre e clica | borda | só teclado: Tab até o link e Enter abre o destino | e2e `f04-visitante.spec.ts` | passou |
+| F04-E10 | visitante abre e clica | borda | a prévia do link no WhatsApp tem título e descrição do perfil | e2e `f04-visitante.spec.ts` | passou |
+| F06-H1 | acompanha os resultados | feliz | a demo vê os totais da semana e o ranking dos links | e2e `f06-resultados.spec.ts` | passou |
+| F06-E1 | acompanha os resultados | borda | sem dados ainda: zeros, taxa sem número, e convite quando não há links | e2e `f06-resultados.spec.ts` | passou |
+| F06-E2 | acompanha os resultados | borda | outra conta só vê os próprios números | e2e `f06-resultados.spec.ts` | passou |
+| F09-H1 | assina o plano | feliz | assina por Pix, paga, perde a marca e cancela em um clique | e2e `f09-plano.spec.ts` | passou |
+| F09-E1 | assina o plano | borda | CPF inválido é recusado antes de falar com o Asaas | e2e `f09-plano.spec.ts` | passou |
+| F09-E2 | assina o plano | borda | dois cliques seguidos em Assinar criam uma assinatura só no Asaas | e2e `f09-plano.spec.ts` | passou |
+| F09-E3 | assina o plano | borda | assinatura pendente: assinar de novo com a mesma forma volta para a mesma cobrança | e2e `f09-plano.spec.ts` | passou |
+| F09-E4 | assina o plano | borda | trocar a forma enquanto pendente cancela a cobrança anterior no Asaas | e2e `f09-plano.spec.ts` | passou |
+| F09-E5 | assina o plano | borda | estorno devolve a página ao grátis (marca volta), sem apagar nada | e2e `f09-plano.spec.ts` | passou |
+| F09-E6 | assina o plano | borda | Asaas fora do ar: mensagem clara e nada gravado | e2e `f09-plano.spec.ts` | passou |
+| F09-E7 | assina o plano | borda | webhook: sem token ou token errado 401, corpo inválido 400, repetido e em paralelo aplicado uma vez | e2e `f09-plano.spec.ts` | passou |
+| F09-E8 | assina o plano | borda | duas abas assinando ao mesmo tempo criam uma assinatura só no Asaas | e2e `f09-plano.spec.ts` | passou (achou BUG-001) |
+| F10-H1 | exclui a conta | feliz | excluir: confirmação forte, tudo apagado na hora, email, endereço segurado | e2e `f10-conta.spec.ts` | passou |
+| F10-E1 | exclui a conta | borda | com o Pro ativo, a assinatura é cancelada no Asaas antes de excluir | e2e `f10-conta.spec.ts` | passou |
+| F10-E2 | exclui a conta | borda | Asaas fora do ar com o Pro ativo: a conta não é excluída e a pessoa sabe por quê | e2e `f10-conta.spec.ts` | passou |
+| F10-E3 | exclui a conta | borda | recadastro com o mesmo email depois de excluir: conta nova, endereço antigo ainda reservado | e2e `f10-conta.spec.ts` | passou |
+| F12-H1 | acesso (derivado) | feliz | entrar e sair deste aparelho | e2e `f12-acesso.spec.ts` | passou (achou BUG-008) |
+| F12-E1 | acesso (derivado) | borda | recuperar a senha: resposta neutra, link abre em outro navegador, senha nova vale e avisa por email | e2e `f12-acesso.spec.ts` | passou |
+| F12-E2 | acesso (derivado) | borda | sair de todos os aparelhos derruba a outra sessão na hora | e2e `f12-acesso.spec.ts` | passou |
+| F12-E3 | acesso (derivado) | borda | sessão com o token vencido se renova sozinha | e2e `f12-acesso.spec.ts` | passou |
+| F12-E4 | acesso (derivado) | borda | dez senhas erradas seguidas para o mesmo email: as próximas tentativas esperam | e2e `f12-acesso.spec.ts` | passou |
+| F12-E5 | acesso (derivado) | borda | voltar no navegador depois de sair não mostra o painel | e2e `f12-acesso.spec.ts` | passou |
+| F12-E6 | acesso (derivado) | borda | cookies da sessão fechados para o JavaScript da página | e2e `f12-acesso.spec.ts` | passou |
+| F12-E7 | acesso (derivado) | borda | sem sessão o painel leva ao login; com sessão, login e cadastro levam ao painel | e2e `f12-acesso.spec.ts` | passou |
+| F12-E8 | acesso (derivado) | borda | jobs e webhook não abrem sem o segredo | e2e `f12-acesso.spec.ts` | passou |
+| F12-N1 | acesso (derivado) | negativo | senha errada e email sem conta dão a mesma resposta | e2e `f12-acesso.spec.ts` | passou |
+| F12-N2 | acesso (derivado) | negativo | email ainda sem confirmar: não entra e pode pedir o link de novo | e2e `f12-acesso.spec.ts` | passou |
+| F12-N3 | acesso (derivado) | negativo | alguém errando a senha de outra pessoa de outro lugar não tranca a conta dela | e2e `f12-acesso.spec.ts` | passou (achou BUG-011) |
+
+Cobertos pelos testes do backend (`tests/backend/`), sem tela: segundo
+usuário não lê nem altera nada do primeiro (F02, F06); API REST e Storage
+fechados para a chave pública, anônimo e logado; webhook idempotente, fora de
+ordem e em paralelo (F09); limites atômicos; job diário no fuso do perfil
+(F06, fuso horário; o Brasil não tem horário de verão desde 2019); exclusão
+apaga na hora e libera o endereço depois de 14 dias (F10).
+
+## Bloqueados: fluxo ainda não construído
+
+| case | flow | o que testar quando existir |
+| --- | --- | --- |
+| F03-H1 | personaliza a aparência | escolher tema, ver na prévia e na página pública |
+| F03-E1 | | cor com contraste ruim é recusada ou avisada |
+| F03-E2 | | imagem de fundo pesada é recusada (5 MB) |
+| F03-E3 | | tema pago no plano grátis |
+| F05-H1 | visitante deixa o email | formulário na página, consentimento gravado, S17 |
+| F05-E1 | | email inválido, repetido (sem duplicar), envio duplo |
+| F05-E2 | | robô (campo isca e limite por visitante) |
+| F06-E4 | acompanha os resultados | escolher o período e o limite do plano |
+| F07-H1 | exporta os inscritos | CSV com os inscritos |
+| F07-E1 | | lista vazia, lista grande |
+| F08-H1 | agenda ou destaca um link | agendar no editor com fuso (o lado público já é testado em F04-E8) |
+| F08-E1 | | fim antes do começo é recusado; recurso pago no grátis |
+| F10-E4 | troca o username | uma vez a cada 7 dias; o antigo segurado por 14 dias |
+| F11-H1 | marca como sensível | aviso S16 antes da página ou do link |
+| F11-E1 | | idade insuficiente |
+
+## Passada manual (precisa das contas reais)
+
+Não dá para automatizar aqui: precisam das contas e chaves do dono (ver
+`replica/backend.md`) ou de aparelhos reais.
+
+| case | o que fazer | esperado | result |
+| --- | --- | --- | --- |
+| M1 | criar conta com um email de verdade (Gmail e Outlook) com o Resend configurado | confirmação chega na caixa de entrada, não no spam, do domínio próprio | pendente |
+| M2 | entrar com Google, conta nova e conta existente | volta ao painel; conta nova vai escolher o endereço | pendente |
+| M3 | no sandbox do Asaas: assinar por Pix e confirmar o pagamento pelo painel do sandbox | webhook real chega, a marca some do rodapé | pendente |
+| M4 (F09-N1) | no sandbox: cartão recusado e cartão aprovado (cartões de teste do Asaas) | recusado: continua grátis, sem cobrança; aprovado: Pro | pendente |
+| M5 | VoiceOver (iPhone) e TalkBack (Android): F01 e F04 inteiros | tudo anunciado, nada inalcançável | pendente |
+| M6 | Safari no iPhone e Chrome no Android, página pública e painel; colar o link no WhatsApp e no Instagram | layout certo, prévia com nome e bio | pendente |
+| M7 | depois do deploy: conferir em `job_runs` que os quatro crons rodaram no horário | uma linha por job por dia, `ok = true` | pendente |
