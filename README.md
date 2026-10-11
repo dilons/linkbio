@@ -43,7 +43,7 @@ Outros comandos:
 npm run typecheck && npm run lint && npm run build
 npm run tokens       # depois de mudar replica/design/tokens.json
 npm run db:types     # depois de uma migração nova: regera src/lib/db/schema.ts
-npm run test:backend # 37 testes do backend contra o banco local
+npm run test:backend # 56 testes do backend contra o banco local
 ```
 
 Testes de ponta a ponta (Playwright, um arquivo por fluxo em `e2e/`). O
@@ -51,7 +51,7 @@ Playwright sobe o app em produção e o Asaas falso sozinho:
 
 ```bash
 npm run build
-npm run test:e2e     # 87 casos; plano e resultados em replica/test-plan.md
+npm run test:e2e     # 115 casos; plano e resultados em replica/test-plan.md
 # CHROMIUM_PATH=... se o Chromium do Playwright não estiver baixado
 ```
 
@@ -72,11 +72,11 @@ escrever código.
 | `/replica-recon` | feito: `replica/recon.md`, `replica/features.csv` (faltam screenshots) |
 | `/replica-architect` | feito: `replica/architecture.md`, `replica/schema.sql` (testado no PGlite) |
 | `/replica-design` | feito: `replica/design/` (tokens, componentes, contraste 0 falhas, capturas) e a rota `/design` |
-| `/replica-build` | fatia vertical e as lacunas da paridade feitas (temas, formulário de email, audiência e CSV, redes sociais, prévia no celular, excluir só a página): 6 telas feitas e 8 parciais de 19; `replica/build-log.md`, `replica/clone-screens/` |
+| `/replica-build` | três rodadas: fatia vertical, lacunas da paridade e os sete should-haves (aviso de conteúdo e trava de idade, agendar com fuso, trocar o endereço, QR code, insights com período, origens e locais), BUG-010 e a correção 1 do `fixes.md`; `replica/build-log.md`, `replica/clone-screens/` |
 | `/replica-backend` | feito: Supabase (banco, login, Storage), Asaas, emails, jobs, limites; `replica/backend.md` |
 | `/replica-lgpd` | |
-| `/replica-test` | feito: 87 casos de ponta a ponta + 37 do backend (com os da segunda `/replica-build`), 11 bugs (1 S1 e 7 S3 corrigidos); `replica/test-plan.md`, `replica/bugs.md` |
-| `/replica-diff` | feito e atualizado: funcionalidades 64,2/100 (era 48,9), must-haves 17 de 18 (falta validar o Asaas no sandbox); layout contra o original sem medir (a rede daqui bloqueia o site dele); `replica/parity.md` |
+| `/replica-test` | feito e atualizado: 115 casos de ponta a ponta + 56 do backend, 13 bugs (todos os S1 a S4 corrigidos, menos um S4 que não vai ser corrigido); `replica/test-plan.md`, `replica/bugs.md` |
+| `/replica-diff` | recalculada: funcionalidades 79,0/100 (era 64,2), must-haves 17 de 18 (falta validar o Asaas no sandbox, que leva a 80,7); layout da S15 indicativo (25,2), a refazer com captura à mão; `replica/parity.md` |
 | `/replica-entrepreneur` | feito com dados reais, provisório: 605 avaliações de 2 plataformas (App Store e Hacker News; falta a terceira, que é colada à mão), `replica/feedback.md`, `replica/fixes.md`, 8 correções na `features.csv`. O ângulo do mock (vender no Brasil) não se sustentou; o recomendado é "sem pegadinha no dinheiro" |
 | `/replica-brand` | feito: nome de trabalho Chamaqui (buscas de marca a rodar), paleta brasa com 0 falhas AA, briefing do logo, voz e 10 textos reescritos, sweep limpo; `replica/brand.md`, `replica/brand.json`. Checagens de 2026-10-11: conflito para os dois nomes ("ChamaAqui E-commerce" no Brasil; Logali registrada na UE e no registro internacional), domínios exatos ocupados; ver `replica/brand.md` |
 | `/replica-inpi` | preparado: classes 9 e 42, 18 termos de busca (som, grafia, sentido e tradução), reserva Logali, checagens e passo a passo do depósito em `replica/inpi.md`; falta você fazer a busca no pePI (a rede daqui bloqueia o INPI) |

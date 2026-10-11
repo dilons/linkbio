@@ -1,62 +1,60 @@
-# Paridade: linkbio × Linktree
+# Paridade: Chamaqui × Linktree
 
-`/replica-diff` em 2026-10-11, build `a5385ee`; placar, lacunas e
-comportamento atualizados depois da segunda `/replica-build` (build
-`ecb2243`). Paridade aqui é fazer o mesmo
-trabalho, não ter a mesma cara: a cor e o desenho de cada tela mudam de
-propósito na `/replica-brand`.
+`/replica-diff` em 2026-10-11, build `a5385ee`; recalculada no WSL em
+2026-10-11, build `04d78ed`, depois da terceira `/replica-build`. Paridade
+aqui é fazer o mesmo trabalho, não ter a mesma cara: a cor e o desenho de
+cada tela mudam de propósito na `/replica-brand`.
 
 ## Placar
 
 | | nota | |
 | --- | --- | --- |
-| **geral** | **64,2** | só funcionalidades; com o layout indicativo, 56,4 |
-| funcionalidades | 64,2 / 100 (era 48,9) | 39 contadas; must-haves **17 de 18** (eram 11) |
+| **geral** | **79,0** | só funcionalidades; com o layout indicativo, 68,2 |
+| funcionalidades | 79,0 / 100 (era 64,2) | 39 contadas; must-haves **17 de 18** |
 | layout contra o original | 25,2 (indicativo) | só a S15, 2 larguras; captura automatizada, que os termos dele proíbem: refazer à mão (ver "Layout") |
-| regressão de layout do próprio clone | 99,4 a 100 | 6 telas no mesmo estado, antes e depois do backend e das correções |
-| bugs abertos | 0 S1, 0 S2, 0 S3 | 1 S4 aberto (BUG-010), ver `bugs.md` |
+| regressão de layout do próprio clone | 95 a 98 | as capturas passaram a ser do WSL (fonte rasterizada diferente da nuvem); mesmo desenho |
+| bugs abertos | 0 S1, 0 S2, 0 S3 | nenhum S4 aberto (BUG-010 corrigido; BUG-012 e BUG-013 achados e corrigidos), ver `bugs.md` |
 
-**Veredito: ainda não dá para lançar.** Falta 1 must-have, e ele não depende
-de código: validar a cobrança no sandbox do Asaas com a sua conta. Nenhum S1
-aberto. Para a linha de lançamento (80), faltam sete should-haves (abaixo).
+**Veredito: ainda não dá para lançar, por um must-have que não depende de
+código:** validar a cobrança no sandbox do Asaas com a sua conta. Com ele,
+a nota vai a **80,7** (calculada), a linha de lançamento. Nenhum S1 aberto.
 
 A nota vem do jeito de contar da skill (must vale 3, should 2, could 1,
-parcial vale metade; os 5 itens fora do escopo não entram). O que existe
-passou em 87 casos de ponta a ponta e 37 do backend.
+parcial vale metade; os 5 itens fora do escopo não entram, nem as 8 linhas
+que são só do Chamaqui). O que existe passou em 115 casos de ponta a ponta e
+56 do backend.
 
 ## Funcionalidades por área, da mais fraca para a mais forte
 
 | área | nota | itens |
 | --- | --- | --- |
-| compartilhamento | 0 | 2 |
-| aparência | 33,3 (era 0) | 5 |
-| conta | 50 (era 25) | 3 |
-| insights | 54,5 | 5 |
-| página pública | 60 | 2 |
-| editor | 72 (era 60) | 11 |
+| aparência | 33,3 | 5 |
+| compartilhamento | 66,7 (era 0) | 2 |
 | plano | 75 | 2 |
+| editor | 80 (era 72) | 11 |
 | onboarding | 81,2 | 6 |
-| audiência | 85,7 (era 0) | 3 |
+| conta | 83,3 (era 50) | 3 |
+| audiência | 85,7 | 3 |
+| página pública | 100 (era 60) | 2 |
+| insights | 100 (era 54,5) | 5 |
 
 ## O que falta, na ordem de construção
 
-Feitos na segunda `/replica-build`: temas prontos (S08), formulário de
-captura de email com consentimento gravado (F05, S11, S15, S17), inscritos e
-CSV (F07, S10), editor das redes sociais e prévia no celular (S06) e excluir
-só a página (S13).
+Feitos na terceira `/replica-build` (2026-10-11, WSL): aviso de conteúdo e
+trava de idade (S16, S12, S07), agendar com fuso (S07), trocar o endereço
+(S13), QR code (S19), insights com período, origens, locais e únicos (S09),
+BUG-010 nos 15 formulários; e, do `fixes.md`, a correção 1 (cobrança sem
+susto).
 
 Must-have que falta:
 
-1. **Plano pago validado no sandbox do Asaas** (plano, S14). O código está
-   pronto e testado contra um Asaas falso; falta a sua conta de sandbox
-   (passos em `backend.md`, casos M3 e M4 do `test-plan.md`).
+1. **Plano pago validado no sandbox do Asaas** (plano, S14). Passos em
+   `backend.md`; casos M3 e M4 do `test-plan.md`.
 
-Should-haves, na ordem de valor por esforço: aviso de conteúdo sensível
-(S16, o componente já existe), agendar link com fuso (o lado público já
-respeita a janela), trocar o endereço, QR code, e nos insights o período, as
-fontes e os locais e os únicos completos. Depois: tema customizável e fundo
-com imagem, miniatura, modelo por categoria, Google (pronto, falta o app
-OAuth). Could-haves: os 8 da matriz (`features.csv`).
+Should-haves que faltam: tema customizável (cor de fundo, botão e fonte; é
+também a correção 3 do `fixes.md`, que pede no plano grátis), fundo com
+imagem, miniatura no link, modelo por categoria, e o Google (pronto, falta o
+app OAuth). Could-haves: os 8 da matriz.
 
 ## Layout
 
@@ -129,25 +127,23 @@ pela rede.
 | F03 aparência | temas grátis e pagos, tema customizável, fundo com imagem ou vídeo | 5 temas prontos, todos grátis, com contraste conferido; a prévia muda na hora | **manter** os temas grátis; **construir** o customizável e o fundo |
 | F04 visitante | rodapé com a marca no grátis; aviso de conteúdo sensível | igual no rodapé; robôs e prévias de redes não contam; `/@usuario` funciona; link desligado mostra página com volta; prévia no WhatsApp com nome e bio | **manter**; **construir** o aviso sensível |
 | F05 deixar o email | formulário com email, nome, telefone, lista | email e nome opcional; o criador escreve o consentimento e ele fica gravado com cada inscrição; o mesmo email não duplica; campo isca e limite por visitante | **manter** o consentimento gravado (LGPD); **construir** o telefone |
-| F06 resultados | visitas, únicos, cliques, taxa, ranking, fontes, países e cidades, período maior no pago | visitas, únicos, cliques, taxa e ranking dos últimos 7 dias; o job diário já soma por dia | **construir** período, fontes e locais |
+| F06 resultados | visitas, únicos, cliques, taxa, ranking, fontes, países e cidades, período maior no pago (Free 28 dias; Starter 90; Pro 365; fontes e locais só Pro e Premium) | 7, 28, 90 dias e 12 meses, todos grátis; únicos por dia (sem cookie); série por dia, semana ou mês; ranking com únicos; origem (com QR code), aparelho, país e cidade | **manter**: mais que o grátis do original, sem cookie |
 | F07 exportar inscritos | CSV por link enviado por email com senha | tabela na Audiência e CSV baixado direto (só o dono, com limite por conta), pronto para o Excel em português e com fórmulas neutralizadas | **manter**: menos passos que o original. Considerar pedir a senha de novo antes do download |
-| F08 agendar ou destacar | pago (Starter ou acima) | o banco e a página pública já respeitam a janela; falta a tela | **construir** a tela |
-| F09 assinar | quatro planos, cartão, cancelar pelo portal | um plano, Pix, cartão ou boleto pelo Asaas, cancelar em um clique na própria tela, Pro até o fim do período | **manter** (Pix e cancelamento fácil são vantagem no Brasil); os planos ficam para a `/replica-entrepreneur` |
-| F10 excluir | exclui perfil ou conta; endereço e email bloqueados por 14 dias; troca de endereço a cada 7 dias | exclui a conta (cancela a cobrança) ou só a página (a conta e o Pro continuam); apaga na hora, apaga as fotos, confirma por email; segura só o endereço por 14 dias, que a própria conta pode retomar | **manter** não segurar o email e deixar a dona retomar o endereço; **construir** a troca de endereço |
-| F11 conteúdo sensível | aviso 18+, 21+, 25+ ou sensível, trava de idade | não existe (o componente da tela de aviso já está pronto) | **construir** |
+| F08 agendar ou destacar | pago (Starter ou acima) | agendar com fuso, grátis; selo no cartão; prévia e página escondem fora da janela | **manter**; **construir** o destaque (could) |
+| F09 assinar | quatro planos (Starter R$ 15 a 22, Pro R$ 32 a 42, Premium R$ 94 a 123 por mês), teste grátis de 7 dias, renova sozinho | um plano, Pix, cartão ou boleto pelo Asaas, sem teste grátis; aviso 3 dias antes de toda renovação, recibo, cancelar em um clique com confirmação por email | **manter** (é o ângulo A do `fixes.md`); o preço fica para a `/replica-launch` |
+| F10 excluir e trocar | exclui perfil ou conta; endereço e email bloqueados por 14 dias; troca de endereço a cada 7 dias (a ajuda não diz o que acontece com o antigo) | exclui a conta ou só a página; troca o endereço uma vez a cada 7 dias, e o antigo leva ao novo por 14 dias, guardado só para a dona | **manter**: o redirecionamento do antigo é vantagem |
+| F11 conteúdo sensível | aviso 18+, 21+, 25+ ou sensível, na página ou num link; data de nascimento | o mesmo, no servidor (os links não vão no HTML antes da resposta); a data não é gravada; menor fica negado na sessão; prévia nas redes sem a bio | **manter** |
 | Sessão | não confirmado | sair de todos os aparelhos vale na hora; o token vencido se renova sozinho; cookies fechados ao JavaScript | manter |
 
 ## Próximos cinco
 
 1. **Você validar a cobrança no sandbox do Asaas** (passos em `backend.md`):
-   fecha o último must-have e leva a nota a **65,9**.
-2. **Aviso de conteúdo sensível** (F11, S16): o `GateScreen` já existe.
-3. **Agendar link com fuso** (F08, S07): a página pública já respeita a
-   janela, falta a tela.
-4. **Trocar o endereço e o QR code** (S13, S19).
-5. **Insights com período, fontes e locais** (S09): o job diário já soma em
-   `daily_stats`, falta a tela ler de lá.
-
-Com esses, a nota vai a **80,7** (calculada com o `parity.py` sobre a matriz
-com os itens marcados como feitos), a linha de lançamento. Depois disso,
-`/replica-entrepreneur`.
+   fecha o último must-have e leva a nota a **80,7**.
+2. **Tema customizável no plano grátis** (S08; correção 3 do `fixes.md`,
+   39 avaliações de 2 fontes): cor de fundo, forma do botão e fonte, com o
+   contraste conferido.
+3. **Capturas do original à mão** (S15 a 1440 e 390) para o layout valer.
+4. **Entrar por link no email** (correção 5) e **moderação que explica**
+   (correção 6): a segunda precisa existir antes do lançamento de qualquer
+   jeito.
+5. **Miniatura no link e fundo com imagem** (S07, S08).
