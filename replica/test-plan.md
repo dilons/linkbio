@@ -28,9 +28,9 @@ sobre o esqueleto e os Tabs passavam antes de haver um link. Agora o
 
 | | casos | passaram | falharam |
 | --- | --- | --- | --- |
-| ponta a ponta (Playwright) | 95 | 95 | 0 |
-| backend (node:test) | 42 | 42 | 0 |
-| bloqueados (fluxo não construído) | 7 | | |
+| ponta a ponta (Playwright) | 100 | 100 | 0 |
+| backend (node:test) | 48 | 48 | 0 |
+| bloqueados (fluxo não construído) | 5 | | |
 | manuais (precisam de conta real) | 7 | | pendentes |
 
 Na primeira rodada, 12 de 61 falharam: 6 por defeito do app (BUG-002 a
@@ -115,6 +115,11 @@ no `Dialog`).
 | F07-E2 | exporta os inscritos | borda | tirar uma pessoa da lista: some da tela e do CSV | e2e `f07-audiencia.spec.ts` | passou |
 | F07-E3 | exporta os inscritos | negativo | o CSV é só do dono: sem sessão 401, outra conta não vê os inscritos | e2e `f07-audiencia.spec.ts` | passou |
 | F07-E4 | exporta os inscritos | borda | a 390 px a tabela rola dentro dela, sem rolar a página | e2e `f07-audiencia.spec.ts` | passou |
+| F08-H1 | agenda um link | feliz | agendar para amanhã: o cartão avisa, a prévia e a página escondem; com a janela aberta, aparece | e2e `f08-agendar.spec.ts` | passou |
+| F08-E1 | agenda um link | borda | fim antes do começo e fim que já passou são recusados, e nada muda no banco | e2e `f08-agendar.spec.ts` | passou |
+| F08-E2 | agenda um link | borda | no fuso do Amazonas: grava em UTC-4 e reabre no mesmo horário e fuso | e2e `f08-agendar.spec.ts` | passou |
+| F08-E3 | agenda um link | borda | tirar o agendamento: o link volta a ficar sempre na página | e2e `f08-agendar.spec.ts` | passou |
+| F08-E4 | agenda um link | borda | a 390 px: o agendamento cabe na tela e o link encerrado aparece como encerrado | e2e `f08-agendar.spec.ts` | passou |
 | F09-H1 | assina o plano | feliz | assina por Pix, paga, perde a marca e cancela em um clique | e2e `f09-plano.spec.ts` | passou |
 | F09-E1 | assina o plano | borda | CPF inválido é recusado antes de falar com o Asaas | e2e `f09-plano.spec.ts` | passou |
 | F09-E2 | assina o plano | borda | dois cliques seguidos em Assinar criam uma assinatura só no Asaas | e2e `f09-plano.spec.ts` | passou |
@@ -168,8 +173,6 @@ outra conta não pega o endereço guardado e a dona retoma; redes sociais
 | F03-E5 | | imagem de fundo pesada é recusada (5 MB) |
 | F03-E6 | | tema pago no plano grátis |
 | F06-E4 | acompanha os resultados | escolher o período e o limite do plano |
-| F08-H1 | agenda ou destaca um link | agendar no editor com fuso (o lado público já é testado em F04-E8) |
-| F08-E1 | | fim antes do começo é recusado; recurso pago no grátis |
 | F10-E4 | troca o username | uma vez a cada 7 dias; o antigo segurado por 14 dias |
 
 Construído e ainda sem caso: lista grande na Audiência (mais de 1000: a tela

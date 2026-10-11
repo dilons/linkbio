@@ -4,6 +4,7 @@ import { urlDaFoto } from "@/lib/data/fotos";
 import { listarLinks } from "@/lib/data/links";
 import { paginaPublica } from "@/lib/data/perfis";
 import { travaDoBanco } from "@/lib/data/validacao";
+import { ehFuso, FUSO_PADRAO, janela, utcParaLocal } from "@/lib/fuso";
 import { exigirPerfil } from "@/lib/sessao";
 import { Editor } from "./editor";
 
@@ -24,18 +25,26 @@ export default function PaginaEditor() {
 async function Dados() {
   const { sessao, perfil } = await exigirPerfil();
   const [links, pagina] = await Promise.all([listarLinks(sessao.userId, perfil.id), paginaPublica(perfil.username)]);
-  const itens = links.map((l) => ({
-    id: l.id,
-    titulo: l.title,
-    url: l.url ?? "",
-    ativo: l.enabled,
-    trava: travaDoBanco(l.lock, l.lock_min_age),
-    formulario: l.formulario,
-  }));
+  const fusoDaPagina = ehFuso(perfil.timezone) ? perfil.timezone : FUSO_PADRAO;
+  const itens = links.map((l) => {
+    const fuso = ehFuso(l.schedule_tz) ? l.schedule_tz : fusoDaPagina;
+    const agora = janela(l.starts_at, l.ends_at, fuso);
+    return {
+      id: l.id,
+      titulo: l.title,
+      url: l.url ?? "",
+      ativo: l.enabled,
+      trava: travaDoBanco(l.lock, l.lock_min_age),
+      agenda: { inicio: utcParaLocal(l.starts_at, fuso), fim: utcParaLocal(l.ends_at, fuso), fuso },
+      agendado: agora.selo,
+      noAr: agora.noAr,
+      formulario: l.formulario,
+    };
+  });
   const redes = (pagina?.redes ?? []).map((r) => ({ plataforma: r.platform, url: r.url }));
   // A chave muda quando os dados do servidor mudam: o editor recomeça do estado salvo.
   const chave = [
-    ...itens.map((l) => `${l.id}:${l.ativo}:${l.titulo}:${l.url}:${l.trava}:${JSON.stringify(l.formulario)}`),
+    ...itens.map((l) => `${l.id}:${l.ativo}:${l.titulo}:${l.url}:${l.trava}:${l.agendado}:${JSON.stringify(l.agenda)}:${JSON.stringify(l.formulario)}`),
     ...redes.map((r) => `${r.plataforma}:${r.url}`),
     perfil.title,
     perfil.bio,

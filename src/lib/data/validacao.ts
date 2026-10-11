@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ehFuso, localParaUtc, type Fuso } from "@/lib/fuso";
 
 export const USERNAME = /^[a-z0-9._]{3,30}$/;
 
@@ -68,6 +69,27 @@ export function travaDoBanco(lock: string, idade: number | null): Trava {
 export function travaParaBanco(t: Trava): { lock: "none" | "sensitive" | "age"; lockMinAge: number | null } {
   if (t === "none" || t === "sensitive") return { lock: t, lockMinAge: null };
   return { lock: "age", lockMinAge: Number(t) };
+}
+
+export type Agenda = { inicio: string | null; fim: string | null; fuso: Fuso };
+
+/**
+ * F08: a janela do link, digitada no fuso escolhido (campos inicio, fim e
+ * fuso de um datetime-local). Vazio nos dois: sem agendamento.
+ */
+export function lerAgenda(form: FormData, agora = Date.now()): { ok: true; agenda: Agenda } | { ok: false; erro: string } {
+  const fuso = form.get("fuso");
+  if (!ehFuso(fuso)) return { ok: false, erro: "Escolha um fuso da lista." };
+  const ler = (campo: string) => {
+    const v = String(form.get(campo) ?? "").trim();
+    return v ? localParaUtc(v, fuso) ?? "invalido" : null;
+  };
+  const inicio = ler("inicio");
+  const fim = ler("fim");
+  if (inicio === "invalido" || fim === "invalido") return { ok: false, erro: "Confira a data e a hora." };
+  if (inicio && fim && fim <= inicio) return { ok: false, erro: "O fim precisa ser depois do começo." };
+  if (fim && Date.parse(fim) <= agora) return { ok: false, erro: "Esse horário de sumir já passou: o link não ia aparecer." };
+  return { ok: true, agenda: { inicio, fim, fuso } };
 }
 
 export const cabecalhoSchema = z.object({

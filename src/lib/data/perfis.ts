@@ -16,6 +16,7 @@ export type Perfil = {
   avatar_path: string | null;
   social_position: "top" | "bottom";
   sensitive_label: "none" | "sensitive" | "18" | "21" | "25";
+  timezone: string;
 };
 
 export type LinkPublico = {
@@ -46,6 +47,7 @@ const COLUNAS = {
   avatar_path: profiles.avatarPath,
   social_position: profiles.socialPosition,
   sensitive_label: profiles.sensitiveLabel,
+  timezone: profiles.timezone,
 };
 
 export type Disponibilidade = { livre: boolean; username: string; motivo?: string };

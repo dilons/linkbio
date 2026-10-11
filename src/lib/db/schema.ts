@@ -1,6 +1,6 @@
 // Gerado por `npm run db:types` a partir do banco migrado (supabase/migrations).
 // Não edite à mão: mude o SQL numa migração nova e gere de novo.
-import { pgTable, index, foreignKey, unique, check, uuid, timestamp, text, integer, boolean, smallint, jsonb, bigint, char, date, uniqueIndex, primaryKey, customType, pgSchema } from "drizzle-orm/pg-core"
+import { pgTable, index, foreignKey, unique, check, uuid, timestamp, text, integer, jsonb, bigint, char, date, uniqueIndex, boolean, smallint, primaryKey, customType, pgSchema } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 // Tipos que o drizzle-kit não reconhece sozinho.
@@ -77,47 +77,6 @@ export const collections = pgTable("collections", {
 			name: "collections_profile_id_fkey"
 		}).onDelete("cascade"),
 	check("collections_title_check", sql`(char_length(title) >= 1) AND (char_length(title) <= 60)`),
-]);
-
-export const links = pgTable("links", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	profileId: uuid("profile_id").notNull(),
-	collectionId: uuid("collection_id"),
-	kind: text().default('link').notNull(),
-	title: text().notNull(),
-	url: text(),
-	thumbnailPath: text("thumbnail_path"),
-	position: integer().notNull(),
-	enabled: boolean().default(true).notNull(),
-	startsAt: timestamp("starts_at", { withTimezone: true, mode: 'string' }),
-	endsAt: timestamp("ends_at", { withTimezone: true, mode: 'string' }),
-	lock: text().default('none').notNull(),
-	lockMinAge: smallint("lock_min_age"),
-	highlight: text().default('none').notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-}, (table) => [
-	index("links_collection_idx").using("btree", table.collectionId.asc().nullsLast().op("uuid_ops")),
-	index("links_profile_idx").using("btree", table.profileId.asc().nullsLast().op("int4_ops"), table.position.asc().nullsLast().op("int4_ops")),
-	foreignKey({
-			columns: [table.collectionId],
-			foreignColumns: [collections.id],
-			name: "links_collection_id_fkey"
-		}).onDelete("set null"),
-	foreignKey({
-			columns: [table.profileId],
-			foreignColumns: [profiles.id],
-			name: "links_profile_id_fkey"
-		}).onDelete("cascade"),
-	check("links_age_lock", sql`(lock = 'age'::text) = (lock_min_age IS NOT NULL)`),
-	check("links_highlight_check", sql`highlight = ANY (ARRAY['none'::text, 'animate'::text, 'spotlight'::text])`),
-	check("links_kind_check", sql`kind = ANY (ARRAY['link'::text, 'header'::text, 'video'::text, 'form'::text])`),
-	check("links_lock_check", sql`lock = ANY (ARRAY['none'::text, 'sensitive'::text, 'age'::text])`),
-	check("links_lock_min_age_check", sql`lock_min_age = ANY (ARRAY[18, 21, 25])`),
-	check("links_title_check", sql`(char_length(title) >= 1) AND (char_length(title) <= 100)`),
-	check("links_url_check", sql`(url IS NULL) OR (url ~ '^https?://[^\s]+$'::text)`),
-	check("links_url_needed", sql`(kind <> ALL (ARRAY['link'::text, 'video'::text])) OR (url IS NOT NULL)`),
-	check("links_window", sql`(ends_at IS NULL) OR (starts_at IS NULL) OR (ends_at > starts_at)`),
 ]);
 
 export const socialLinks = pgTable("social_links", {
@@ -325,6 +284,49 @@ export const jobRuns = pgTable("job_runs", {
 }, (table) => [
 	index("job_runs_falhas_idx").using("btree", table.startedAt.desc().nullsFirst().op("timestamptz_ops")).where(sql`(ok IS FALSE)`),
 	index("job_runs_job_idx").using("btree", table.job.asc().nullsLast().op("text_ops"), table.startedAt.desc().nullsFirst().op("text_ops")),
+]);
+
+export const links = pgTable("links", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	profileId: uuid("profile_id").notNull(),
+	collectionId: uuid("collection_id"),
+	kind: text().default('link').notNull(),
+	title: text().notNull(),
+	url: text(),
+	thumbnailPath: text("thumbnail_path"),
+	position: integer().notNull(),
+	enabled: boolean().default(true).notNull(),
+	startsAt: timestamp("starts_at", { withTimezone: true, mode: 'string' }),
+	endsAt: timestamp("ends_at", { withTimezone: true, mode: 'string' }),
+	lock: text().default('none').notNull(),
+	lockMinAge: smallint("lock_min_age"),
+	highlight: text().default('none').notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	scheduleTz: text("schedule_tz"),
+}, (table) => [
+	index("links_collection_idx").using("btree", table.collectionId.asc().nullsLast().op("uuid_ops")),
+	index("links_profile_idx").using("btree", table.profileId.asc().nullsLast().op("int4_ops"), table.position.asc().nullsLast().op("int4_ops")),
+	foreignKey({
+			columns: [table.collectionId],
+			foreignColumns: [collections.id],
+			name: "links_collection_id_fkey"
+		}).onDelete("set null"),
+	foreignKey({
+			columns: [table.profileId],
+			foreignColumns: [profiles.id],
+			name: "links_profile_id_fkey"
+		}).onDelete("cascade"),
+	check("links_age_lock", sql`(lock = 'age'::text) = (lock_min_age IS NOT NULL)`),
+	check("links_highlight_check", sql`highlight = ANY (ARRAY['none'::text, 'animate'::text, 'spotlight'::text])`),
+	check("links_kind_check", sql`kind = ANY (ARRAY['link'::text, 'header'::text, 'video'::text, 'form'::text])`),
+	check("links_lock_check", sql`lock = ANY (ARRAY['none'::text, 'sensitive'::text, 'age'::text])`),
+	check("links_lock_min_age_check", sql`lock_min_age = ANY (ARRAY[18, 21, 25])`),
+	check("links_schedule_tz_check", sql`(schedule_tz IS NULL) OR ((char_length(schedule_tz) >= 1) AND (char_length(schedule_tz) <= 64))`),
+	check("links_title_check", sql`(char_length(title) >= 1) AND (char_length(title) <= 100)`),
+	check("links_url_check", sql`(url IS NULL) OR (url ~ '^https?://[^\s]+$'::text)`),
+	check("links_url_needed", sql`(kind <> ALL (ARRAY['link'::text, 'video'::text])) OR (url IS NOT NULL)`),
+	check("links_window", sql`(ends_at IS NULL) OR (starts_at IS NULL) OR (ends_at > starts_at)`),
 ]);
 
 export const rateLimits = pgTable("rate_limits", {

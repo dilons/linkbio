@@ -17,7 +17,7 @@ axe 0 violações em 17 telas; console sem erros). Capturas em
 | S04 modelo por categoria | 2026-10-11 | stub | tudo (should-have, etapa 6) | |
 | S05 plano no onboarding | 2026-10-11 | stub | tudo (etapa 5) | |
 | S06 editor de links | 2026-10-11 | feito | coleções (could-have) | o editor guarda o estado local para a prévia reagir na hora e remonta quando o servidor muda (chave pelos dados); reordenar pelo teclado anuncia em português. Redes: o endereço tem que ser do domínio da rede, senão um ícone do Instagram levaria a qualquer site. Prévia no celular em tela cheia: o Dialog do Radix só devolvia o foco a quem abriu quando havia `trigger` |
-| S07 editar link | 2026-10-11 | parcial | miniatura, agendamento com fuso, destaque, selo de recurso pago | 2026-10-11 (WSL): ganhou o aviso antes de abrir (sensível ou idade), com o selo no cartão do link |
+| S07 editar link | 2026-10-11 | parcial | miniatura, destaque | 2026-10-11 (WSL): ganhou o aviso antes de abrir (sensível ou idade) e o agendamento com fuso, com selos no cartão. O fuso precisou de coluna própria (`schedule_tz`, migração nova): sem ela, quem agendou no fuso do Amazonas reabria vendo o horário de Brasília. Conversão só com `Intl`, testada com o horário de verão de Lisboa. Agendar ficou grátis (correção 2 do `fixes.md`) |
 | S08 aparência | 2026-10-11 | parcial | tema customizado e fundo com imagem (should, etapa 6) | pouco: os 5 temas já estavam nos tokens desde a /replica-design, com contraste conferido |
 | S09 insights | 2026-10-11 | parcial | gráfico por dia, período, fontes e locais, soma diária (`daily_stats`) | o Chromium headless se apresenta como "HeadlessChrome" e o isbot (certo) não conta; o teste usa um user-agent comum |
 | S10 audiência | 2026-10-11 | feito | | CSV que abre certo no Excel em português: BOM, ponto e vírgula, horário de Brasília e fórmulas neutralizadas (`=`, `+`, `-`, `@` no começo) |
@@ -103,3 +103,5 @@ desenho é o mesmo, a fonte sai rasterizada um pouco diferente da nuvem
   S16. Decisão: cookie de sessão, estritamente funcional, só "ok" ou
   "negado" por alvo; a data de nascimento não é gravada (LGPD e ECA
   Digital, para a `/replica-lgpd`).
+- **F08 agendar com fuso** (S07). Ver a linha da S07. Os campos do diálogo
+  travam enquanto salva (BUG-010).

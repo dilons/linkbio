@@ -1,16 +1,7 @@
 "use client";
 
 import { useId } from "react";
-
-const FUSOS = [
-  ["America/Sao_Paulo", "Brasília (São Paulo, Rio, Minas...)"],
-  ["America/Manaus", "Amazonas"],
-  ["America/Cuiaba", "Mato Grosso"],
-  ["America/Rio_Branco", "Acre"],
-  ["America/Noronha", "Fernando de Noronha"],
-  ["Europe/Lisbon", "Lisboa"],
-  ["UTC", "UTC"],
-] as const;
+import { FUSOS } from "@/lib/fuso";
 
 /**
  * Janela de agendamento de um link: quando aparece, quando some, em qual fuso.

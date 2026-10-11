@@ -16,7 +16,7 @@ import { dentroDosLimites } from "@/lib/data/limites";
 import { adicionarLink, alternarLink, editarLink, excluirLink, reordenarLinks } from "@/lib/data/links";
 import { AVISOS_DA_PAGINA, atualizarCabecalho, criarPerfil, definirAvisoDaPagina, perfilDaConta } from "@/lib/data/perfis";
 import { IDS_DAS_REDES, normalizarRede, posicionarRedes, removerRede, reordenarRedes, salvarRede } from "@/lib/data/redes";
-import { cabecalhoSchema, credenciaisSchema, linkSchema, travaSchema } from "@/lib/data/validacao";
+import { cabecalhoSchema, credenciaisSchema, lerAgenda, linkSchema, travaSchema } from "@/lib/data/validacao";
 import { exigirConta, exigirPerfil } from "@/lib/sessao";
 import { ipAtual, origemDoPedido } from "@/lib/visitante";
 
@@ -234,10 +234,13 @@ const idsSchema = z.array(z.uuid()).max(500);
 export async function salvarLink(_: Estado, form: FormData): Promise<Estado> {
   const { sessao } = await exigirPerfil();
   const dados = linkSchema.safeParse({ titulo: form.get("titulo"), url: form.get("url") });
-  if (!dados.success) return { erros: errosDe(dados.error.issues), valores: valoresDe(form, ["titulo", "url", "trava"]) };
+  const valores = valoresDe(form, ["titulo", "url", "trava", "inicio", "fim", "fuso"]);
+  if (!dados.success) return { erros: errosDe(dados.error.issues), valores };
+  const agenda = form.has("fuso") ? lerAgenda(form) : undefined;
+  if (agenda && !agenda.ok) return { erros: { agenda: agenda.erro }, valores };
   const id = idSchema.safeParse(form.get("id"));
   const trava = form.has("trava") ? travaSchema.parse(form.get("trava")) : undefined;
-  const ok = id.success && (await editarLink(sessao.userId, id.data, { ...dados.data, trava }));
+  const ok = id.success && (await editarLink(sessao.userId, id.data, { ...dados.data, trava, agenda: agenda?.agenda }));
   if (!ok) return { erro: "Esse link não existe mais." };
   refresh();
   return { ok: true };

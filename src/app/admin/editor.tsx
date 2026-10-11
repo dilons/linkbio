@@ -21,6 +21,7 @@ import {
 import { PublicPage } from "@/components/public/public-page";
 import { IconeDaRede, type Rede } from "@/components/public/social-row";
 import { Button } from "@/components/ui/button";
+import { DateTimeTz } from "@/components/ui/datetime-tz";
 import { Dialog } from "@/components/ui/dialog";
 import { SelectField, TextArea, TextField } from "@/components/ui/field";
 import { ImageUpload } from "@/components/ui/image-upload";
@@ -30,12 +31,27 @@ import { SortableList } from "@/components/ui/sortable-list";
 import { useToast } from "@/components/ui/toast";
 import { SEM_CONEXAO, semQuebrar, tentar } from "@/lib/acao-segura";
 import { cn } from "@/lib/cn";
+import { FUSO_PADRAO } from "@/lib/fuso";
 import { REDES, type Plataforma } from "@/lib/plataformas";
 import { MARCA } from "@/lib/marca";
 
 export type ConfigFormulario = { pedirNome: boolean; consentimento: string; sucesso: string };
 export type Trava = "none" | "sensitive" | "18" | "21" | "25";
-export type LinkEditor = { id: string; titulo: string; url: string; ativo: boolean; trava?: Trava; formulario: ConfigFormulario | null };
+export type Agenda = { inicio: string; fim: string; fuso: string };
+export type LinkEditor = {
+  id: string;
+  titulo: string;
+  url: string;
+  ativo: boolean;
+  trava?: Trava;
+  /** a janela no fuso em que foi agendada (vazio: sem agendamento) */
+  agenda?: Agenda;
+  /** texto do selo: "Aparece 20/10 às 18:00", "Encerrado"... */
+  agendado?: string;
+  /** dentro da janela agora (a prévia mostra só esses, como a página) */
+  noAr?: boolean;
+  formulario: ConfigFormulario | null;
+};
 
 const TRAVAS: ReadonlyArray<readonly [Trava, string]> = [
   ["none", "Sem aviso"],
@@ -112,7 +128,9 @@ export function Editor(props: Props) {
       avatarUrl={props.avatarUrl}
       redes={redes}
       redesNoTopo={redesNoTopo}
-      links={itens.filter((l) => l.ativo).map((l) => ({ id: l.id, titulo: l.titulo, travado: !!seloDaTrava(l.trava), formulario: l.formulario }))}
+      links={itens
+        .filter((l) => l.ativo && l.noAr !== false)
+        .map((l) => ({ id: l.id, titulo: l.titulo, travado: !!seloDaTrava(l.trava), formulario: l.formulario }))}
     />
   );
 
@@ -142,6 +160,7 @@ export function Editor(props: Props) {
                     url: link.formulario ? undefined : link.url,
                     selo: link.formulario ? "Formulário de email" : undefined,
                     travado: seloDaTrava(link.trava),
+                    agendado: link.agendado,
                   }}
                   alca={alca}
                   arrastando={arrastando}
@@ -670,6 +689,7 @@ function EditarFormulario({ link, formulario, onFechar }: { link: LinkEditor; fo
 }
 
 function EditarLink({ link, onFechar }: { link: LinkEditor; onFechar: () => void }) {
+  const [agenda, setAgenda] = useState<Agenda>(link.agenda ?? { inicio: "", fim: "", fuso: FUSO_PADRAO });
   const [estado, acao, enviando] = useActionState(async (anterior: Estado, form: FormData) => {
     const r = await salvarLinkSeguro(anterior, form);
     if (r.ok) onFechar();
@@ -679,6 +699,9 @@ function EditarLink({ link, onFechar }: { link: LinkEditor; onFechar: () => void
     <Dialog open onOpenChange={(v) => !v && onFechar()} title="Editar link">
       <form action={acao} className="flex flex-col gap-4" noValidate>
         <input type="hidden" name="id" value={link.id} />
+        <input type="hidden" name="inicio" value={agenda.inicio} />
+        <input type="hidden" name="fim" value={agenda.fim} />
+        <input type="hidden" name="fuso" value={agenda.fuso} />
         {/* travado enquanto envia: a resposta de um envio não apaga o que foi digitado depois (BUG-010) */}
         <fieldset disabled={enviando} className="flex flex-col gap-4">
           <TextField label="Título" name="titulo" defaultValue={estado.valores?.titulo ?? link.titulo} error={estado.erros?.titulo} />
@@ -690,6 +713,22 @@ function EditarLink({ link, onFechar }: { link: LinkEditor; onFechar: () => void
             defaultValue={estado.valores?.trava ?? link.trava ?? "none"}
             hint="Com idade mínima, quem clica informa a data de nascimento antes de ir ao link."
           />
+          <div className="flex flex-col gap-2">
+            <DateTimeTz inicio={agenda.inicio} fim={agenda.fim} fuso={agenda.fuso} onChange={setAgenda} />
+            <p className="text-xs text-muted">Deixe em branco para o link ficar sempre na página. Fora da janela, ele some sozinho.</p>
+            {(agenda.inicio || agenda.fim) && (
+              <div>
+                <Button size="sm" variant="ghost" onClick={() => setAgenda((a) => ({ ...a, inicio: "", fim: "" }))}>
+                  Tirar o agendamento
+                </Button>
+              </div>
+            )}
+            {estado.erros?.agenda && (
+              <p role="alert" className="text-sm font-medium text-danger">
+                {estado.erros.agenda}
+              </p>
+            )}
+          </div>
         </fieldset>
         {estado.erro && (
           <p role="alert" className="text-sm font-medium text-danger">
