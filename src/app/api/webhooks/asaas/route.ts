@@ -1,6 +1,6 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
-import { processarEvento } from "@/lib/billing";
+import { assinaturaDaConta, processarEvento } from "@/lib/billing";
 import { emailDaConta } from "@/lib/data/emails";
 import { enviarEmail } from "@/lib/email";
 import { modelos } from "@/lib/email/modelos";
@@ -39,14 +39,17 @@ export async function POST(req: Request) {
   }
 
   // aviso por email, uma vez por evento (a chave de idempotência é o id do evento)
-  if (r.accountId && (r.efeito === "ativou" || r.efeito === "venceu")) {
+  if (r.accountId && (r.efeito === "ativou" || r.efeito === "renovou" || r.efeito === "venceu")) {
     const email = await emailDaConta(r.accountId);
     const site = env.site() ?? new URL(req.url).origin;
+    const ate = r.fimDoPeriodo ?? new Date(Date.now() + 30 * 86400_000).toISOString();
     if (email) {
       const msg =
         r.efeito === "ativou"
-          ? modelos.proAtivo(email, site, r.fimDoPeriodo ?? new Date(Date.now() + 30 * 86400_000).toISOString())
-          : modelos.pagamentoVencido(email, site);
+          ? modelos.proAtivo(email, site, ate)
+          : r.efeito === "renovou"
+            ? modelos.renovou(email, site, (await assinaturaDaConta(r.accountId))?.precoCentavos ?? 0, ate)
+            : modelos.pagamentoVencido(email, site);
       await enviarEmail(msg, `asaas-${dados.data.id}`);
     }
   }

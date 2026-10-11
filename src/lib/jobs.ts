@@ -102,7 +102,8 @@ async function limpeza(): Promise<Resultado> {
 }
 
 /**
- * 12:00: lembra quem renova por Pix em 3 dias e volta ao grátis quem está com
+ * 12:00: lembra quem renova em 3 dias (qualquer forma de pagamento: no cartão
+ * a cobrança é automática, e ninguém deve ser cobrado sem aviso) e volta ao grátis quem está com
  * a cobrança vencida há mais de 5 dias (cancelando no Asaas, para não gerar
  * mais cobranças).
  */
@@ -111,12 +112,11 @@ async function cobranca(): Promise<Resultado> {
   let lembretes = 0;
   let rebaixados = 0;
   const renovam = await conn
-    .select({ accountId: subscriptions.accountId, fim: subscriptions.currentPeriodEnd, preco: subscriptions.priceCents })
+    .select({ accountId: subscriptions.accountId, fim: subscriptions.currentPeriodEnd, preco: subscriptions.priceCents, forma: subscriptions.billingType })
     .from(subscriptions)
     .where(
       and(
         eq(subscriptions.status, "active"),
-        eq(subscriptions.billingType, "pix"),
         eq(subscriptions.cancelAtPeriodEnd, false),
         sql`${subscriptions.currentPeriodEnd} between now() + interval '3 days' and now() + interval '4 days'`,
       ),
@@ -125,7 +125,8 @@ async function cobranca(): Promise<Resultado> {
     const email = await emailDaConta(r.accountId);
     if (email && r.fim) {
       // a chave impede o segundo lembrete do mesmo período se o job rodar de novo
-      if (await enviarEmail(modelos.lembretePix(email, site(), r.preco, r.fim), `pix-${r.accountId}-${r.fim.slice(0, 10)}`)) lembretes++;
+      const forma = r.forma === "card" || r.forma === "boleto" ? r.forma : "pix";
+      if (await enviarEmail(modelos.lembreteRenovacao(email, site(), r.preco, r.fim, forma), `renova-${r.accountId}-${r.fim.slice(0, 10)}`)) lembretes++;
     }
   }
   const vencidas = await conn

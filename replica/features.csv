@@ -43,7 +43,7 @@ Loja e afiliados e venda de produtos,vendas,could,yes,skip,fora da fatia escolhi
 App mobile iOS e Android,plataforma,could,yes,skip,plataforma escolhida é web
 Recursos de IA para conteúdo,ia,could,yes,skip,fora do núcleo; confirmado no changelog oficial (app.getbeamer.com/linktree/en; lido em 2026-10-11): chatbot (2024-12); design e títulos com IA (2025-09); Insights Chat (2026-03)
 Quadros de stickers (2026),aparencia,could,yes,skip,fora do núcleo; não confirmado
-Aviso antes de toda renovação e email de cancelado,plano,should,no,partial,fixes.md #1 (cobrança; 33 avaliações); hoje só o lembrete do Pix 3 dias antes; faltam cartão e boleto e o email de cancelado
+Aviso antes de toda renovação e email de cancelado,plano,should,no,yes,fixes.md #1: lembrete 3 dias antes em toda forma (no cartão diz quanto e quando vai cobrar); recibo a cada renovação com o caminho para cancelar; email de cancelado quando a pessoa cancela. Sem teste grátis. (cobrança; 33 avaliações)
 Sem pop-up nem email empurrando o plano pago; o grátis não perde recurso,plano,should,no,partial,fixes.md #2 (upsell 12 e preço 36; 2 fontes); o painel não tem pop-up; falta a promessa escrita na página de preço e uma checagem na /replica-test
 Cor de fundo e forma do botão e fonte no plano grátis,aparencia,should,no,no,fixes.md #3 (personalização; 39 avaliações de 2 fontes); no original é pago
 Insights com período e fontes e locais no plano grátis,insights,should,no,no,fixes.md #4 (métricas; 21 de 2 fontes); no original o período maior é pago

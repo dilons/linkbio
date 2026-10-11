@@ -45,13 +45,42 @@ export const modelos = {
       { href: `${site}/admin/plano`, texto: "Pagar agora" },
     ),
 
-  lembretePix: (para: string, site: string, precoCentavos: number, vence: string) =>
+  /** 3 dias antes de toda renovação, em qualquer forma de pagamento (fixes.md, correção 1). */
+  lembreteRenovacao: (para: string, site: string, precoCentavos: number, vence: string, forma: "pix" | "card" | "boleto") =>
     montar(
       para,
       `Seu ${MARCA.plano} renova em 3 dias`,
       [
-        `A renovação do ${MARCA.plano} (${reais(precoCentavos)}) vence em ${data(vence)}. A cobrança por Pix chega pelo Asaas, nosso sistema de pagamento.`,
-        "Se não quiser renovar, cancele na tela do plano; o Pro continua até o fim do período pago.",
+        forma === "card"
+          ? `No dia ${data(vence)}, vamos cobrar ${reais(precoCentavos)} no cartão cadastrado para renovar o ${MARCA.plano} por mais um mês.`
+          : `A renovação do ${MARCA.plano} (${reais(precoCentavos)}) vence em ${data(vence)}. ${forma === "pix" ? "A cobrança por Pix" : "O boleto"} chega pelo Asaas, nosso sistema de pagamento.`,
+        "Se não quiser renovar, cancele na tela do plano, em um clique, até lá: nada mais é cobrado, e o Pro continua até o fim do período pago.",
+      ],
+      { href: `${site}/admin/plano`, texto: "Ver meu plano" },
+    ),
+
+  /** O recibo de cada renovação, com o caminho para cancelar. */
+  renovou: (para: string, site: string, precoCentavos: number, ate: string) =>
+    montar(
+      para,
+      `Recebemos o pagamento do seu ${MARCA.plano}`,
+      [
+        `Pagamento de ${reais(precoCentavos)} confirmado. Seu ${MARCA.plano} vai até ${data(ate)}, e avisamos 3 dias antes da próxima cobrança.`,
+        "Para cancelar, é um clique na tela do plano. Nada mais é cobrado depois disso.",
+      ],
+      { href: `${site}/admin/plano`, texto: "Ver meu plano" },
+    ),
+
+  /** Quando a própria pessoa cancela: a confirmação de que nada mais é cobrado. */
+  cancelada: (para: string, site: string, ate: string | null) =>
+    montar(
+      para,
+      `Assinatura do ${MARCA.plano} cancelada`,
+      [
+        "Pronto, a assinatura está cancelada e nenhuma cobrança nova vai ser gerada.",
+        ate && Date.parse(ate) > Date.now()
+          ? `O ${MARCA.plano} continua até ${data(ate)}. Depois disso, a página volta ao plano grátis, sem perder nada do que você configurou.`
+          : "A página está no plano grátis, sem perder nada do que você configurou.",
       ],
       { href: `${site}/admin/plano`, texto: "Ver meu plano" },
     ),

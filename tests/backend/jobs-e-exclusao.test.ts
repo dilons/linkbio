@@ -124,10 +124,12 @@ test("exclusão: apagar o usuário esvazia o perfil na hora e segura o endereço
   assert.equal((await verificarUsername(username)).livre, true, "liberado depois de 14 dias");
 });
 
-test("cobrança: vencida há mais de 5 dias volta ao grátis; Pix renova com lembrete", async () => {
+test("cobrança: vencida há mais de 5 dias volta ao grátis; toda renovação (Pix e cartão) tem lembrete; cancelada não", async () => {
   const conn = await db();
   const vencida = await contaComPerfil("vencida");
   const pix = await contaComPerfil("pix");
+  const cartao = await contaComPerfil("cartao");
+  const cancelada = await contaComPerfil("cancelada");
   await conn.insert(subscriptions).values([
     {
       accountId: vencida.conta, providerCustomerId: "cus_x", providerSubscriptionId: `sub_${sufixo()}`, plan: "pro",
@@ -140,6 +142,16 @@ test("cobrança: vencida há mais de 5 dias volta ao grátis; Pix renova com lem
       billingType: "pix", status: "active", priceCents: 1900,
       currentPeriodEnd: new Date(Date.now() + 3.5 * 86400_000).toISOString(),
     },
+    {
+      accountId: cartao.conta, providerCustomerId: "cus_z", providerSubscriptionId: `sub_${sufixo()}`, plan: "pro",
+      billingType: "card", status: "active", priceCents: 1900,
+      currentPeriodEnd: new Date(Date.now() + 3.5 * 86400_000).toISOString(),
+    },
+    {
+      accountId: cancelada.conta, providerCustomerId: "cus_w", providerSubscriptionId: `sub_${sufixo()}`, plan: "pro",
+      billingType: "card", status: "canceled", cancelAtPeriodEnd: true, priceCents: 1900,
+      currentPeriodEnd: new Date(Date.now() + 3.5 * 86400_000).toISOString(),
+    },
   ]);
   const r = await rodarJob("cobranca");
   assert.equal(r.ok, true);
@@ -149,8 +161,15 @@ test("cobrança: vencida há mais de 5 dias volta ao grátis; Pix renova com lem
   assert.equal(s.status, "canceled");
   assert.ok(Date.parse(s.currentPeriodEnd!) <= Date.now());
   // os emails foram para o Mailpit do Supabase local
-  const caixa = await (await fetch(`${process.env.MAILPIT_URL}/api/v1/search?query=${encodeURIComponent(`to:${pix.email}`)}`)).json();
-  assert.ok(caixa.messages.some((m: { Subject: string }) => m.Subject.includes("renova em 3 dias")));
+  const caixa = async (email: string) =>
+    (await (await fetch(`${process.env.MAILPIT_URL}/api/v1/search?query=${encodeURIComponent(`to:${email}`)}`)).json()).messages as Array<{ ID: string; Subject: string }>;
+  assert.ok((await caixa(pix.email)).some((m) => m.Subject.includes("renova em 3 dias")));
+  // no cartão a cobrança é automática: o aviso diz quanto e quando vai ser cobrado
+  const doCartao = (await caixa(cartao.email)).find((m) => m.Subject.includes("renova em 3 dias"));
+  assert.ok(doCartao, "o cartão também recebe o lembrete");
+  const texto = (await (await fetch(`${process.env.MAILPIT_URL}/api/v1/message/${doCartao.ID}`)).json()).Text as string;
+  assert.match(texto, /vamos cobrar R\$\s?19,00 no cartão/);
+  assert.equal((await caixa(cancelada.email)).filter((m) => m.Subject.includes("renova em 3 dias")).length, 0);
 });
 
 test("job que falha três vezes fica na fila de mortos com o erro", async () => {

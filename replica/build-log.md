@@ -114,3 +114,9 @@ desenho é o mesmo, a fonte sai rasterizada um pouco diferente da nuvem
 - **BUG-010** nos 15 formulários com campos: componente `Travado`
   (`fieldset disabled` com `display: contents`, para não mudar o layout, e o
   foco no primeiro campo inválido quando a resposta volta com erro).
+- **Correção 1 do `fixes.md`, cobrança sem susto**: o lembrete de 3 dias
+  antes vale para toda forma de pagamento (no cartão, a cobrança é
+  automática e o aviso diz quanto e quando), o recibo de cada renovação traz
+  o caminho para cancelar, e quem cancela recebe a confirmação por escrito.
+- **BUG-013**, variável em branco tratada como valor: `lerVariavel` e
+  `lerInteiro` em `lib/env.ts`.

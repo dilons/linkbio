@@ -29,7 +29,7 @@ sobre o esqueleto e os Tabs passavam antes de haver um link. Agora o
 | | casos | passaram | falharam |
 | --- | --- | --- | --- |
 | ponta a ponta (Playwright) | 115 | 115 | 0 |
-| backend (node:test) | 53 | 53 | 0 |
+| backend (node:test) | 56 | 56 | 0 |
 | bloqueados (fluxo não construído) | 3 | | |
 | manuais (precisam de conta real) | 7 | | pendentes |
 
@@ -125,7 +125,7 @@ no `Dialog`).
 | F08-E2 | agenda um link | borda | no fuso do Amazonas: grava em UTC-4 e reabre no mesmo horário e fuso | e2e `f08-agendar.spec.ts` | passou |
 | F08-E3 | agenda um link | borda | tirar o agendamento: o link volta a ficar sempre na página | e2e `f08-agendar.spec.ts` | passou |
 | F08-E4 | agenda um link | borda | a 390 px: o agendamento cabe na tela e o link encerrado aparece como encerrado | e2e `f08-agendar.spec.ts` | passou |
-| F09-H1 | assina o plano | feliz | assina por Pix, paga, perde a marca e cancela em um clique | e2e `f09-plano.spec.ts` | passou |
+| F09-H1 | assina o plano | feliz | assina por Pix, paga, perde a marca, recebe o recibo da renovação e cancela em um clique, com o email de cancelada | e2e `f09-plano.spec.ts` | passou |
 | F09-E1 | assina o plano | borda | CPF inválido é recusado antes de falar com o Asaas | e2e `f09-plano.spec.ts` | passou |
 | F09-E2 | assina o plano | borda | dois cliques seguidos em Assinar criam uma assinatura só no Asaas | e2e `f09-plano.spec.ts` | passou |
 | F09-E3 | assina o plano | borda | assinatura pendente: assinar de novo com a mesma forma volta para a mesma cobrança | e2e `f09-plano.spec.ts` | passou |

@@ -5,7 +5,7 @@
 import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { cancelarAssinatura, iniciarAssinatura, type Forma } from "@/lib/billing";
+import { assinaturaDaConta, cancelarAssinatura, iniciarAssinatura, type Forma } from "@/lib/billing";
 import { documentoValido } from "@/lib/billing/cpf";
 import { criarConta, entrar, pedirNovaSenha, reenviarConfirmacao, sair, trocarSenha, urlLoginGoogle } from "@/lib/data/auth";
 import { definirTema, IDS_DOS_TEMAS } from "@/lib/data/aparencia";
@@ -17,6 +17,8 @@ import { adicionarLink, alternarLink, editarLink, excluirLink, reordenarLinks } 
 import { AVISOS_DA_PAGINA, atualizarCabecalho, criarPerfil, definirAvisoDaPagina, perfilDaConta, trocarUsername } from "@/lib/data/perfis";
 import { IDS_DAS_REDES, normalizarRede, posicionarRedes, removerRede, reordenarRedes, salvarRede } from "@/lib/data/redes";
 import { cabecalhoSchema, credenciaisSchema, lerAgenda, linkSchema, travaSchema } from "@/lib/data/validacao";
+import { enviarEmail } from "@/lib/email";
+import { modelos } from "@/lib/email/modelos";
 import { exigirConta, exigirPerfil } from "@/lib/sessao";
 import { MARCA } from "@/lib/marca";
 import { ipAtual, origemDoPedido } from "@/lib/visitante";
@@ -203,6 +205,11 @@ export async function assinarPro(_: Estado, form: FormData): Promise<Estado> {
 export async function cancelarPro(): Promise<Estado> {
   const sessao = await exigirConta();
   const ok = await cancelarAssinatura(sessao.userId);
+  // a confirmação por escrito de que nada mais é cobrado (fixes.md, correção 1)
+  if (ok) {
+    const fim = (await assinaturaDaConta(sessao.userId))?.fimDoPeriodo ?? null;
+    await enviarEmail(modelos.cancelada(sessao.email, await origemDoPedido(), fim), `cancelada-${sessao.userId}-${fim?.slice(0, 10) ?? "agora"}`);
+  }
   refresh();
   return ok ? { ok: true, aviso: "Assinatura cancelada. O Pro continua até o fim do período pago." } : { erro: "Não deu para cancelar agora. Tente de novo em instantes." };
 }

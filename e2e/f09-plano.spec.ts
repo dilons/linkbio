@@ -1,6 +1,7 @@
 // F09 Criador assina um plano: S14 -> pagamento no Asaas -> Pro liberado; cancelar em um clique.
 import type { APIRequestContext, Page } from "@playwright/test";
 import { ASAAS, capturar, contaPronta, emailPara, entrarNoPainel, expect, semViolacoes, sql, sufixo, test } from "./apoio";
+import { MARCA } from "../src/lib/marca";
 
 const TOKEN = process.env.ASAAS_WEBHOOK_TOKEN ?? "token-local-do-webhook";
 const hoje = () => new Date().toISOString().slice(0, 10);
@@ -50,12 +51,23 @@ test.describe("F09 assina o plano", () => {
     await page.goto(`/${c.username}`);
     await expect(page.getByText("Faça a sua no")).toHaveCount(0);
 
+    // a renovação do mês seguinte manda o recibo, com o caminho para cancelar
+    const prox = new Date(Date.now() + 30 * 86400_000).toISOString().slice(0, 10);
+    const renovou = await webhook(request, { id: `evt_${sufixo()}`, event: "PAYMENT_RECEIVED", payment: { subscription: sub, dueDate: prox } });
+    expect(await renovou.json()).toMatchObject({ efeito: "renovou" });
+    const recibo = await emailPara(c.email, `Recebemos o pagamento do seu ${MARCA.plano}`);
+    expect(recibo.Text).toMatch(/Pagamento de R\$\s?19,00 confirmado/);
+    expect(recibo.Text).toContain("Para cancelar, é um clique na tela do plano.");
+
     await page.goto("/admin/plano");
     await expect(page.getByText("Ativo", { exact: true })).toBeVisible();
     await capturar(page, "S14-pro");
     await page.getByRole("button", { name: "Cancelar assinatura" }).click();
     await expect(page.getByText(/O Pro continua até/)).toBeVisible();
     expect((await pedidos()).some((p) => p.metodo === "DELETE" && p.caminho === `/v3/subscriptions/${sub}`)).toBe(true);
+    // e a confirmação por escrito de que nada mais é cobrado
+    const cancelada = await emailPara(c.email, `Assinatura do ${MARCA.plano} cancelada`);
+    expect(cancelada.Text).toContain("nenhuma cobrança nova vai ser gerada");
     await page.goto(`/${c.username}`);
     await expect(page.getByText("Faça a sua no")).toHaveCount(0);
   });
