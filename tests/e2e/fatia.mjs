@@ -1,13 +1,16 @@
-// Teste ponta a ponta da fatia vertical: cadastro, endereço, links, página
-// pública, clique contado, insights, login; a 1440 e a 390 px (esta só com
-// teclado), com axe em cada tela. Grava as capturas para a /replica-diff.
+// Teste ponta a ponta da fatia vertical: cadastro (com a confirmação lida no
+// Mailpit), endereço, links, página pública, clique contado, insights, login;
+// a 1440 e a 390 px (esta só com teclado), com axe em cada tela. Grava as
+// capturas para a /replica-diff.
 //
-// Com o app rodando num banco novo (LINKBIO_DEMO=1 next start -p 3123):
+// Com o Supabase local (npm run db:start; db:reset) e o app em
+// `next start -p 3123` com o .env.local:
 //   npm run e2e                       # capturas em replica/clone-screens
-// Variáveis: E2E_BASE (padrão http://localhost:3123) e CHROMIUM_PATH (um
-// Chromium já instalado, se o do Playwright não estiver baixado).
+// Variáveis: E2E_BASE (padrão http://localhost:3123), MAILPIT_URL e
+// CHROMIUM_PATH (um Chromium já instalado, se o do Playwright não estiver baixado).
 import { chromium } from "playwright";
 import { AxeBuilder } from "@axe-core/playwright";
+import { CABECALHOS, linkDoEmail, zerarLimites } from "./ajuda.mjs";
 
 const BASE = process.env.E2E_BASE ?? "http://localhost:3123";
 const OUT = process.argv[2] ?? "replica/clone-screens";
@@ -24,6 +27,7 @@ const ok = (cond, msg) => {
   if (!cond) falhas++;
 };
 
+await zerarLimites();
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
 
 async function novoContexto(w, h) {
@@ -32,6 +36,7 @@ async function novoContexto(w, h) {
   const ctx = await browser.newContext({
     viewport: { width: w, height: h },
     userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    extraHTTPHeaders: CABECALHOS,
   });
   // destinos externos dos links: responde aqui mesmo, sem sair para a rede
   await ctx.route(/^https:\/\/(www\.)?exemplo\.com\.br\//, (r) => r.fulfill({ contentType: "text/html", body: "<title>destino</title>destino" }));
@@ -75,8 +80,13 @@ async function foto(page, id, w) {
   await foto(page, "S01-erro", W);
   await page.getByLabel("Senha").fill(SENHA);
   await page.getByRole("button", { name: "Criar minha conta" }).click();
+  await page.getByRole("heading", { name: "Confira seu email" }).waitFor();
+  ok(true, "S01 -> S02: pede para confirmar o email");
+  await foto(page, "S02", W);
+  await axe(page, "S02");
+  await page.goto(await linkDoEmail(EMAIL, "Confirme seu email"));
   await page.waitForURL("**/comecar");
-  ok(true, "S01 -> S03 depois do cadastro");
+  ok(true, "S02 -> S03: link do email confirma e abre a sessão");
 
   // S03 endereço: ocupado, reservado, livre
   await page.getByLabel("Seu endereço").fill("doces.da.ana");
@@ -196,8 +206,8 @@ async function foto(page, id, w) {
   await foto(page, "S09", W);
   await axe(page, "S09");
 
-  // stubs do painel
-  for (const [id, rota] of [["S08", "aparencia"], ["S10", "audiencia"], ["S12", "configuracoes"], ["S13", "conta"], ["S14", "plano"]]) {
+  // outras telas do painel (S13 e S14 têm teste próprio em backend.mjs)
+  for (const [id, rota] of [["S08", "aparencia"], ["S10", "audiencia"], ["S12", "configuracoes"]]) {
     await page.goto(`${BASE}/admin/${rota}`, { waitUntil: "networkidle" });
     await foto(page, id, W);
     await axe(page, id);
@@ -205,7 +215,7 @@ async function foto(page, id, w) {
 
   // sair, entrar com senha errada, entrar
   await page.goto(`${BASE}/admin/conta`, { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "Sair" }).last().click();
+  await page.getByRole("button", { name: "Sair deste aparelho" }).click();
   await page.waitForURL("**/entrar");
   await foto(page, "S18", W);
   await axe(page, "S18");
@@ -220,7 +230,7 @@ async function foto(page, id, w) {
   ok(true, "S18: login leva ao painel");
 
   // stubs de entrada e 404
-  for (const [id, rota] of [["S02", "confirmar"], ["S04", "comecar/modelo"], ["S05", "comecar/plano"], ["S18b", "entrar/recuperar"], ["404", "ninguem.mora.aqui"]]) {
+  for (const [id, rota] of [["S04", "comecar/modelo"], ["S05", "comecar/plano"], ["404", "ninguem.mora.aqui"]]) {
     await page.goto(`${BASE}/${rota}`, { waitUntil: "networkidle" });
     await foto(page, id, W);
     await axe(page, id);
@@ -239,7 +249,11 @@ async function foto(page, id, w) {
   await page.getByRole("button", { name: /^Mover / }).first().waitFor();
   ok((await page.getByRole("button", { name: /^Mover / }).count()) === 4, "demo: vê só os 4 links dela");
   ok((await page.getByText("Catálogo de bolos").count()) === 0, "demo: não vê links da outra conta");
-  await page.goto(`${BASE}/admin/insights`, { waitUntil: "networkidle" });
+  // espera o número aparecer (não "rede ociosa": pré-carregamentos do menu em voo contam como rede)
+  await page.goto(`${BASE}/admin/insights`);
+  await page.getByRole("heading", { name: "Links mais clicados" }).waitFor();
+  const visitasDemo = Number((await page.locator("main").innerText()).match(/Visitas\n([\d.]+)/)?.[1]?.replace(".", ""));
+  ok(visitasDemo >= 203, `S09 demo: a semana semeada aparece (${visitasDemo} visitas)`);
   await foto(page, "S09-demo", 1440);
   await ctx.close();
 }
@@ -268,6 +282,9 @@ async function foto(page, id, w) {
   await tabAte("Senha");
   await page.keyboard.type(SENHA);
   await page.keyboard.press("Enter");
+  await page.getByRole("heading", { name: "Confira seu email" }).waitFor();
+  await foto(page, "S02", W);
+  await page.goto(await linkDoEmail(`teclado.${sufixo}@exemplo.com`, "Confirme seu email"));
   await page.waitForURL("**/comecar");
   await tabAte("Seu endereço");
   await page.keyboard.type(user2);

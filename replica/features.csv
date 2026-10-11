@@ -1,12 +1,12 @@
 feature,area,priority,original,clone,notes
-Cadastro e login por email,onboarding,must,yes,partial,email e senha funcionando; login provisório (PGlite + scrypt) até a /replica-backend trocar por Supabase Auth
-Confirmação de email,onboarding,must,yes,no,S02 é stub; no dev o email já nasce confirmado
-Recuperar senha,onboarding,must,yes,no,tela é stub; precisa de email (Resend) na /replica-backend
+Cadastro e login por email,onboarding,must,yes,yes,Supabase Auth; sessão em cookie httpOnly; limites por IP e por email; mensagens que não revelam quem tem conta
+Confirmação de email,onboarding,must,yes,yes,link com token_hash (abre em outro aparelho); reenviar com limite; login sem confirmar oferece reenviar
+Recuperar senha,onboarding,must,yes,yes,mesma resposta com ou sem conta; senha nova duas vezes; aviso por email quando a senha muda
 Escolher o username que vira a URL,onboarding,must,yes,yes,checagem ao vivo; reservados (admin; api; ajuda...); dois cadastros ao mesmo tempo: o índice único decide
 Adicionar editar e excluir link,editor,must,yes,yes,https:// completado; confirmação antes de excluir; cliques antigos ficam nos insights
 Reordenar links arrastando,editor,must,yes,yes,acessível pelo teclado também (espaço; setas; espaço) e testado assim
 Ligar e desligar link sem excluir,editor,must,yes,yes,selo Desligado no editor; some da página pública e da prévia
-Perfil com foto título e bio,editor,must,yes,partial,título e bio feitos; foto falta (upload na etapa 2); sem foto mostra as iniciais
+Perfil com foto título e bio,editor,must,yes,yes,foto no Supabase Storage por URL assinada (até 2 MB; JPG; PNG; WebP); sem foto mostra as iniciais
 Ícones de redes sociais no topo ou no rodapé,editor,must,yes,partial,aparecem na página pública e na prévia (topo ou rodapé); falta o editor das redes
 Prévia ao vivo da página no editor,editor,must,yes,partial,no computador reage na hora; no celular só o botão Abrir
 Página pública responsiva em /username,pagina publica,must,yes,yes,404 para perfil inexistente ou excluído: robôs de prévia recebem status 404; navegador recebe a página de 404 com noindex (limite do streaming)
@@ -14,16 +14,16 @@ Temas prontos,aparencia,must,yes,no,tema papel fixo; galeria na S08 (etapa 2)
 Contagem de views e cliques,insights,must,yes,yes,sem cookie e sem guardar IP; robôs (isbot) não contam; visita contada pelo navegador; clique por /r/ sem JavaScript
 Formulário de captura de email na página,audiencia,must,yes,no,consentimento e finalidade na hora da coleta (LGPD)
 Ver inscritos e exportar CSV,audiencia,must,yes,no,original manda link por email com senha
-Plano pago com assinatura e cancelamento,plano,must,yes,no,cancelar em um clique
-Tirar a marca do rodapé no plano pago,plano,must,yes,no,principal motivo para pagar
-Excluir perfil ou conta,conta,must,yes,no,username e email bloqueados por 14 dias no original
-Login com Google,onboarding,should,yes,no,
+Plano pago com assinatura e cancelamento,plano,must,yes,partial,Asaas: Pix; cartão; boleto na página do Asaas; webhook idempotente; cancelar em um clique (Pro até o fim do período). Testado contra um Asaas falso: falta validar no sandbox com a conta do dono
+Tirar a marca do rodapé no plano pago,plano,must,yes,yes,some com o Pro ativo e até o fim do período pago depois de cancelar
+Excluir perfil ou conta,conta,must,yes,partial,excluir a conta: apaga na hora; cancela a assinatura; apaga fotos; segura o username 14 dias; confirma por email. Excluir só a página (sem a conta) ainda sem tela
+Login com Google,onboarding,should,yes,partial,código e configuração prontos (escopos email e profile); precisa do app OAuth do dono; não testado
 Modelo de página pela categoria da conta,onboarding,should,yes,no,
 Tema customizável (fundo botões fonte cores),aparencia,should,yes,no,contraste checado
 Fundo com imagem,aparencia,should,yes,no,
 Miniatura no link,editor,should,yes,no,
 Agendar link para aparecer e sumir com fuso,editor,should,yes,no,pago no original (Starter ou acima)
-Views e cliques únicos e taxa de clique,insights,should,yes,partial,visitantes únicos por dia e taxa de clique nos últimos 7 dias; sem escolher período
+Views e cliques únicos e taxa de clique,insights,should,yes,partial,visitantes únicos por dia e taxa de clique nos últimos 7 dias; o job diário já soma em daily_stats; a tela ainda lê os eventos e não escolhe período
 Ranking dos links mais clicados,insights,should,yes,yes,tabela na S09
 Fontes de tráfego e locais (país e cidade),insights,should,yes,no,
 Escolher o período dos insights,insights,should,yes,no,período maior nos planos pagos
