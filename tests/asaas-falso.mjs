@@ -29,6 +29,10 @@ createServer(async (req, res) => {
   }
   pedidos.push({ metodo: req.method, caminho: url.pathname, corpo, userAgent: req.headers["user-agent"] });
   if (req.headers.access_token !== chave) return responder(res, 401, { errors: [{ code: "invalid_access_token" }] });
+  // Asaas fora do ar, para os testes: nome de cliente ou id de assinatura com "falha-simulada"
+  if (JSON.stringify(corpo ?? "").includes("falha-simulada") || url.pathname.includes("falha-simulada")) {
+    return responder(res, 503, { errors: [{ code: "service_unavailable" }] });
+  }
 
   if (req.method === "POST" && url.pathname === "/v3/customers") {
     if (!corpo?.name || !corpo?.cpfCnpj) return responder(res, 400, { errors: [{ code: "invalid_object", description: "name e cpfCnpj" }] });

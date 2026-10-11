@@ -29,3 +29,7 @@ npm-debug.log*
 
 # saída temporária do drizzle-kit pull (npm run db:types)
 /.drizzle-pull/
+
+# resultados dos testes de ponta a ponta (npm run test:e2e)
+/test-results/
+/playwright-report/
