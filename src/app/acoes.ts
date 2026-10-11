@@ -75,9 +75,12 @@ export async function fazerLogin(_: Estado, form: FormData): Promise<Estado> {
   const dados = credenciaisSchema.safeParse({ email: form.get("email"), senha: form.get("senha") });
   const valores = valoresDe(form, ["email"]);
   if (!dados.success) return { erro: "Email ou senha não conferem.", valores };
+  const ip = await ipAtual();
+  // Por email e IP, não só por email: senão qualquer um tranca a conta de
+  // outra pessoa errando a senha dela de propósito (BUG-011).
   const ok = await dentroDosLimites([
-    ["login:ip", await ipAtual(), 20, 900],
-    ["login:email", dados.data.email, 10, 900],
+    ["login:ip", ip, 20, 900],
+    ["login:email-ip", `${dados.data.email}|${ip}`, 10, 900],
   ]);
   if (!ok) return { erro: MUITAS_TENTATIVAS, valores };
   const r = await entrar(dados.data.email, dados.data.senha);
