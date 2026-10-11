@@ -1,10 +1,25 @@
 {
-  "_about": "Marca do app (replica/brand.md). avoid, domains e colors são do ORIGINAL e não podem aparecer no código, na loja nem no marketing: o sweep.py da /replica-brand, o listing.py da /replica-launch e a /replica-deploy leem daqui. As cores do original vêm de fontes públicas que divergem entre si (ver brand.md); estão aqui só para o sweep pegar alguma que tenha escapado.",
+  "_about": "Marca do app (replica/brand.md). avoid tem o ORIGINAL e os concorrentes maiores da categoria; domains e colors são do original. Nada disso pode aparecer no código, na loja nem no marketing: o sweep.py da /replica-brand, o listing.py da /replica-launch e a /replica-deploy leem daqui. As cores do original vêm de fontes públicas que divergem entre si (ver brand.md); estão aqui só para o sweep pegar alguma que tenha escapado.",
   "name": "Chamaqui",
   "domain": "chamaqui.com.br",
-  "avoid": ["Linktree", "Linktree Pty Ltd"],
-  "domains": ["linktr.ee", "linktree.com"],
-  "colors": ["#43e660", "#39e09b", "#7551e9"],
+  "avoid": [
+    "Linktree",
+    "Linktree Pty Ltd",
+    "Beacons",
+    "Taplink",
+    "Campsite",
+    "Linkin.bio",
+    "Bio.link"
+  ],
+  "domains": [
+    "linktr.ee",
+    "linktree.com"
+  ],
+  "colors": [
+    "#43e660",
+    "#39e09b",
+    "#7551e9"
+  ],
   "palette": {
     "accent": "#c2410c",
     "accent-hover": "#9a3412",

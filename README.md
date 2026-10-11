@@ -77,6 +77,6 @@ escrever código.
 | `/replica-diff` | feito e atualizado: funcionalidades 64,2/100 (era 48,9), must-haves 17 de 18 (falta validar o Asaas no sandbox); layout contra o original sem medir (a rede daqui bloqueia o site dele); `replica/parity.md` |
 | `/replica-entrepreneur` | mock: coleta pronta (`replica/ferramentas/coletar_avaliacoes.py`, `replica/coleta.md`, `replica/temas.json`) e o caminho inteiro testado com 60 avaliações fictícias em `replica/mock/`; falta trazer as reais (a rede daqui bloqueia as fontes) |
 | `/replica-brand` | feito: nome de trabalho Chamaqui (buscas de marca a rodar), paleta brasa com 0 falhas AA, briefing do logo, voz e 10 textos reescritos, sweep limpo; `replica/brand.md`, `replica/brand.json` |
-| `/replica-inpi` | |
+| `/replica-inpi` | preparado: classes 9 e 42, 18 termos de busca (som, grafia, sentido e tradução), reserva Logali, checagens e passo a passo do depósito em `replica/inpi.md`; falta você fazer a busca no pePI (a rede daqui bloqueia o INPI) |
 | `/replica-launch` | |
 | `/replica-deploy` | |

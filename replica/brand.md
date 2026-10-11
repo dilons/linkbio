@@ -51,7 +51,7 @@ marcas faz a busca de verdade. "a rodar" = ninguém rodou ainda.
 
 | checagem | Chamaqui | Logali | Plaquinha | Cartaz | Balcão |
 | --- | --- | --- | --- | --- | --- |
-| Brasil, INPI (pePI), classes 9, 35, 42 | a rodar (`/replica-inpi`) | a rodar | a rodar | a rodar | a rodar |
+| Brasil, INPI (pePI), classes 9 e 42 | a rodar: termos e plano em `replica/inpi.md` | a rodar (reserva, mesmo plano) | a rodar | a rodar | a rodar |
 | EUA (tmsearch.uspto.gov, 9 e 42) | a rodar | a rodar | a rodar | a rodar | a rodar |
 | UE (EUIPO eSearch ou TMview) | a rodar | a rodar | a rodar | a rodar | a rodar |
 | Canadá (ised-isde.canada.ca) | a rodar | a rodar | a rodar | a rodar | a rodar |
@@ -194,8 +194,11 @@ documentos de `replica/`, que são o histórico do projeto.
 
 ## O que falta para o nome valer
 
-1. Rodar as checagens da tabela, começando pela `/replica-inpi` (classes 9,
-   35 e 42) e pelo Registro.br (`chamaqui.com.br` e `chamaaqui.com.br`).
+1. Rodar as checagens da tabela, começando pelo pePI do INPI (classes 9 e
+   42; os termos, o modo de busca e como colar o resultado estão em
+   `replica/inpi.md`) e pelo Registro.br (`chamaqui.com.br` e
+   `chamaaqui.com.br`). Nome de reserva, se o Chamaqui não passar: **Logali**.
+   Com a busca limpa, depositar a marca nominativa antes de divulgar o nome.
 2. Com o nome livre: registrar os domínios e os perfis, encomendar o logo com
    o briefing acima e trocar o monograma provisório.
 3. Opcional: renomear o repositório `dilons/linkbio` no GitHub (o GitHub
