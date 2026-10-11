@@ -74,7 +74,7 @@ escrever código.
 | `/replica-design` | feito: `replica/design/` (tokens, componentes, contraste 0 falhas, capturas) e a rota `/design` |
 | `/replica-build` | três rodadas: fatia vertical, lacunas da paridade e os sete should-haves (aviso de conteúdo e trava de idade, agendar com fuso, trocar o endereço, QR code, insights com período, origens e locais), BUG-010 e a correção 1 do `fixes.md`; `replica/build-log.md`, `replica/clone-screens/` |
 | `/replica-backend` | feito: Supabase (banco, login, Storage), Asaas, emails, jobs, limites; `replica/backend.md` |
-| `/replica-lgpd` | |
+| `/replica-lgpd` | primeira passada: inventário (`replica/dados.csv`), operadores (`replica/lgpd.json`), decisões, testes de balanceamento e plano de incidente (`replica/lgpd.md`), baixar meus dados e com quem compartilhamos na S13, rascunhos da política e dos termos; a verificação dá 8 erros, todos pendências do dono (controlador, encarregado, DPAs, cláusulas da ANPD) |
 | `/replica-test` | feito e atualizado: 115 casos de ponta a ponta + 56 do backend, 13 bugs (todos os S1 a S4 corrigidos, menos um S4 que não vai ser corrigido); `replica/test-plan.md`, `replica/bugs.md` |
 | `/replica-diff` | recalculada: funcionalidades 79,0/100 (era 64,2), must-haves 17 de 18 (falta validar o Asaas no sandbox, que leva a 80,7); layout da S15 indicativo (25,2), a refazer com captura à mão; `replica/parity.md` |
 | `/replica-entrepreneur` | feito com dados reais, provisório: 605 avaliações de 2 plataformas (App Store e Hacker News; falta a terceira, que é colada à mão), `replica/feedback.md`, `replica/fixes.md`, 8 correções na `features.csv`. O ângulo do mock (vender no Brasil) não se sustentou; o recomendado é "sem pegadinha no dinheiro" |

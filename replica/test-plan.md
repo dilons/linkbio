@@ -28,8 +28,8 @@ sobre o esqueleto e os Tabs passavam antes de haver um link. Agora o
 
 | | casos | passaram | falharam |
 | --- | --- | --- | --- |
-| ponta a ponta (Playwright) | 115 | 115 | 0 |
-| backend (node:test) | 56 | 56 | 0 |
+| ponta a ponta (Playwright) | 118 | 118 | 0 |
+| backend (node:test) | 57 | 57 | 0 |
 | bloqueados (fluxo não construído) | 3 | | |
 | manuais (precisam de conta real) | 7 | | pendentes |
 
@@ -158,6 +158,9 @@ no `Dialog`).
 | S19-E1 | QR code (S12) | borda | quem chega pelo QR conta com a origem "qr" e o ?origem some do endereço | e2e `s19-qr.spec.ts` | passou |
 | S19-E2 | QR code (S12) | negativo | endereço que não existe não ganha QR | e2e `s19-qr.spec.ts` | passou |
 | S19-E3 | QR code (S12) | borda | a 390 px o QR e os botões cabem e dá para baixar só com teclado | e2e `s19-qr.spec.ts` | passou |
+| S13-L1 | privacidade e dados (LGPD) | feliz | baixar meus dados: JSON com a página e os links, e o pedido registrado | e2e `f10-dados.spec.ts` | passou |
+| S13-L2 | privacidade e dados (LGPD) | negativo | sem sessão não há cópia de nada | e2e `f10-dados.spec.ts` | passou |
+| S13-L3 | privacidade e dados (LGPD) | borda | a 390 px a tabela de fornecedores não estica a página | e2e `f10-dados.spec.ts` | passou |
 | F12-H1 | acesso (derivado) | feliz | entrar e sair deste aparelho | e2e `f12-acesso.spec.ts` | passou (achou BUG-008) |
 | F12-E1 | acesso (derivado) | borda | recuperar a senha: resposta neutra, link abre em outro navegador, senha nova vale e avisa por email | e2e `f12-acesso.spec.ts` | passou |
 | F12-E2 | acesso (derivado) | borda | sair de todos os aparelhos derruba a outra sessão na hora | e2e `f12-acesso.spec.ts` | passou |

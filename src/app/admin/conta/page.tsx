@@ -6,11 +6,12 @@ import { perfilDaConta, proximaTroca } from "@/lib/data/perfis";
 import { exigirConta } from "@/lib/sessao";
 import { TrocarEndereco } from "./endereco";
 import { ExcluirConta, ExcluirPagina } from "./excluir";
+import { PrivacidadeEDados } from "./privacidade";
 import { MARCA } from "@/lib/marca";
 
 export const metadata: Metadata = { title: "Conta" };
 
-// S13 (a exportação dos dados chega com a /replica-lgpd)
+// S13: endereço, acesso, privacidade e dados (LGPD) e as zonas de perigo
 export default function Conta() {
   return (
     <div className="flex max-w-2xl flex-col gap-6">
@@ -54,6 +55,7 @@ async function Dados() {
           </form>
         </div>
       </section>
+      <PrivacidadeEDados />
       {perfil && (
         <section aria-labelledby="t-pagina" className="flex flex-col gap-3 rounded-lg border border-danger/40 bg-bg p-4 shadow-card">
           <h2 id="t-pagina" className="text-lg font-semibold text-fg">

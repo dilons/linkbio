@@ -49,5 +49,5 @@ Cor de fundo e forma do botão e fonte no plano grátis,aparencia,should,no,no,f
 Insights com período e fontes e locais no plano grátis,insights,should,no,yes,fixes.md #4 (métricas; 21 de 2 fontes); no original o período maior é pago; feito em 2026-10-11 (S09)
 Entrar por link no email e suporte em português com prazo,conta,should,no,no,fixes.md #5 (login 84 e suporte 38; 1 fonte; quase tudo do app iOS deles); recuperar senha já existe
 Moderação que tira só o link e diz qual e por quê; contestar,pagina publica,should,no,no,fixes.md #6 (conta suspensa; 14; fraco); precisa existir antes do lançamento de qualquer jeito
-Termos sem IA: conteúdo do criador não treina IA nem vai para IA de terceiros,conta,could,no,no,fixes.md #7 (IA e termos 6 e privacidade 4; fraco; todas de 2026); /replica-lgpd
+Termos sem IA: conteúdo do criador não treina IA nem vai para IA de terceiros,conta,could,no,partial,fixes.md #7 (IA e termos 6 e privacidade 4; fraco; todas de 2026); /replica-lgpd; escrito no rascunho dos termos (replica/termos-de-uso.md) e da política; falta publicar
 Leitor de tela conferido (VoiceOver e TalkBack),plataforma,should,no,partial,fixes.md #8 (acessibilidade; 7; fraco); axe 0 violações e testes de teclado; falta a passada manual M5

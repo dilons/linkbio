@@ -1,0 +1,24 @@
+{
+  "_sobre": "Configuração de privacidade do Chamaqui, lida pelo lgpd.py da /replica-lgpd (modelo e opções em .claude/skills/replica-lgpd/lgpd.example.json). Controlador, encarregado e canal ficam em branco até o dono preencher: a verificação acusa erro, de propósito. pequeno_porte fica false (prazos normais e encarregado exigido) até o dono confirmar que é agente de pequeno porte (Res. CD/ANPD 2/2022). Operadores: 'a_confirmar' até o dono aceitar o DPA e o fornecedor confirmar as cláusulas-padrão da ANPD (ver replica/lgpd.md, 'Operadores').",
+  "controlador": {
+    "nome": "",
+    "cnpj": "",
+    "endereco": "",
+    "contato": ""
+  },
+  "publico": ["br"],
+  "pequeno_porte": false,
+  "encarregado": {"nome": "", "email": ""},
+  "canal_titular": "",
+  "representante_ue": "",
+  "politica_url": "/privacidade",
+  "dpa_para_clientes": "a_confirmar",
+  "colunas_ignoradas": ["reserved_usernames.username", "links.title", "links.url", "links.thumbnail_path", "social_links.url", "forms.success_message", "forms.consent_text", "job_runs.result", "job_runs.error"],
+  "operadores": [
+    {"nome": "Supabase", "servico": "banco de dados, login e arquivos", "pais": "US", "regiao": "São Paulo (sa-east-1)", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"},
+    {"nome": "Vercel", "servico": "hospedagem e funções", "pais": "US", "regiao": "gru1, São Paulo (exige o plano Pro da Vercel)", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"},
+    {"nome": "Resend", "servico": "email transacional", "pais": "US", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"},
+    {"nome": "Asaas", "servico": "cobrança (Pix, cartão e boleto)", "pais": "BR", "dpa": "a_confirmar"},
+    {"nome": "Google APIs", "apelidos": ["Google"], "servico": "login com Google (só quem escolhe)", "pais": "US", "dpa": "a_confirmar", "mecanismo_br": "a_confirmar", "mecanismo_ue": "a_confirmar"}
+  ]
+}
