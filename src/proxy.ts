@@ -28,6 +28,10 @@ export async function proxy(request: NextRequest) {
   const { data } = await supabase.auth.getUser();
   const logado = Boolean(data.user);
   const caminho = request.nextUrl.pathname;
+  // Só navegação é redirecionada. Uma ação do servidor (POST) que recebesse um
+  // redirect daqui receberia HTML no lugar da resposta da ação e a página
+  // quebrava (BUG-002); a própria ação confere a sessão e manda ao login.
+  if (request.method !== "GET" && request.method !== "HEAD") return resposta;
 
   const destino =
     !logado && /^\/(admin|comecar)(\/|$)|^\/entrar\/nova-senha$/.test(caminho)
@@ -42,14 +46,17 @@ export async function proxy(request: NextRequest) {
   return redirecionar;
 }
 
+// Pré-carregamentos do Next ficam de fora: um redirect aqui virava 404 no
+// console (BUG-008), e a página conferir a sessão já basta para eles. O
+// matcher precisa ser estático, daí a repetição.
 export const config = {
   matcher: [
-    "/admin/:path*",
-    "/comecar/:path*",
-    "/cadastro",
-    "/entrar/:path*",
-    "/api/username",
-    "/api/upload",
-    "/api/me/:path*",
+    { source: "/admin/:path*", missing: [{ type: "header", key: "next-router-prefetch" }, { type: "header", key: "purpose", value: "prefetch" }] },
+    { source: "/comecar/:path*", missing: [{ type: "header", key: "next-router-prefetch" }, { type: "header", key: "purpose", value: "prefetch" }] },
+    { source: "/cadastro", missing: [{ type: "header", key: "next-router-prefetch" }, { type: "header", key: "purpose", value: "prefetch" }] },
+    { source: "/entrar/:path*", missing: [{ type: "header", key: "next-router-prefetch" }, { type: "header", key: "purpose", value: "prefetch" }] },
+    { source: "/api/username", missing: [{ type: "header", key: "next-router-prefetch" }, { type: "header", key: "purpose", value: "prefetch" }] },
+    { source: "/api/upload", missing: [{ type: "header", key: "next-router-prefetch" }, { type: "header", key: "purpose", value: "prefetch" }] },
+    { source: "/api/me/:path*", missing: [{ type: "header", key: "next-router-prefetch" }, { type: "header", key: "purpose", value: "prefetch" }] },
   ],
 };
