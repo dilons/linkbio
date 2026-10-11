@@ -5,6 +5,7 @@
 // Asaas (exigência da cobrança) e não fica no nosso banco.
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
+import { lerInteiro } from "@/lib/env";
 import { billingEvents, subscriptions } from "@/lib/db/schema";
 import { asaas, ErroAsaas, type FormaAsaas } from "./asaas";
 import { MARCA } from "@/lib/marca";
@@ -13,7 +14,7 @@ export type Forma = "pix" | "card" | "boleto";
 const FORMAS: Record<Forma, FormaAsaas> = { pix: "PIX", card: "CREDIT_CARD", boleto: "BOLETO" };
 
 /** Preço provisório (a /replica-entrepreneur decide o definitivo). */
-export const precoProCentavos = () => Number(process.env.PRECO_PRO_CENTAVOS ?? 1900);
+export const precoProCentavos = () => lerInteiro("PRECO_PRO_CENTAVOS", 1900);
 
 export type Assinatura = {
   status: "pending" | "active" | "past_due" | "canceled";

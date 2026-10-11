@@ -4,6 +4,7 @@
 import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { connection } from "next/server";
 import postgres from "postgres";
+import { lerInteiro } from "@/lib/env";
 import * as schema from "./schema";
 
 export type Banco = PostgresJsDatabase<typeof schema>;
@@ -17,7 +18,7 @@ function abrir(): Banco {
   // do Supabase (porta 6543), que não guarda comandos preparados.
   const sql = postgres(url, {
     prepare: false,
-    max: Number(process.env.DATABASE_POOL_MAX ?? 5),
+    max: lerInteiro("DATABASE_POOL_MAX", 5),
     idle_timeout: 20,
     connect_timeout: 10,
   });

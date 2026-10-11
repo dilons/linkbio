@@ -2,6 +2,7 @@
 // app usa: cliente, assinatura, cobranças da assinatura e cancelamento.
 // Sandbox por padrão; produção só com ASAAS_API_URL=https://api.asaas.com/v3
 // e a chave de produção, na /replica-deploy.
+import { lerVariavel } from "@/lib/env";
 import { MARCA } from "@/lib/marca";
 
 export class ErroAsaas extends Error {
@@ -13,7 +14,7 @@ export class ErroAsaas extends Error {
   }
 }
 
-const base = () => (process.env.ASAAS_API_URL ?? "https://api-sandbox.asaas.com/v3").replace(/\/$/, "");
+const base = () => (lerVariavel("ASAAS_API_URL") ?? "https://api-sandbox.asaas.com/v3").replace(/\/$/, "");
 
 async function chamar<T>(metodo: "GET" | "POST" | "DELETE", caminho: string, corpo?: unknown): Promise<T> {
   const chave = process.env.ASAAS_API_KEY;

@@ -6,9 +6,10 @@
 // guarda tudo e não manda nada para fora.
 
 export type Email = { para: string; assunto: string; html: string; texto: string };
+import { lerVariavel } from "@/lib/env";
 import { MARCA } from "@/lib/marca";
 
-const remetente = () => process.env.EMAIL_FROM ?? MARCA.remetente;
+const remetente = () => lerVariavel("EMAIL_FROM") ?? MARCA.remetente;
 
 /**
  * Manda o email. `chave` evita mandar duas vezes a mesma coisa (o Resend

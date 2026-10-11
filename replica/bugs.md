@@ -8,7 +8,7 @@ aqui o que foi reproduzido; o resto está em "A conferir", no fim.
 | --- | --- | --- |
 | S1 | 1 | 1 |
 | S2 | 0 | 0 |
-| S3 | 7 | 7 |
+| S3 | 8 | 8 |
 | S4 | 4 | 3 (1 não vai ser corrigido) |
 
 Nenhum S1 aberto.
@@ -214,6 +214,23 @@ Actual: o erro do envio anterior continua no campo e esconde a checagem nova, at
 Evidence: F10-E6 com o campo em "guarda.726ee60b" e o erro antigo depois de o endereço ter sido liberado; F01-E1 estendido falha sem a correção ("está livre" não aparece).
 Suspected cause: o erro devolvido pela ação tinha prioridade sobre a checagem ao vivo, sem olhar se a pessoa tinha mexido no campo.
 Status: fixed (o erro do envio vale até a pessoa editar o campo), com o F01-E1 falhando antes da correção.
+
+### BUG-013: variável de ambiente em branco vale como valor (preço zero, pool zero)
+
+- Severity: S3 (configuração: um campo vazio no painel da Vercel bastaria)
+- Flow / case: F09 e todos os emails / `tests/backend/env.test.ts`
+- Screen: nenhuma (servidor)
+- Build: 97b7057  Ambiente: WSL, `.env.local` copiado do `.env.example`
+
+Steps
+1. Copiar o `.env.example` para o `.env.local` e deixar `PRECO_PRO_CENTAVOS=` (ou `DATABASE_POOL_MAX=`, `EMAIL_FROM=`, `NEXT_PUBLIC_SITE_URL=`, `ASAAS_API_URL=`) em branco, como o próprio arquivo sugere.
+2. Assinar o Pro, ou mandar um email.
+
+Expected: em branco é o mesmo que ausente: vale o padrão (R$ 19, pool de 5, o remetente da marca, o endereço do pedido, o sandbox).
+Actual: `Number(process.env.X ?? padrão)` com "" dá 0: a assinatura seria criada com valor zero, o pool com zero conexões, e os links dos emails e do QR ficariam relativos.
+Evidence: lido no código na Parte 0, ao montar o `.env.local` (as linhas em branco ficaram comentadas para o ambiente subir); `env.test.ts` cobre os casos.
+Suspected cause: `??` só troca undefined e null, não "".
+Status: fixed (lerVariavel e lerInteiro em `lib/env.ts`, usados nas cinco leituras).
 
 ## A conferir (não reproduzido)
 
