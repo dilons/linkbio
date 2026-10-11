@@ -64,6 +64,22 @@ async function linkDaCobrancaEmAberto(assinaturaId: string): Promise<string | nu
 
 export type ResultadoCheckout = { ok: true; url: string } | { ok: false; erro: string };
 
+type Transacao = Parameters<Parameters<Awaited<ReturnType<typeof db>>["transaction"]>[0]>[0];
+
+/**
+ * Uma operação de cobrança por conta de cada vez (trava do Postgres que dura a
+ * transação). Sem isto, duas abas assinando juntas criavam dois clientes e
+ * duas assinaturas no Asaas, e uma delas ficava cobrando sem o app saber
+ * (BUG-001). A segunda aba espera a primeira e reaproveita a mesma cobrança.
+ */
+async function comTravaDaConta<T>(accountId: string, fn: (tx: Transacao) => Promise<T>): Promise<T> {
+  const conn = await db();
+  return conn.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`cobranca:${accountId}`}))`);
+    return fn(tx);
+  });
+}
+
 /**
  * Cria (ou reaproveita) o cliente e a assinatura no Asaas e devolve o link da
  * primeira cobrança, na página de pagamento do Asaas.
@@ -73,7 +89,15 @@ export async function iniciarAssinatura(
   email: string,
   dados: { forma: Forma; nome?: string; documento?: string },
 ): Promise<ResultadoCheckout> {
-  const conn = await db();
+  return comTravaDaConta(accountId, (tx) => iniciarAssinaturaTravada(tx, accountId, email, dados));
+}
+
+async function iniciarAssinaturaTravada(
+  conn: Transacao,
+  accountId: string,
+  email: string,
+  dados: { forma: Forma; nome?: string; documento?: string },
+): Promise<ResultadoCheckout> {
   const [atual] = await conn.select().from(subscriptions).where(eq(subscriptions.accountId, accountId)).limit(1);
   const estado = atual
     ? { status: atual.status as Assinatura["status"], fimDoPeriodo: atual.currentPeriodEnd }
@@ -133,7 +157,10 @@ export async function iniciarAssinatura(
  * fim do período já pago. Chamar duas vezes não faz mal.
  */
 export async function cancelarAssinatura(accountId: string): Promise<boolean> {
-  const conn = await db();
+  return comTravaDaConta(accountId, (tx) => cancelarAssinaturaTravada(tx, accountId));
+}
+
+async function cancelarAssinaturaTravada(conn: Transacao, accountId: string): Promise<boolean> {
   const [s] = await conn.select().from(subscriptions).where(eq(subscriptions.accountId, accountId)).limit(1);
   if (!s || s.status === "canceled") return true;
   if (s.providerSubscriptionId) {
