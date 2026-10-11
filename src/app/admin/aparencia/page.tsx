@@ -6,7 +6,7 @@ import { paginaPublica } from "@/lib/data/perfis";
 import { exigirPerfil } from "@/lib/sessao";
 import { Galeria } from "./galeria";
 
-export const metadata: Metadata = { title: "Aparência · linkbio" };
+export const metadata: Metadata = { title: "Aparência" };
 
 // S08 (temas prontos; o tema customizado é da etapa 6)
 export default function Aparencia() {

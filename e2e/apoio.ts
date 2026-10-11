@@ -6,10 +6,11 @@ import { createClient } from "@supabase/supabase-js";
 import { expect, test as base, type Page } from "@playwright/test";
 import postgres from "postgres";
 import { randomUUID } from "node:crypto";
+import { MARCA } from "../src/lib/marca";
 
 export const MAILPIT = process.env.MAILPIT_URL ?? "http://127.0.0.1:54324";
 export const ASAAS = "http://127.0.0.1:4010";
-export const DEMO = { email: "demo@linkbio.test", senha: "linkbio-demo-2026", username: "doces.da.ana" };
+export const DEMO = { email: "demo@chamaqui.test", senha: "chamaqui-demo-2026", username: "doces.da.ana" };
 
 export const sufixo = () => randomUUID().slice(0, 8);
 export const sql = postgres(process.env.DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres", { max: 2 });
@@ -60,7 +61,7 @@ export { expect };
 export async function semViolacoes(page: Page, tela: string) {
   // só com a página assentada (título já no lugar); no meio de uma navegação o
   // axe vê um documento pela metade
-  await expect(page).toHaveTitle(/linkbio/);
+  await expect(page).toHaveTitle(new RegExp(MARCA.nome));
   const r = await new AxeBuilder({ page }).analyze();
   expect(r.violations.map((v) => `${tela}: ${v.id} (${v.nodes.length})`)).toEqual([]);
 }

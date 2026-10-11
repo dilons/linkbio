@@ -42,13 +42,13 @@ test.describe("F09 assina o plano", () => {
     await page.goto("/admin/plano");
     await expect(page.getByText("Aguardando pagamento")).toBeVisible();
     await page.goto(`/${c.username}`);
-    await expect(page.getByText("Feito com")).toBeVisible();
+    await expect(page.getByText("Faça a sua no")).toBeVisible();
 
     const r = await webhook(request, { id: `evt_${sufixo()}`, event: "PAYMENT_CONFIRMED", payment: { subscription: sub, dueDate: hoje() } });
     expect(await r.json()).toMatchObject({ efeito: "ativou" });
     await emailPara(c.email, "Pro está ativo");
     await page.goto(`/${c.username}`);
-    await expect(page.getByText("Feito com")).toHaveCount(0);
+    await expect(page.getByText("Faça a sua no")).toHaveCount(0);
 
     await page.goto("/admin/plano");
     await expect(page.getByText("Ativo", { exact: true })).toBeVisible();
@@ -57,7 +57,7 @@ test.describe("F09 assina o plano", () => {
     await expect(page.getByText(/O Pro continua até/)).toBeVisible();
     expect((await pedidos()).some((p) => p.metodo === "DELETE" && p.caminho === `/v3/subscriptions/${sub}`)).toBe(true);
     await page.goto(`/${c.username}`);
-    await expect(page.getByText("Feito com")).toHaveCount(0);
+    await expect(page.getByText("Faça a sua no")).toHaveCount(0);
   });
 
   test("F09-E1 CPF inválido é recusado antes de falar com o Asaas", async ({ page }) => {
@@ -134,10 +134,10 @@ test.describe("F09 assina o plano", () => {
     const sub = new URL(page.url()).pathname.split("/").pop()!;
     await webhook(request, { id: `evt_${sufixo()}`, event: "PAYMENT_RECEIVED", payment: { subscription: sub, dueDate: hoje() } });
     await page.goto(`/${c.username}`);
-    await expect(page.getByText("Feito com")).toHaveCount(0);
+    await expect(page.getByText("Faça a sua no")).toHaveCount(0);
     await webhook(request, { id: `evt_${sufixo()}`, event: "PAYMENT_REFUNDED", payment: { subscription: sub, dueDate: hoje() } });
     await page.goto(`/${c.username}`);
-    await expect(page.getByText("Feito com")).toBeVisible();
+    await expect(page.getByText("Faça a sua no")).toBeVisible();
     await expect(page.getByRole("link", { name: "Loja" })).toBeVisible();
   });
 

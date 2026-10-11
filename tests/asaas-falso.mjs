@@ -1,5 +1,5 @@
 // Um Asaas de mentira para testes locais (o sandbox de verdade precisa da
-// conta e da chave do dono do produto). Responde só às rotas que o linkbio usa,
+// conta e da chave do dono do produto). Responde só às rotas que o app usa,
 // no formato da documentação da API v3, e recusa pedido sem access_token ou
 // sem campo obrigatório. Uso: node tests/asaas-falso.mjs [porta]
 import { createServer } from "node:http";

@@ -14,9 +14,10 @@ o Tailwind em `src/app/globals.css`. Todos os componentes estão na rota
   celular. Quando houver capturas, medir largura da coluna, espaçamento entre
   botões e altura do botão para a comparação de layout da `/replica-diff`, e
   ajustar só os tokens de `layout`.
-- **Cor de destaque provisória** (`accent` #4338ca, um índigo neutro). A
-  `/replica-brand` define a cor da marca. A cor do Linktree não entra em nenhum
-  caso.
+- **Cor da marca: brasa** (`accent` #c2410c), definida na `/replica-brand`
+  (`replica/brand.md`), no lugar do índigo provisório (#4338ca). O perigo foi
+  para o carmim (#b0153f) para não se confundir com a ação principal. A cor do
+  original não entra em nenhum caso.
 - **Fonte:** Inter (SIL OFL), servida pelo próprio app (`src/app/fonts`). Nada
   de CDN do Google, que mandaria o IP de cada visitante para os EUA.
 - **Ícones:** Lucide (ISC) na interface; Simple Icons (CC0) para as redes

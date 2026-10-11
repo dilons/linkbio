@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/field";
 import { semQuebrar } from "@/lib/acao-segura";
+import { MARCA } from "@/lib/marca";
 
 // sem rede, a ação devolve uma mensagem em vez de derrubar a tela
 const acoes = {
@@ -126,7 +127,7 @@ export function FormCadastro() {
           error={estado.erros?.senha}
         />
         <Button type="submit" size="lg" loading={enviando}>
-          Criar minha conta
+          Criar minha página
         </Button>
         <p className="text-sm text-muted">
           Já tem conta?{" "}
@@ -283,7 +284,7 @@ export function FormUsername() {
 
   const atual = valor.trim().length >= 3 ? checagem : null;
   const erro = estado.erros?.username ?? (atual && !atual.livre ? atual.motivo : undefined);
-  const dica = atual?.livre ? `linkbio.com.br/${atual.username} está livre.` : "Letras, números, ponto e sublinhado.";
+  const dica = atual?.livre ? `${MARCA.dominio}/${atual.username} está livre.` : "Letras, números, ponto e sublinhado.";
 
   return (
     <form action={acao} className="flex flex-col gap-4" noValidate>
@@ -291,7 +292,7 @@ export function FormUsername() {
       <TextField
         label="Seu endereço"
         name="username"
-        prefix="linkbio.com.br/"
+        prefix={`${MARCA.dominio}/`}
         autoComplete="off"
         autoCapitalize="none"
         spellCheck={false}

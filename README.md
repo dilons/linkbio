@@ -1,12 +1,14 @@
-# linkbio
+# Chamaqui
 
-Página "link na bio" para criadores e pequenos negócios brasileiros, construída
-com o pacote Replica para validar as skills de ponta a ponta, inclusive as
-brasileiras (INPI e LGPD).
+Página de link na bio para quem vende e atende pelas redes no Brasil: todos os
+links, o WhatsApp e um formulário de contato numa página só, com cobrança em
+reais. Construída com o pacote Replica para validar as skills de ponta a
+ponta, inclusive as brasileiras (INPI e LGPD).
 
-O app de referência é o Linktree. O clone reproduz funcionalidades e fluxos,
-escritos do zero: nada do código, da marca, dos textos ou das imagens do
-original.
+As funcionalidades partem de um app de referência mapeado em
+`replica/recon.md`, reescritas do zero: nada do código, da marca, dos textos
+ou das imagens dele. Nome e identidade em `replica/brand.md` (Chamaqui é o
+nome de trabalho; as buscas de marca ainda precisam ser feitas).
 
 ## Onde está cada coisa
 
@@ -28,7 +30,7 @@ cp .env.example .env.local   # preencha com o que o db:start imprimiu
 npm run dev          # http://localhost:3000
 ```
 
-Conta demo: `demo@linkbio.test` / `linkbio-demo-2026`, página em
+Conta demo: `demo@chamaqui.test` / `chamaqui-demo-2026`, página em
 `/doces.da.ana`. Os emails do desenvolvimento (confirmação, senha nova,
 cobrança) chegam no Mailpit: http://127.0.0.1:54324. `/design` mostra o design
 system.
@@ -72,9 +74,9 @@ escrever código.
 | `/replica-backend` | feito: Supabase (banco, login, Storage), Asaas, emails, jobs, limites; `replica/backend.md` |
 | `/replica-lgpd` | |
 | `/replica-test` | feito: 87 casos de ponta a ponta + 37 do backend (com os da segunda `/replica-build`), 11 bugs (1 S1 e 7 S3 corrigidos); `replica/test-plan.md`, `replica/bugs.md` |
-| `/replica-diff` | feito e atualizado: funcionalidades 64,2/100 (era 48,9), must-haves 17 de 18 (falta validar o Asaas no sandbox); layout contra o original sem medir (rede bloqueia linktr.ee); `replica/parity.md` |
-| `/replica-entrepreneur` | mock: coleta pronta (`scripts/coletar_avaliacoes.py`, `replica/coleta.md`, `replica/temas.json`) e o caminho inteiro testado com 60 avaliações fictícias em `replica/mock/`; falta trazer as reais (a rede daqui bloqueia as fontes) |
-| `/replica-brand` | |
+| `/replica-diff` | feito e atualizado: funcionalidades 64,2/100 (era 48,9), must-haves 17 de 18 (falta validar o Asaas no sandbox); layout contra o original sem medir (a rede daqui bloqueia o site dele); `replica/parity.md` |
+| `/replica-entrepreneur` | mock: coleta pronta (`replica/ferramentas/coletar_avaliacoes.py`, `replica/coleta.md`, `replica/temas.json`) e o caminho inteiro testado com 60 avaliações fictícias em `replica/mock/`; falta trazer as reais (a rede daqui bloqueia as fontes) |
+| `/replica-brand` | feito: nome de trabalho Chamaqui (buscas de marca a rodar), paleta brasa com 0 falhas AA, briefing do logo, voz e 10 textos reescritos, sweep limpo; `replica/brand.md`, `replica/brand.json` |
 | `/replica-inpi` | |
 | `/replica-launch` | |
 | `/replica-deploy` | |

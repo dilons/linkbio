@@ -6,7 +6,7 @@ import { paginaPublica } from "@/lib/data/perfis";
 import { exigirPerfil } from "@/lib/sessao";
 import { Editor } from "./editor";
 
-export const metadata: Metadata = { title: "Seus links · linkbio" };
+export const metadata: Metadata = { title: "Seus links" };
 
 // S06 (com S07 nos modais de edição)
 export default function PaginaEditor() {

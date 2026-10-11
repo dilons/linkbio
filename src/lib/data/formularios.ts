@@ -1,6 +1,6 @@
 // Formulário de captura de email na página pública (F05, S11, S15, S17) e a
 // lista de inscritos (F07, S10). Nos dados dos inscritos o criador é o
-// controlador e o linkbio é operador (LGPD): o texto de consentimento que o
+// controlador e o app é operador (LGPD): o texto de consentimento que o
 // visitante aceitou fica gravado com cada inscrição, como prova.
 import { and, asc, desc, eq, gt, inArray, isNull, lte, min, or, sql } from "drizzle-orm";
 import { z } from "zod";

@@ -35,8 +35,8 @@ Linha sem link ou sem texto é descartada pelo `reviews.py`.
 ## Automático (fontes com feed ou API oficial)
 
 ```bash
-python3 scripts/coletar_avaliacoes.py                   # App Store Brasil e EUA (até 500 cada) e Hacker News
-python3 scripts/coletar_avaliacoes.py --paises br,us,pt # mais lojas da App Store
+python3 replica/ferramentas/coletar_avaliacoes.py                   # App Store Brasil e EUA (até 500 cada) e Hacker News
+python3 replica/ferramentas/coletar_avaliacoes.py --paises br,us,pt # mais lojas da App Store
 ```
 
 Só biblioteca padrão do Python, roda em qualquer máquina com Python 3. Mantém
@@ -48,7 +48,7 @@ as linhas que você colou à mão e não repete a mesma URL. Fontes:
 - **Hacker News**: API pública do Algolia, só o que cita o Linktree.
 - **Reddit** (opcional): precisa da sua chave da API oficial. Crie um app do
   tipo "script" em reddit.com/prefs/apps e rode com `REDDIT_CLIENT_ID`,
-  `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT="linkbio-pesquisa/0.1 by
+  `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT="chamaqui-pesquisa/0.1 by
   seu_usuario"` e `--reddit`.
 
 ## À mão, no navegador

@@ -2,7 +2,7 @@
 -- produção. Pessoas e negócios inventados; números fixos para telas e testes
 -- estáveis.
 --
--- Conta: demo@linkbio.test / linkbio-demo-2026, página /doces.da.ana
+-- Conta: demo@chamaqui.test / chamaqui-demo-2026, página /doces.da.ana
 
 -- O usuário entra direto em auth.users (com email já confirmado), como o
 -- Supabase Auth gravaria. Os campos de token vazios ('') são exigidos por ele.
@@ -12,15 +12,15 @@ insert into auth.users (
   confirmation_token, recovery_token, email_change, email_change_token_new
 ) values (
   '00000000-0000-0000-0000-000000000000', 'a0a0a0a0-0000-4000-8000-000000000001',
-  'authenticated', 'authenticated', 'demo@linkbio.test',
-  extensions.crypt('linkbio-demo-2026', extensions.gen_salt('bf')), now(),
+  'authenticated', 'authenticated', 'demo@chamaqui.test',
+  extensions.crypt('chamaqui-demo-2026', extensions.gen_salt('bf')), now(),
   '{"provider": "email", "providers": ["email"]}', '{}', now(), now(), '', '', '', ''
 );
 
 insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
 values (
   'a0a0a0a0-0000-4000-8000-000000000001', 'a0a0a0a0-0000-4000-8000-000000000001',
-  '{"sub": "a0a0a0a0-0000-4000-8000-000000000001", "email": "demo@linkbio.test", "email_verified": true}',
+  '{"sub": "a0a0a0a0-0000-4000-8000-000000000001", "email": "demo@chamaqui.test", "email_verified": true}',
   'email', now(), now(), now()
 );
 -- a linha em accounts vem do gatilho criar_conta

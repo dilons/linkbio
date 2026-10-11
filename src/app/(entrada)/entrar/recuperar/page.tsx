@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FormRecuperar } from "../../formularios";
 
-export const metadata: Metadata = { title: "Recuperar a senha · linkbio" };
+export const metadata: Metadata = { title: "Recuperar a senha" };
 
 // S18 (recuperar a senha)
 export default function Recuperar() {

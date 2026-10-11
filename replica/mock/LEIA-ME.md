@@ -16,7 +16,7 @@ Como o mock fica separado dos dados reais:
 - fontes `mock-*` e links em `https://mock.invalid/...` (o `.invalid` é
   reservado e não existe);
 - os textos falam de "o app", sem citar o Linktree nem pessoas;
-- o `scripts/coletar_avaliacoes.py` tira do `replica/reviews.csv` qualquer
+- o `replica/ferramentas/coletar_avaliacoes.py` tira do `replica/reviews.csv` qualquer
   linha `mock-*` ou `.invalid`;
 - nada daqui foi para a `features.csv`, o `replica/feedback.md` ou o
   `replica/fixes.md`.
@@ -27,7 +27,7 @@ inventadas.
 ## Trocar pelos dados reais
 
 ```bash
-python3 scripts/coletar_avaliacoes.py      # ou cole à mão (replica/coleta.md)
+python3 replica/ferramentas/coletar_avaliacoes.py      # ou cole à mão (replica/coleta.md)
 python3 ~/.claude/skills/replica-entrepreneur/reviews.py replica/reviews.csv \
   --themes replica/temas.json --out replica/feedback.md
 ```

@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps<"/[username]">): Pr
   if (!pagina) notFound();
   const nome = pagina.perfil.title || pagina.perfil.username;
   return {
-    title: `${nome} · linkbio`,
+    title: nome,
     description: pagina.perfil.bio ?? `Os links de ${nome}.`,
   };
 }

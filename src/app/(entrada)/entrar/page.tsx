@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AvisoDaUrl, FormLogin } from "../formularios";
 
-export const metadata: Metadata = { title: "Entrar · linkbio" };
+export const metadata: Metadata = { title: "Entrar" };
 
 // S18
 export default function Entrar() {

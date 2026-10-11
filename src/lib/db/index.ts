@@ -8,7 +8,7 @@ import * as schema from "./schema";
 
 export type Banco = PostgresJsDatabase<typeof schema>;
 
-type Global = typeof globalThis & { __linkbioBanco?: Banco; __linkbioSql?: postgres.Sql };
+type Global = typeof globalThis & { __bancoDoApp?: Banco; __sqlDoApp?: postgres.Sql };
 
 function abrir(): Banco {
   const url = process.env.DATABASE_URL;
@@ -21,7 +21,7 @@ function abrir(): Banco {
     idle_timeout: 20,
     connect_timeout: 10,
   });
-  (globalThis as Global).__linkbioSql = sql;
+  (globalThis as Global).__sqlDoApp = sql;
   return drizzle(sql, { schema });
 }
 
@@ -30,16 +30,16 @@ export async function db(): Promise<Banco> {
   // da pré-renderização. Fora dele (scripts e testes) não há pedido a esperar.
   if (process.env.NEXT_RUNTIME) await connection();
   const g = globalThis as Global;
-  g.__linkbioBanco ??= abrir();
-  return g.__linkbioBanco;
+  g.__bancoDoApp ??= abrir();
+  return g.__bancoDoApp;
 }
 
 /** Fecha as conexões (scripts e testes, para o processo terminar). */
 export async function fecharBanco(): Promise<void> {
   const g = globalThis as Global;
-  await g.__linkbioSql?.end({ timeout: 5 });
-  g.__linkbioSql = undefined;
-  g.__linkbioBanco = undefined;
+  await g.__sqlDoApp?.end({ timeout: 5 });
+  g.__sqlDoApp = undefined;
+  g.__bancoDoApp = undefined;
 }
 
 /** Erro de violação de unicidade do Postgres (23505), direto ou embrulhado pelo Drizzle. */

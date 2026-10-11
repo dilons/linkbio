@@ -5,14 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { assinaturaDaConta, ehPro, precoProCentavos } from "@/lib/billing";
 import { exigirConta } from "@/lib/sessao";
 import { BotaoCancelar, FormAssinar } from "./formularios";
+import { MARCA } from "@/lib/marca";
 
-export const metadata: Metadata = { title: "Seu plano · linkbio" };
+export const metadata: Metadata = { title: "Seu plano" };
 
 const reais = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const dia = (iso: string) => new Date(iso).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
 
 // só o que já existe; agendamento e insights longos entram quando forem construídos
-const VANTAGENS = ["Página sem a marca do linkbio no rodapé"];
+const VANTAGENS = [`Página sem a marca do ${MARCA.nome} no rodapé`];
 
 // S14
 export default function Plano() {

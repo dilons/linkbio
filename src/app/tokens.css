@@ -2,23 +2,23 @@
 
 :root {
   --bg: #ffffff;
-  --surface: #f5f6f8;
-  --surface-2: #eceef2;
-  --border: #e2e5ea;
-  --border-input: #7d8592;
-  --text: #15181d;
-  --text-muted: #555d6b;
-  --accent: #4338ca;
-  --accent-hover: #3730a3;
-  --accent-soft: #eef0ff;
+  --surface: #f7f5f2;
+  --surface-2: #eeeae5;
+  --border: #e5e0d9;
+  --border-input: #81776d;
+  --text: #1a1613;
+  --text-muted: #5c534b;
+  --accent: #c2410c;
+  --accent-hover: #9a3412;
+  --accent-soft: #fff1e8;
   --on-accent: #ffffff;
-  --danger: #b42318;
+  --danger: #b0153f;
   --on-danger: #ffffff;
   --success: #1a7f45;
-  --warning: #8f5300;
+  --warning: #8a4b00;
   --paid: #7a4d00;
   --paid-soft: #fff4dc;
-  --focus: #4338ca;
+  --focus: #c2410c;
   --font-sans-stack: Inter Variable, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   --tk-radius-sm: 6px;
   --tk-radius-md: 10px;

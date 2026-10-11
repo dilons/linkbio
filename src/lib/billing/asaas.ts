@@ -1,7 +1,8 @@
 // Cliente mínimo da API v3 do Asaas (https://docs.asaas.com). Só o que o
-// linkbio usa: cliente, assinatura, cobranças da assinatura e cancelamento.
+// app usa: cliente, assinatura, cobranças da assinatura e cancelamento.
 // Sandbox por padrão; produção só com ASAAS_API_URL=https://api.asaas.com/v3
 // e a chave de produção, na /replica-deploy.
+import { MARCA } from "@/lib/marca";
 
 export class ErroAsaas extends Error {
   constructor(
@@ -23,7 +24,7 @@ async function chamar<T>(metodo: "GET" | "POST" | "DELETE", caminho: string, cor
       access_token: chave,
       "content-type": "application/json",
       // contas criadas a partir de 06/11/2024 precisam mandar User-Agent
-      "user-agent": "linkbio",
+      "user-agent": MARCA.nome,
     },
     body: corpo === undefined ? undefined : JSON.stringify(corpo),
     signal: AbortSignal.timeout(15_000),

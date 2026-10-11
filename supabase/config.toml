@@ -2,7 +2,7 @@
 # https://supabase.com/docs/guides/local-development/cli/config
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
 # working directory name when running `supabase init`.
-project_id = "linkbio"
+project_id = "chamaqui"
 
 [api]
 enabled = true
@@ -255,26 +255,26 @@ otp_expiry = 3600
 
 # Em produção o Supabase Auth manda pelo SMTP do Resend, do domínio próprio
 # (configurado no painel, com a chave do Resend como senha):
-# host = "smtp.resend.com", port = 465, user = "resend", sender_name = "linkbio"
+# host = "smtp.resend.com", port = 465, user = "resend", sender_name = "Chamaqui"
 
-# Emails escritos para o linkbio. Os links levam a /auth/confirm com o
+# Emails escritos para o Chamaqui (nome em src/lib/marca.ts; aqui é fixo). Os links levam a /auth/confirm com o
 # token_hash, que funciona mesmo abrindo o email em outro aparelho. Em
 # produção: `npx supabase config push` ou colar no painel.
 [auth.email.template.confirmation]
-subject = "Confirme seu email no linkbio"
+subject = "Confirme seu email no Chamaqui"
 content_path = "./supabase/templates/confirmacao.html"
 
 [auth.email.template.recovery]
-subject = "Crie uma senha nova no linkbio"
+subject = "Crie uma senha nova no Chamaqui"
 content_path = "./supabase/templates/recuperar-senha.html"
 
 [auth.email.template.email_change]
-subject = "Confirme seu novo email no linkbio"
+subject = "Confirme seu novo email no Chamaqui"
 content_path = "./supabase/templates/trocar-email.html"
 
 [auth.email.notification.password_changed]
 enabled = true
-subject = "Sua senha do linkbio mudou"
+subject = "Sua senha do Chamaqui mudou"
 content_path = "./supabase/templates/senha-alterada.html"
 
 [auth.sms]
@@ -342,7 +342,7 @@ max_frequency = "5s"
 # Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
 # `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
 # `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.
-# Login com Google, com o app OAuth do próprio linkbio no Google Cloud
+# Login com Google, com o app OAuth do próprio Chamaqui no Google Cloud
 # (tela de consentimento só com email e perfil). Ligue com as variáveis no
 # .env da raiz e NEXT_PUBLIC_LOGIN_GOOGLE=1 no app.
 [auth.external.google]

@@ -1,8 +1,10 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { FormBlock } from "./form-block";
 import { PublicLinkButton, type Forma, type Preenchimento } from "./link-button";
 import { ProfileHeader } from "./profile-header";
 import { SocialRow, type Rede } from "./social-row";
+import { MARCA } from "@/lib/marca";
 
 export type LinkPublico = {
   id: string;
@@ -77,7 +79,9 @@ export function PublicPage({
         {!redesNoTopo && <SocialRow redes={redes} />}
         {comMarca && (
           <footer className="pt-4 text-center text-xs text-t-muted">
-            Feito com <span className="font-semibold">linkbio</span>
+            <Link href="/" prefetch={false} className="rounded-sm hover:underline">
+              Faça a sua no <span className="font-semibold">{MARCA.nome}</span>
+            </Link>
           </footer>
         )}
       </Raiz>

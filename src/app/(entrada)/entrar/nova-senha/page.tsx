@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FormSenhaNova } from "../../formularios";
 
-export const metadata: Metadata = { title: "Senha nova · linkbio" };
+export const metadata: Metadata = { title: "Senha nova" };
 
 // Chega-se aqui pelo link de recuperação (/auth/confirm já abriu a sessão).
 export default function SenhaNova() {

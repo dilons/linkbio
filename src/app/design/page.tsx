@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Vitrine } from "./vitrine";
 
 export const metadata: Metadata = {
-  title: "Design system · linkbio",
+  title: "Design system",
   robots: { index: false },
 };
 

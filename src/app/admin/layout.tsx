@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { fazerLogout } from "@/app/acoes";
 import { ToastProvider } from "@/components/ui/toast";
 import { NavAdmin } from "./nav";
+import { MARCA } from "@/lib/marca";
 
 export default function LayoutAdmin({ children }: { children: ReactNode }) {
   return (
@@ -14,7 +15,7 @@ export default function LayoutAdmin({ children }: { children: ReactNode }) {
         >
           <div className="flex items-center justify-between px-4" style={{ height: "var(--layout-admin-header)" }}>
             <Link href="/admin" className="text-lg font-bold text-fg">
-              linkbio
+              {MARCA.nome}
             </Link>
             <form action={fazerLogout} className="md:hidden">
               <button type="submit" className="flex items-center gap-1 rounded-md px-2 py-1 text-sm text-muted hover:bg-surface">

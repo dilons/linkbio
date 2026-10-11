@@ -30,7 +30,7 @@ export type LinkPublico = {
 export type RedePublica = { platform: string; url: string };
 export type PaginaPublica = {
   perfil: Perfil;
-  /** plano pago: a página sai sem a marca do linkbio no rodapé */
+  /** plano pago: a página sai sem a marca do app no rodapé */
   pro: boolean;
   tema: string;
   links: LinkPublico[];

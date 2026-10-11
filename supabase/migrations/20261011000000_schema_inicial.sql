@@ -1,4 +1,4 @@
--- linkbio: schema inicial (Postgres no Supabase, região São Paulo).
+-- Chamaqui: schema inicial (Postgres no Supabase, região São Paulo).
 -- Cópia de replica/schema.sql (da /replica-architect). Daqui em diante o schema
 -- muda só por migrações novas nesta pasta; o Drizzle lê o resultado.
 --
@@ -122,7 +122,7 @@ create table forms (
   updated_at timestamptz not null default now()
 );
 
--- Dados das pessoas do criador: aqui o linkbio é operador (LGPD).
+-- Dados das pessoas do criador: aqui o app é operador (LGPD).
 create table submissions (
   id uuid primary key default gen_random_uuid(),
   profile_id uuid not null references profiles (id) on delete cascade,

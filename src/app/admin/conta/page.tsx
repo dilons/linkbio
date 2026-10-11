@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { perfilDaConta } from "@/lib/data/perfis";
 import { exigirConta } from "@/lib/sessao";
 import { ExcluirConta, ExcluirPagina } from "./excluir";
+import { MARCA } from "@/lib/marca";
 
-export const metadata: Metadata = { title: "Conta · linkbio" };
+export const metadata: Metadata = { title: "Conta" };
 
 // S13 (troca de endereço e exportação dos dados chegam na etapa 6 e na /replica-lgpd)
 export default function Conta() {
@@ -51,7 +52,7 @@ async function Dados() {
             Excluir só a página
           </h2>
           <p className="text-sm text-muted">
-            Apaga <strong className="break-all text-fg">linkbio.com.br/{perfil.username}</strong> e tudo o que está nela. Sua conta continua, e
+            Apaga <strong className="break-all text-fg">{MARCA.dominio}/{perfil.username}</strong> e tudo o que está nela. Sua conta continua, e
             você pode criar outra página depois.
           </p>
           <div>

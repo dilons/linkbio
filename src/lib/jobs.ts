@@ -11,10 +11,11 @@ import { analyticsSalts, jobRuns, subscriptions } from "@/lib/db/schema";
 import { enviarEmail } from "@/lib/email";
 import { modelos } from "@/lib/email/modelos";
 import { env } from "@/lib/env";
+import { MARCA } from "@/lib/marca";
 
 type Resultado = Record<string, number>;
 
-const site = () => env.site() ?? "https://linkbio.com.br";
+const site = () => env.site() ?? MARCA.site;
 
 /** 00:05: cria o sal de hoje e de amanhã e apaga os de mais de um dia. */
 async function sal(): Promise<Resultado> {

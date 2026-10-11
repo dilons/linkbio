@@ -108,7 +108,7 @@ test.describe("F02 redes sociais e prévia", () => {
     await page.getByLabel("Título", { exact: true }).fill("Cardápio da semana");
     await page.getByLabel("Endereço", { exact: true }).fill("exemplo.com.br/cardapio");
     await page.getByRole("button", { name: "Adicionar", exact: true }).click();
-    await expect(page.getByText("Link adicionado")).toBeVisible();
+    await expect(page.getByText("Pronto, o link está na página")).toBeVisible();
     await botao.click();
     await expect(dlg.getByText("Cardápio da semana")).toBeVisible();
     await dlg.getByRole("button", { name: "Fechar" }).click();

@@ -10,6 +10,6 @@ export const env = {
   supabaseUrl: () => exigir("NEXT_PUBLIC_SUPABASE_URL"),
   supabaseChavePublica: () => exigir("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
   supabaseChaveSecreta: () => exigir("SUPABASE_SECRET_KEY"),
-  /** Origem pública do app, para links em emails e no Asaas (ex.: https://linkbio.com.br). */
+  /** Origem pública do app, para links em emails e no Asaas (ex.: https://chamaqui.com.br). */
   site: () => process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? null,
 };

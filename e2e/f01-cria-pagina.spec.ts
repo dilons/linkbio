@@ -1,11 +1,12 @@
 // F01 Criador cria a página e compartilha: S01 -> S02 -> S03 -> S06 -> copiar a URL.
 import { capturar, contaPronta, emailPara, emailsPara, entrar, expect, linkDoEmail, semRolagemLateral, semViolacoes, sql, sufixo, test, DEMO } from "./apoio";
+import { MARCA } from "../src/lib/marca";
 
 async function cadastrar(page: import("@playwright/test").Page, email: string, senha = "senha-boa-123") {
   await page.goto("/cadastro");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Senha").fill(senha);
-  await page.getByRole("button", { name: "Criar minha conta" }).click();
+  await page.getByRole("button", { name: "Criar minha página" }).click();
 }
 
 test.describe("F01 cria a página e compartilha", () => {
@@ -24,12 +25,12 @@ test.describe("F01 cria a página e compartilha", () => {
     await page.goto(await linkDoEmail(email, "Confirme seu email"));
     await page.waitForURL("**/comecar");
     await page.getByLabel("Seu endereço").fill(username);
-    await expect(page.getByText(`linkbio.com.br/${username} está livre.`)).toBeVisible();
+    await expect(page.getByText(`${MARCA.dominio}/${username} está livre.`)).toBeVisible();
     await semViolacoes(page, "S03");
     await capturar(page, "S03");
     await page.getByRole("button", { name: "Continuar" }).click();
     await page.waitForURL("**/admin");
-    await expect(page.getByText("Sua página ainda não tem links")).toBeVisible();
+    await expect(page.getByText("Nada por aqui ainda")).toBeVisible();
     await capturar(page, "S06-vazio");
 
     await page.getByRole("textbox", { name: "Título" }).fill("Meu site");
@@ -69,7 +70,7 @@ test.describe("F01 cria a página e compartilha", () => {
     await cadastrar(page, c.email, "outra-senha-qualquer");
     await expect(page.getByRole("heading", { name: "Confira seu email" })).toBeVisible();
     await expect(page.getByText(/já tem conta,\s*entre por aqui/)).toBeVisible();
-    const aviso = await emailPara(c.email, "Você já tem conta no linkbio");
+    const aviso = await emailPara(c.email, `Você já tem conta no ${MARCA.nome}`);
     expect(aviso.HTML).toContain("/entrar");
     expect((await emailsPara(c.email)).filter((m) => m.Subject.includes("Confirme"))).toHaveLength(0);
   });
@@ -85,12 +86,12 @@ test.describe("F01 cria a página e compartilha", () => {
     await expect(page.getByLabel("Seu endereço")).toBeVisible();
   });
 
-  test("F01-E4 dois cliques seguidos em Criar minha conta: uma conta, tela de confirmação", async ({ page }) => {
+  test("F01-E4 dois cliques seguidos em Criar minha página: uma conta, tela de confirmação", async ({ page }) => {
     const email = `dani.${sufixo()}@exemplo.com`;
     await page.goto("/cadastro");
     await page.getByLabel("Email").fill(email);
     await page.getByLabel("Senha").fill("senha-boa-123");
-    await page.getByRole("button", { name: "Criar minha conta" }).dblclick();
+    await page.getByRole("button", { name: "Criar minha página" }).dblclick();
     await expect(page.getByRole("heading", { name: "Confira seu email" })).toBeVisible();
     const [{ n }] = await sql`select count(*)::int as n from auth.users where email = ${email}`;
     expect(n).toBe(1);
@@ -98,12 +99,12 @@ test.describe("F01 cria a página e compartilha", () => {
 
   test("F01-E5 email com maiúsculas e +: a conta vale em minúsculas", async ({ page, context }) => {
     const base = `edu.${sufixo()}`;
-    await cadastrar(page, `${base.toUpperCase()}+LinkBio@Exemplo.com`);
+    await cadastrar(page, `${base.toUpperCase()}+Teste@Exemplo.com`);
     await expect(page.getByRole("heading", { name: "Confira seu email" })).toBeVisible();
-    await page.goto(await linkDoEmail(`${base}+linkbio@exemplo.com`, "Confirme seu email"));
+    await page.goto(await linkDoEmail(`${base}+teste@exemplo.com`, "Confirme seu email"));
     await page.waitForURL("**/comecar");
     await context.clearCookies();
-    await entrar(page, `${base}+linkbio@exemplo.com`, "senha-boa-123");
+    await entrar(page, `${base}+teste@exemplo.com`, "senha-boa-123");
     await page.waitForURL("**/comecar");
   });
 
@@ -164,7 +165,7 @@ test.describe("F01 cria a página e compartilha", () => {
     await capturar(page, "S01-erro");
     await page.getByLabel("Email").fill("ivo@");
     await page.getByLabel("Senha").fill("senha-boa-123");
-    await page.getByRole("button", { name: "Criar minha conta" }).click();
+    await page.getByRole("button", { name: "Criar minha página" }).click();
     await expect(page.getByText("Confira o email.")).toBeVisible();
     const [{ n }] = await sql`select count(*)::int as n from auth.users where email like ${"ivo%"}`;
     expect(n).toBe(0);
@@ -203,7 +204,7 @@ test.describe("F01 cria a página e compartilha", () => {
     await capturar(page, "S03");
     await page.keyboard.press("Enter");
     await page.waitForURL("**/admin");
-    await page.getByText("Sua página ainda não tem links").waitFor();
+    await page.getByText("Nada por aqui ainda").waitFor();
     await capturar(page, "S06-vazio");
     await tabAte("Título");
     await page.keyboard.type("Fale comigo no WhatsApp com um título bem comprido para testar");

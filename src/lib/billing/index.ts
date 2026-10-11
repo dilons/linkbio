@@ -1,12 +1,13 @@
 // Assinatura do plano Pro pelo Asaas (Pix, cartão ou boleto). O estado da
 // assinatura mora no nosso banco, atualizado pelos webhooks; a tela lê daqui e
 // nunca confia no navegador. Pagamento acontece na página do próprio Asaas:
-// o linkbio não vê nem guarda dados de cartão. O CPF ou CNPJ vai direto para o
+// o app não vê nem guarda dados de cartão. O CPF ou CNPJ vai direto para o
 // Asaas (exigência da cobrança) e não fica no nosso banco.
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { billingEvents, subscriptions } from "@/lib/db/schema";
 import { asaas, ErroAsaas, type FormaAsaas } from "./asaas";
+import { MARCA } from "@/lib/marca";
 
 export type Forma = "pix" | "card" | "boleto";
 const FORMAS: Record<Forma, FormaAsaas> = { pix: "PIX", card: "CREDIT_CARD", boleto: "BOLETO" };
@@ -126,7 +127,7 @@ async function iniciarAssinaturaTravada(
       value: preco / 100,
       nextDueDate: hojeEmSaoPaulo(),
       cycle: "MONTHLY",
-      description: "linkbio Pro (mensal)",
+      description: `${MARCA.plano} (mensal)`,
       externalReference: accountId,
     });
     const valores = {

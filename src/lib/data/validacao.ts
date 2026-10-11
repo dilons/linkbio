@@ -4,7 +4,7 @@ export const USERNAME = /^[a-z0-9._]{3,30}$/;
 
 /**
  * "@Doces.Da.Ana " vira "doces.da.ana". Aceita o segmento da URL ainda
- * codificado ("%40ana"): quem compartilha linkbio.com.br/@ana, no hábito do
+ * codificado ("%40ana"): quem compartilha chamaqui.com.br/@ana, no hábito do
  * Instagram, cai na página certa (BUG-006).
  */
 export function normalizarUsername(bruto: string): string {

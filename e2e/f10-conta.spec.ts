@@ -1,5 +1,6 @@
 // F10 Criador exclui a conta ou só a página (S13). A troca de endereço ainda não foi construída.
 import { ASAAS, capturar, contaPronta, emailPara, entrar, entrarNoPainel, expect, semViolacoes, sql, test } from "./apoio";
+import { MARCA } from "../src/lib/marca";
 
 const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==", "base64");
 
@@ -78,7 +79,7 @@ test.describe("F10 exclui a conta ou a página", () => {
     await page.goto("/cadastro");
     await page.getByLabel("Email").fill(c.email);
     await page.getByLabel("Senha").fill("senha-nova-123");
-    await page.getByRole("button", { name: "Criar minha conta" }).click();
+    await page.getByRole("button", { name: "Criar minha página" }).click();
     await expect(page.getByRole("heading", { name: "Confira seu email" })).toBeVisible();
     const link = (await emailPara(c.email, "Confirme seu email")).HTML.match(/href="([^"]*\/auth\/confirm\?[^"]+)"/)![1].replaceAll("&amp;", "&");
     await page.goto(link);
@@ -111,7 +112,7 @@ test.describe("F10 exclui a conta ou a página", () => {
     await page.waitForURL("**/comecar?aviso=pagina-excluida");
     await expect(page.getByText("Sua página foi excluída")).toBeVisible();
 
-    await emailPara(c.email, "Sua página do linkbio foi excluída");
+    await emailPara(c.email, `Sua página do ${MARCA.nome} foi excluída`);
     const [p] = await sql`select account_id, title, deleted_at from profiles where id = ${c.perfil}`;
     expect(p.account_id).toBe(c.id);
     expect(p.title).toBeNull();
@@ -130,10 +131,10 @@ test.describe("F10 exclui a conta ou a página", () => {
     await page.goto("/admin");
     await page.waitForURL("**/comecar");
     await page.getByLabel("Seu endereço").fill(c.username);
-    await expect(page.getByText(`linkbio.com.br/${c.username} está livre.`)).toBeVisible();
+    await expect(page.getByText(`${MARCA.dominio}/${c.username} está livre.`)).toBeVisible();
     await page.getByRole("button", { name: "Continuar" }).click();
     await page.waitForURL("**/admin");
-    await expect(page.getByText("Sua página ainda não tem links.")).toBeVisible();
+    await expect(page.getByText("Nada por aqui ainda.")).toBeVisible();
   });
 
   test("F10-E5 com o Pro ativo, excluir só a página não mexe na assinatura", async ({ page }) => {

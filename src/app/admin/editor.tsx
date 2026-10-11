@@ -31,6 +31,7 @@ import { useToast } from "@/components/ui/toast";
 import { SEM_CONEXAO, semQuebrar, tentar } from "@/lib/acao-segura";
 import { cn } from "@/lib/cn";
 import { REDES, type Plataforma } from "@/lib/plataformas";
+import { MARCA } from "@/lib/marca";
 
 export type ConfigFormulario = { pedirNome: boolean; consentimento: string; sucesso: string };
 export type LinkEditor = { id: string; titulo: string; url: string; ativo: boolean; formulario: ConfigFormulario | null };
@@ -118,7 +119,7 @@ export function Editor(props: Props) {
           </h2>
           {itens.length === 0 ? (
             <p className="rounded-lg border border-dashed border-input bg-bg p-6 text-center text-sm text-muted">
-              Sua página ainda não tem links. Comece pelo mais importante: ele vai ficar no topo.
+              Nada por aqui ainda. Comece pelo link que mais importa, como seu WhatsApp ou sua loja: ele fica no topo.
             </p>
           ) : (
             <SortableList
@@ -201,7 +202,7 @@ function Endereco({ username, onPrevia }: { username: string; onPrevia: () => vo
     <section className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-bg p-4 shadow-card">
       <div className="min-w-0">
         <p className="text-xs font-medium text-muted">Sua página</p>
-        <p className="truncate text-base font-semibold text-fg">linkbio.com.br{caminho}</p>
+        <p className="truncate text-base font-semibold text-fg">{MARCA.dominio}{caminho}</p>
       </div>
       <div className="flex gap-2">
         <Button variant="secondary" size="sm" onClick={copiar}>
@@ -546,7 +547,7 @@ function NovoLink() {
   const toast = useToast();
   const [estado, acao, enviando] = useActionState(async (anterior: Estado, form: FormData) => {
     const r = await novoLinkSeguro(anterior, form);
-    if (r.ok) toast("Link adicionado");
+    if (r.ok) toast("Pronto, o link está na página");
     else if (r.erro) toast(r.erro, "erro");
     // sem rede, o que foi digitado volta para os campos
     return r.erro && !r.valores ? { ...r, valores: { titulo: String(form.get("titulo") ?? ""), url: String(form.get("url") ?? "") } } : r;

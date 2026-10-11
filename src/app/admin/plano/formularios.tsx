@@ -5,6 +5,7 @@ import { assinarPro, cancelarPro } from "@/app/acoes";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/field";
 import { semQuebrar } from "@/lib/acao-segura";
+import { MARCA } from "@/lib/marca";
 
 const assinarSeguro = semQuebrar(assinarPro);
 const cancelarSeguro = semQuebrar(cancelarPro);
@@ -48,7 +49,7 @@ export function FormAssinar({ pedeDocumento }: { pedeDocumento: boolean }) {
             autoComplete="off"
             defaultValue={estado.valores?.documento}
             error={estado.erros?.documento}
-            hint="Exigido para emitir a cobrança. Vai direto para o Asaas; o linkbio não guarda."
+            hint={`Exigido para emitir a cobrança. Vai direto para o Asaas; o ${MARCA.nome} não guarda.`}
           />
         </div>
       )}

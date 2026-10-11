@@ -1,25 +1,25 @@
-  AAA   17.79:1  text                     on bg                   
-  AAA   16.45:1  text                     on surface              
-  AAA   15.32:1  text                     on surface-2            
-  AA     6.64:1  text-muted               on bg                   
-  AA     6.14:1  text-muted               on surface              
-  AAA    7.90:1  on-accent                on accent               
-  AAA    9.93:1  on-accent                on accent-hover         
-  AAA    7.90:1  accent                   on bg                   
-  AAA    7.31:1  accent                   on surface              
-  AA     6.98:1  accent                   on accent-soft          
-  AA     6.57:1  danger                   on bg                   
-  AA     6.57:1  on-danger                on danger               
+  AAA   17.98:1  text                     on bg                   
+  AAA   16.52:1  text                     on surface              
+  AAA   15.01:1  text                     on surface-2            
+  AAA    7.52:1  text-muted               on bg                   
+  AA     6.91:1  text-muted               on surface              
+  AA     5.18:1  on-accent                on accent               
+  AAA    7.31:1  on-accent                on accent-hover         
+  AA     5.18:1  accent                   on bg                   
+  AA     4.76:1  accent                   on surface              
+  AA     4.69:1  accent                   on accent-soft          
+  AA     6.94:1  danger                   on bg                   
+  AA     6.94:1  on-danger                on danger               
   AA     5.04:1  success                  on bg                   
-  AA     6.17:1  warning                  on bg                   
+  AA     6.80:1  warning                  on bg                   
   AA     6.65:1  paid                     on paid-soft            
-  AAA   17.79:1  bg                       on text                 
-  AA     5.65:1  warning                  on paid-soft            
-  AA     4.66:1  success                  on surface              
-  PASS   3.72:1  border-input             on bg                   ui
-  PASS   3.44:1  border-input             on surface              ui
-  PASS   7.90:1  focus                    on bg                   ui
-  PASS   7.31:1  focus                    on surface              ui
+  AAA   17.98:1  bg                       on text                 
+  AA     6.23:1  warning                  on paid-soft            
+  AA     4.63:1  success                  on surface              
+  PASS   4.38:1  border-input             on bg                   ui
+  PASS   4.03:1  border-input             on surface              ui
+  PASS   5.18:1  focus                    on bg                   ui
+  PASS   4.76:1  focus                    on surface              ui
   AAA   16.29:1  theme-papel-text         on theme-papel-bg       
   AA     6.42:1  theme-papel-text-muted   on theme-papel-bg       
   AAA   17.00:1  theme-papel-button-text  on theme-papel-button-bg 

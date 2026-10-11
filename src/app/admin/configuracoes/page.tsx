@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { EmConstrucao } from "@/components/app/em-construcao";
 
-export const metadata: Metadata = { title: "Configurações · linkbio" };
+export const metadata: Metadata = { title: "Configurações" };
 
 // S12
 export default function Pagina() {

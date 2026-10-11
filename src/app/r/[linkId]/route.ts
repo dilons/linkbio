@@ -1,6 +1,8 @@
 import { registrarClique, usernameDoLink } from "@/lib/data/eventos";
 import { dentroDosLimites } from "@/lib/data/limites";
 import { infoDoPedido } from "@/lib/visitante";
+import { MARCA } from "@/lib/marca";
+import { CORES } from "@/lib/cores";
 
 // Clique num link da página pública: conta e redireciona para a URL gravada.
 // O redirecionamento sai sempre; acima do limite, o clique só não é contado.
@@ -23,17 +25,17 @@ const escapar = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)
 function indisponivel(username: string | null): Response {
   const volta = username
     ? `<a href="/${escapar(username)}">Ver a página de ${escapar(username)}</a>`
-    : `<a href="/">Ir para o linkbio</a>`;
+    : `<a href="/">Ir para o ${MARCA.nome}</a>`;
   const html = `<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex"><title>Link indisponível · linkbio</title>
+<meta name="robots" content="noindex"><title>Link indisponível · ${MARCA.nome}</title>
 <style>
   body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fafafa;color:#1c1c1f;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
   main{max-width:28rem;padding:2rem;text-align:center}
   h1{font-size:1.5rem;margin:0 0 .75rem}
   p{color:#5b5b66;margin:0 0 1.5rem;line-height:1.5}
-  a{display:inline-block;padding:.75rem 1.25rem;border-radius:999px;background:#4338ca;color:#fff;font-weight:600;text-decoration:none}
-  a:focus-visible{outline:2px solid #4338ca;outline-offset:3px}
+  a{display:inline-block;padding:.75rem 1.25rem;border-radius:999px;background:${CORES.accent};color:${CORES["on-accent"]};font-weight:600;text-decoration:none}
+  a:focus-visible{outline:2px solid ${CORES.focus};outline-offset:3px}
 </style></head>
 <body><main><h1>Este link não está mais disponível</h1>
 <p>Ele pode ter sido desligado ou ficado fora do ar depois que a página abriu.</p>

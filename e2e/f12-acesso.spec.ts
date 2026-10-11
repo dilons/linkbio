@@ -1,5 +1,6 @@
 // F12 (derivado, não está no recon): entrar, recuperar a senha, sessão e saída.
 import { capturar, contaPronta, emailPara, entrar, entrarNoPainel, expect, linkDoEmail, semViolacoes, sufixo, test } from "./apoio";
+import { MARCA } from "../src/lib/marca";
 
 test.describe("F12 acesso: entrar, senha e sessão", () => {
   test("F12-H1 entrar e sair deste aparelho", async ({ page }) => {
@@ -28,7 +29,7 @@ test.describe("F12 acesso: entrar, senha e sessão", () => {
     await page.goto("/cadastro");
     await page.getByLabel("Email").fill(email);
     await page.getByLabel("Senha").fill("senha-boa-123");
-    await page.getByRole("button", { name: "Criar minha conta" }).click();
+    await page.getByRole("button", { name: "Criar minha página" }).click();
     await expect(page.getByRole("heading", { name: "Confira seu email" })).toBeVisible();
     await page.context().clearCookies();
     await page.waitForTimeout(1500); // o Auth local pede 1 s entre envios
@@ -66,7 +67,7 @@ test.describe("F12 acesso: entrar, senha e sessão", () => {
     await p2.getByRole("button", { name: "Salvar e entrar" }).click();
     await p2.waitForURL("**/admin");
     await outro.close();
-    await emailPara(c.email, "senha do linkbio mudou");
+    await emailPara(c.email, `senha do ${MARCA.nome} mudou`);
     await entrar(page, c.email, c.senha);
     await expect(page.getByText("Email ou senha não conferem.")).toBeVisible();
     await entrarNoPainel(page, { email: c.email, senha: "outra-senha-456" });

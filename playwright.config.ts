@@ -1,6 +1,6 @@
 import { defineConfig } from "@playwright/test";
 
-// Testes de ponta a ponta do linkbio (replica/test-plan.md). Rodam contra o
+// Testes de ponta a ponta do Chamaqui (replica/test-plan.md). Rodam contra o
 // build de produção local e o Supabase local:
 //   npm run db:start && npm run db:reset && npm run build && npm run test:e2e
 try {

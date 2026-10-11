@@ -28,4 +28,11 @@ for (const [theme, roles] of Object.entries(tokens.color.theme ?? {})) {
 }
 
 writeFileSync("src/app/tokens.css", lines.join("\n"));
+
+// As mesmas cores para o que não lê CSS: emails e a página crua de /r/[id].
+const cores = Object.fromEntries(Object.entries(tokens.color).filter(([, v]) => typeof v === "string"));
+writeFileSync(
+  "src/lib/cores.ts",
+  `// Gerado por scripts/tokens.mjs a partir de replica/design/tokens.json. Não edite.\nexport const CORES = ${JSON.stringify(cores, null, 2)} as const;\n`,
+);
 console.log(`tokens.css: ${Object.keys(tokens.color.theme ?? {}).length} temas`);

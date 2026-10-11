@@ -7,7 +7,7 @@ import { listarInscritos } from "@/lib/data/formularios";
 import { exigirPerfil } from "@/lib/sessao";
 import { TirarDaLista } from "./tirar";
 
-export const metadata: Metadata = { title: "Audiência · linkbio" };
+export const metadata: Metadata = { title: "Audiência" };
 
 const LIMITE_NA_TELA = 1000;
 const quando = (iso: string) =>

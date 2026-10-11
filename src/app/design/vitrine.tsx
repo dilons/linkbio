@@ -20,6 +20,7 @@ import { StatTile } from "@/components/ui/stat-tile";
 import { Switch } from "@/components/ui/switch";
 import { ThemeCard } from "@/components/ui/theme-card";
 import { ToastProvider, useToast } from "@/components/ui/toast";
+import { MARCA } from "@/lib/marca";
 
 const CORES = [
   "bg", "surface", "surface-2", "border", "border-input", "text", "text-muted", "accent",
@@ -77,7 +78,7 @@ function Conteudo() {
       <header className="flex flex-col gap-2 pb-6">
         <h1 className="text-display font-bold text-fg">Design system</h1>
         <p className="text-base text-muted">
-          Todos os componentes do linkbio em todos os estados, antes de qualquer tela. Tokens em{" "}
+          Todos os componentes do {MARCA.nome} em todos os estados, antes de qualquer tela. Tokens em{" "}
           <code className="font-mono text-sm">replica/design/tokens.json</code>.
         </p>
       </header>
@@ -117,8 +118,8 @@ function Conteudo() {
 
       <Secao titulo="Campos">
         <div className="grid gap-6 md:grid-cols-2">
-          <TextField label="Seu endereço" prefix="linkbio.com.br/" defaultValue="doces.da.ana" hint="Letras, números, ponto e sublinhado." />
-          <TextField label="Seu endereço" prefix="linkbio.com.br/" defaultValue="admin" error="Esse endereço é reservado. Tente outro." />
+          <TextField label="Seu endereço" prefix={`${MARCA.dominio}/`} defaultValue="doces.da.ana" hint="Letras, números, ponto e sublinhado." />
+          <TextField label="Seu endereço" prefix={`${MARCA.dominio}/`} defaultValue="admin" error="Esse endereço é reservado. Tente outro." />
           <TextArea label="Bio" maxLength={160} value={bio} onChange={(e) => setBio(e.target.value)} />
           <TextField label="Desabilitado" defaultValue="não dá para editar" disabled />
           <ColorField label="Cor do texto (contraste baixo)" value={corTexto} onChange={setCorTexto} contraFundo="#fafafa" />

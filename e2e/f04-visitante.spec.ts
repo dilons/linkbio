@@ -1,5 +1,6 @@
 // F04 Visitante abre a página e clica num link: S15 -> link externo, com o clique contado.
 import { capturar, contaPronta, DEMO, expect, semRolagemLateral, semViolacoes, sql, test } from "./apoio";
+import { MARCA } from "../src/lib/marca";
 
 const BOT = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)";
 
@@ -27,7 +28,7 @@ test.describe("F04 visitante abre a página e clica", () => {
     const r = await request.get("/ninguem.mora.aqui", { headers: { "user-agent": BOT } });
     expect(r.status()).toBe(404);
     await page.goto("/ninguem.mora.aqui");
-    await expect(page.getByRole("heading", { name: "Essa página não existe (ainda)" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Ninguém mora neste endereço (ainda)" })).toBeVisible();
     await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", "noindex");
     await semViolacoes(page, "404");
     await capturar(page, "404");
@@ -41,7 +42,7 @@ test.describe("F04 visitante abre a página e clica", () => {
     const r = await request.get(`/r/${l.id}`, { maxRedirects: 0 });
     expect(r.status()).toBe(404);
     await page.goto(`/${c.username}`);
-    await expect(page.getByRole("heading", { name: "Essa página não existe (ainda)" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Ninguém mora neste endereço (ainda)" })).toBeVisible();
   });
 
   test.describe(() => {
@@ -121,7 +122,7 @@ test.describe("F04 visitante abre a página e clica", () => {
 
   test("F04-E10 a prévia do link no WhatsApp tem título e descrição do perfil", async ({ request }) => {
     const html = await (await request.get(`/${DEMO.username}`, { headers: { "user-agent": "WhatsApp/2.23.20.0" } })).text();
-    expect(html).toContain("<title>Doces da Ana · linkbio</title>");
+    expect(html).toContain(`<title>Doces da Ana · ${MARCA.nome}</title>`);
     expect(html).toContain('content="Confeitaria artesanal em BH. Encomendas pelo link abaixo."');
   });
 });

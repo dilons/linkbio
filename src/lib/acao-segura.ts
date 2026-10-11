@@ -4,7 +4,7 @@
 // também chegam como erro, seguem para o Next.
 import { unstable_rethrow } from "next/navigation";
 
-export const SEM_CONEXAO = "Sem conexão com o servidor. Confira a internet e tente de novo.";
+export const SEM_CONEXAO = "Sem internet agora. Nada foi perdido: tente de novo quando a conexão voltar.";
 
 /** Para useActionState: devolve { erro } em vez de derrubar a página. */
 export function semQuebrar<E extends { erro?: string }, A extends unknown[]>(acao: (...args: A) => Promise<E>) {

@@ -2,10 +2,10 @@
 """Coleta avaliações do Linktree pelas fontes oficiais e públicas, para a
 /replica-entrepreneur. Só biblioteca padrão do Python.
 
-    python3 scripts/coletar_avaliacoes.py                 # App Store (br, us) e Hacker News
-    python3 scripts/coletar_avaliacoes.py --paises br,us,pt --paginas 10
-    REDDIT_CLIENT_ID=... REDDIT_CLIENT_SECRET=... REDDIT_USER_AGENT="linkbio-pesquisa/0.1 by seu_usuario" \\
-        python3 scripts/coletar_avaliacoes.py --reddit
+    python3 replica/ferramentas/coletar_avaliacoes.py                 # App Store (br, us) e Hacker News
+    python3 replica/ferramentas/coletar_avaliacoes.py --paises br,us,pt --paginas 10
+    REDDIT_CLIENT_ID=... REDDIT_CLIENT_SECRET=... REDDIT_USER_AGENT="chamaqui-pesquisa/0.1 by seu_usuario" \\
+        python3 replica/ferramentas/coletar_avaliacoes.py --reddit
 
 Fontes, todas dentro dos termos de cada uma:
 - App Store: o feed RSS público de avaliações da Apple (customerreviews).
@@ -42,7 +42,7 @@ PAUSA = 1.0  # segundos entre pedidos: no ritmo de uma pessoa, sem martelar ning
 
 
 def pegar(url, cabecalhos=None, dados=None):
-    pedido = urllib.request.Request(url, data=dados, headers={"User-Agent": "linkbio-pesquisa/0.1", **(cabecalhos or {})})
+    pedido = urllib.request.Request(url, data=dados, headers={"User-Agent": "chamaqui-pesquisa/0.1", **(cabecalhos or {})})
     with urllib.request.urlopen(pedido, timeout=30) as r:
         corpo = r.read().decode("utf-8")
     time.sleep(PAUSA)

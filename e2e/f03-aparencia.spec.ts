@@ -58,9 +58,10 @@ test.describe("F03 personaliza a aparência", () => {
       await entrarNoPainel(page, c);
       await page.goto("/admin/aparencia");
       await page.getByRole("button", { name: /Oceano/ }).waitFor();
+      await page.waitForLoadState("networkidle"); // pré-carregamentos do menu terminam antes de cair a rede
       await context.setOffline(true);
       await page.getByRole("button", { name: /Oceano/ }).click();
-      await expect(page.getByText("Sem conexão com o servidor")).toBeVisible();
+      await expect(page.getByText("Sem internet agora")).toBeVisible();
       await expect(page.getByRole("button", { name: /Papel/ })).toHaveAttribute("aria-pressed", "true");
       await context.setOffline(false);
       expect(await temaNoBanco(c.perfil)).toBe("padrao");

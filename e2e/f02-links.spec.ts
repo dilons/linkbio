@@ -35,7 +35,7 @@ test.describe("F02 adiciona e organiza links", () => {
     await novoLink(page, "Cardápio", "https://exemplo.com.br/cardapio");
     expect(await ordem(page)).toEqual(["Cardápio", "Loja"]);
     const previa = page.getByRole("complementary", { name: "Prévia" });
-    await expect(previa.getByRole("link")).toHaveText(["Cardápio", "Loja"]);
+    await expect(previa.getByRole("navigation").getByRole("link")).toHaveText(["Cardápio", "Loja"]);
 
     await page.getByRole("button", { name: "Editar Loja" }).click();
     await page.getByRole("dialog").getByLabel("Título").fill("Loja online");
@@ -58,7 +58,7 @@ test.describe("F02 adiciona e organiza links", () => {
 
     await page.getByRole("switch", { name: "Mostrar Cardápio na página" }).click();
     await expect(page.getByText("Desligado")).toBeVisible();
-    await expect(previa.getByRole("link")).toHaveText(["Loja online"]);
+    await expect(previa.getByRole("navigation").getByRole("link")).toHaveText(["Loja online"]);
     await semViolacoes(page, "S06");
     await capturar(page, "S06");
 
@@ -174,15 +174,17 @@ test.describe("F02 adiciona e organiza links", () => {
   test("F02-E8 sem rede: adicionar e ligar avisam e o painel continua de pé", async ({ page, context }) => {
     const c = await contaPronta("e8", [["Ligado", "https://exemplo.com.br/1"]]);
     await entrarNoPainel(page, c);
+    // os pré-carregamentos das rotas do menu terminam antes de cair a rede (senão o chunk em voo falha no console)
+    await page.waitForLoadState("networkidle");
     await context.setOffline(true);
     await titulo(page).fill("Sem rede");
     await endereco(page).fill("exemplo.com.br");
     await adicionar(page).click();
-    await expect(page.getByText("Sem conexão com o servidor").first()).toBeVisible();
+    await expect(page.getByText("Sem internet agora").first()).toBeVisible();
     await expect(titulo(page), "o que foi digitado continua").toHaveValue("Sem rede");
     const chave = page.getByRole("switch", { name: "Mostrar Ligado na página" });
     await chave.click();
-    await expect(page.getByText("Sem conexão com o servidor").first()).toBeVisible();
+    await expect(page.getByText("Sem internet agora").first()).toBeVisible();
     await expect(chave, "volta ao estado salvo").toHaveAttribute("aria-checked", "true");
     await expect(page.getByRole("heading", { name: "Adicionar link" })).toBeVisible();
     await context.setOffline(false);

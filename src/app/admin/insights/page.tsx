@@ -5,7 +5,7 @@ import { StatTile } from "@/components/ui/stat-tile";
 import { totais } from "@/lib/data/eventos";
 import { exigirPerfil } from "@/lib/sessao";
 
-export const metadata: Metadata = { title: "Insights · linkbio" };
+export const metadata: Metadata = { title: "Insights" };
 
 const numero = new Intl.NumberFormat("pt-BR");
 const pct = new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 });
