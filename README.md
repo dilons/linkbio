@@ -72,7 +72,7 @@ escrever código.
 | `/replica-backend` | feito: Supabase (banco, login, Storage), Asaas, emails, jobs, limites; `replica/backend.md` |
 | `/replica-lgpd` | |
 | `/replica-test` | feito: 64 casos de ponta a ponta + 30 do backend, 11 bugs (1 S1 e 7 S3 corrigidos); `replica/test-plan.md`, `replica/bugs.md` |
-| `/replica-diff` | próximo |
+| `/replica-diff` | feito: funcionalidades 48,9/100, must-haves 11 de 18, não lança ainda; layout contra o original sem medir (rede bloqueia linktr.ee); `replica/parity.md` |
 | `/replica-entrepreneur` | |
 | `/replica-brand` | |
 | `/replica-inpi` | |
