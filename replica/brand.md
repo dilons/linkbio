@@ -58,19 +58,47 @@ original, nem é um "-ly" dele.
 Triagem, não liberação jurídica. Antes de gastar com o nome, um advogado de
 marcas faz a busca de verdade. "a rodar" = ninguém rodou ainda.
 
-| checagem | Chamaqui | Logali | Plaquinha | Cartaz | Balcão |
+| checagem | Chamaqui (e "chama aqui") | Logali | Plaquinha | Cartaz | Balcão |
 | --- | --- | --- | --- | --- | --- |
-| Brasil, INPI (pePI), classes 9 e 42 | a rodar: termos e plano em `replica/inpi.md` | a rodar (reserva, mesmo plano) | a rodar | a rodar | a rodar |
-| EUA (tmsearch.uspto.gov, 9 e 42) | a rodar | a rodar | a rodar | a rodar | a rodar |
-| UE (EUIPO eSearch ou TMview) | a rodar | a rodar | a rodar | a rodar | a rodar |
-| Canadá (ised-isde.canada.ca) | a rodar | a rodar | a rodar | a rodar | a rodar |
-| global (WIPO Global Brand Database) | a rodar | a rodar | a rodar | a rodar | a rodar |
-| domínio .com.br (Registro.br) | a rodar | a rodar | a rodar | a rodar | a rodar |
-| domínio .com (whois) | a rodar | a rodar | a rodar | a rodar | a rodar |
-| App Store e Google Play (nome exato) | a rodar | a rodar | a rodar | a rodar | a rodar |
-| perfis (Instagram, TikTok, X, GitHub) | a rodar | a rodar | a rodar | a rodar | a rodar |
-| nome empresarial (Junta Comercial) | a rodar | a rodar | a rodar | a rodar | a rodar |
-| web: "nome + categoria" | **2026-10-11**: nenhum app ou serviço com o nome; os resultados foram para o Cerro Champaquí (Argentina), outra grafia | **2026-10-11**: nenhum app com o nome; só nomes parecidos de outras áreas (Logi-App, LogDog) | **2026-10-11**: nada com o nome na categoria | **2026-10-11**: nenhum app de link na bio; "Cartaz" aparece como categoria de design no Canva | **2026-10-11**: nada específico na categoria |
+| Brasil, INPI (pePI), classes 9 e 42 | a executar: você, com os termos de `replica/inpi.md` | a executar (mesmo plano) | a rodar | a rodar | a rodar |
+| EUA (tmsearch.uspto.gov, 9 e 42) | **2026-10-11**: "chamaqui" 0; "chamaaqui" 0; "chamaki" 2 (classes 30 e 8, chá e canivete); "chama aqui" 237 por palavra solta (CHAMA, AQUI), nenhuma "CHAMA AQUI" nas cerca de 45 vistas: conferir a lista inteira nas classes 9 e 42 no navegador | **2026-10-11**: **pedido LOGALI 99841847**, Logali Tech LLC, classes **41 e 42** (consultoria e software), depositado em 2026-05-23, aprovado para publicação (sai em 2026-10-27), com base em registro estrangeiro; LOGALIS, classe 9, registrada (outra empresa) | a rodar | a rodar | a rodar |
+| UE e outros escritórios (TMview) | **2026-10-11**: "chamaqui" 36 parecidas (CHAMAQUITO, CHAMAQUITA...), nenhuma idêntica; nas classes 9 e 42 só "EL CHAMAQUITO", Argentina, classe 9, expirada. No Brasil: CHAMAQUITO (35, extinta) e CHAMAQUITAS (25, roupa, registrada). "chama aqui" 43, nenhuma idêntica nas classes 9 e 42 | **2026-10-11**: **Logali registrada na EUIPO (019302964)**, classes **41 e 42**, de 2026-01-14, Logali Europe SRL; **registro internacional WIPO 1922021** (Protocolo de Madri, 41 e 42, 2026-04-08): os países designados não carregaram, conferir no Madrid Monitor se o Brasil está entre eles | a rodar | a rodar | a rodar |
+| Canadá (ised-isde.canada.ca) | a executar: você (a base abre, a busca automatizada não foi feita) | a executar: você | a rodar | a rodar | a rodar |
+| global (WIPO Global Brand Database) | a executar: você (a WIPO barra automação com um desafio anti-robô) | a executar: você (e o 1922021 no Madrid Monitor) | a rodar | a rodar | a rodar |
+| domínio .com.br (Registro.br, RDAP oficial) | **2026-10-11**: chamaqui.com.br **registrado** (pessoa física, desde 2025-07), vencido em 2026-07-29, status "inactive", DNS de estacionamento: pode entrar no processo de liberação do Registro.br; chamaaqui.com.br **registrado e ativo** até 2027 (pessoa física), com um site no ar (ver abaixo) | **2026-10-11**: logali.com.br **registrado** (pessoa física, desde 2018), ativo até 2027, sem site respondendo | a rodar | a rodar | a rodar |
+| domínio .com (RDAP oficial da Verisign) | **2026-10-11**: chamaqui.com **registrado** (2024-04 a 2027-04), DNS de "suspenso para verificação"; chamaaqui.com registrado, vencido em 2026-08-27, em período de resgate | **2026-10-11**: logali.com **registrado** desde 1997, ativo, sem site respondendo | a rodar | a rodar | a rodar |
+| App Store (API de busca oficial, Brasil e EUA) | **2026-10-11**: "chamaqui" 0; "chama aqui" e "chamaaqui": **"São Judas - Chama Aqui!"**, da Zellar Servicos de Conservacao Ltda | **2026-10-11**: 0 com o nome | a rodar | a rodar | a rodar |
+| Google Play | a executar: você, no navegador | a executar: você | a rodar | a rodar | a rodar |
+| perfis | **2026-10-11**: GitHub @chamaqui **ocupado** (usuário de 2023, sem repositórios); YouTube @chamaqui **ocupado**; @chamaaqui livre nos dois. Instagram, TikTok e X: a executar, você, no navegador | **2026-10-11**: GitHub @logali **ocupado** (organização de 2020, sem repositórios); YouTube @logali **ocupado**. Instagram, TikTok e X: a executar, você | a rodar | a rodar | a rodar |
+| nome empresarial (Junta Comercial, REDESIM) | a executar: você | a executar: você | a rodar | a rodar | a rodar |
+| web: "nome + categoria" | **2026-10-11**: nenhum app ou serviço com o nome; os resultados foram para o Cerro Champaquí (Argentina), outra grafia. **Mas** o domínio chamaaqui.com.br tem no ar a **"ChamaAqui E-commerce"**: loja virtual para comerciantes, com Pix e cartão, planos de R$ 49,99 a R$ 149,99 por mês, sem CNPJ na página | **2026-10-11**: nenhum app com o nome; só nomes parecidos de outras áreas (Logi-App, LogDog) | **2026-10-11**: nada com o nome na categoria | **2026-10-11**: nenhum app de link na bio; "Cartaz" aparece como categoria de design no Canva | **2026-10-11**: nada específico na categoria |
+
+Fontes: domínios pelo RDAP, o serviço oficial que substitui o whois
+(`rdap.registro.br`, `rdap.verisign.com`), porque o `whois` não está
+instalado no WSL; App Store pela API de busca da Apple; GitHub pela API;
+YouTube pelo status da página; USPTO e TMview pelos sites, uma busca por
+termo. Os titulares pessoas físicas ficam sem nome aqui (o repositório é
+público).
+
+### O que isso muda (2026-10-11)
+
+**Chamaqui tem um conflito no Brasil que nenhuma base de marca mostra.** A
+"ChamaAqui E-commerce" tem o mesmo som, vende software para quem vende online
+no Brasil (o mesmo público e a classe 42) e o domínio dela está no ar desde
+2024. Mesmo sem registro no INPI, quem usa de boa-fé há mais de seis meses
+tem precedência (Lei 9.279, art. 129, §1º). Há também o app "São Judas -
+Chama Aqui!" (classe 9) e nenhum domínio exato livre (o chamaqui.com.br pode
+ser liberado; o chamaaqui.com.br é dela).
+
+**Logali, a reserva, está pior.** Registrada na União Europeia e no registro
+internacional nas classes 41 e 42 (software), em 2026, com pedido nos EUA
+saindo na publicação; .com e .com.br ocupados.
+
+**Recomendação:** não gastar com nenhum dos dois antes do pePI. A busca no
+INPI decide se a ChamaAqui depositou (e se o registro internacional do Logali
+designa o Brasil). Se qualquer um aparecer, reabrir a lista de nomes. Com o
+ângulo novo das avaliações ("sem pegadinha no dinheiro", `replica/fixes.md`),
+é uma boa hora para isso. A decisão é sua.
 
 A busca na web foi feita por uma ferramenta de busca que devolve resumo e
 links, não pelo Google: vale como primeiro filtro, nada mais.
@@ -112,7 +140,9 @@ indisponível) com `npm run tokens`. Os modelos de email do Supabase
 
 **Cores do original** no `brand.json`, só para o sweep pegar alguma que
 escape: #43e660 e #39e09b (verdes) e #7551e9 (violeta). As fontes públicas
-divergem e nenhuma é a página de marca deles:
+divergem e nenhuma é a página de marca deles. Em 2026-10-11 a busca não achou
+página de marca, kit de imprensa nem guia oficial; as três cores continuam no
+`brand.json` e o sweep segue limpo:
 [Brandkit](https://brandkit.pro/brand/linktree),
 [Brandfetch](https://brandfetch.com/linktree.com.md).
 

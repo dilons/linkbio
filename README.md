@@ -78,7 +78,7 @@ escrever código.
 | `/replica-test` | feito: 87 casos de ponta a ponta + 37 do backend (com os da segunda `/replica-build`), 11 bugs (1 S1 e 7 S3 corrigidos); `replica/test-plan.md`, `replica/bugs.md` |
 | `/replica-diff` | feito e atualizado: funcionalidades 64,2/100 (era 48,9), must-haves 17 de 18 (falta validar o Asaas no sandbox); layout contra o original sem medir (a rede daqui bloqueia o site dele); `replica/parity.md` |
 | `/replica-entrepreneur` | feito com dados reais, provisório: 605 avaliações de 2 plataformas (App Store e Hacker News; falta a terceira, que é colada à mão), `replica/feedback.md`, `replica/fixes.md`, 8 correções na `features.csv`. O ângulo do mock (vender no Brasil) não se sustentou; o recomendado é "sem pegadinha no dinheiro" |
-| `/replica-brand` | feito: nome de trabalho Chamaqui (buscas de marca a rodar), paleta brasa com 0 falhas AA, briefing do logo, voz e 10 textos reescritos, sweep limpo; `replica/brand.md`, `replica/brand.json` |
+| `/replica-brand` | feito: nome de trabalho Chamaqui (buscas de marca a rodar), paleta brasa com 0 falhas AA, briefing do logo, voz e 10 textos reescritos, sweep limpo; `replica/brand.md`, `replica/brand.json`. Checagens de 2026-10-11: conflito para os dois nomes ("ChamaAqui E-commerce" no Brasil; Logali registrada na UE e no registro internacional), domínios exatos ocupados; ver `replica/brand.md` |
 | `/replica-inpi` | preparado: classes 9 e 42, 18 termos de busca (som, grafia, sentido e tradução), reserva Logali, checagens e passo a passo do depósito em `replica/inpi.md`; falta você fazer a busca no pePI (a rede daqui bloqueia o INPI) |
 | `/replica-launch` | |
 | `/replica-deploy` | |

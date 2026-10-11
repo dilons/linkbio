@@ -13,6 +13,13 @@ Por isso: pesquisar, e se estiver limpo, **depositar antes de divulgar o nome**
 
 ## A escolha (provisória até a busca)
 
+> **2026-10-11:** as checagens fora do pePI acharam um conflito para cada
+> nome (detalhes na `brand.md`, "O que isso muda"). Chamaqui: a "ChamaAqui
+> E-commerce", no ar no Brasil desde 2024, com o mesmo som e o mesmo público
+> (art. 129, §1º, uso anterior de boa-fé). Logali: registrada na União
+> Europeia e no registro internacional nas classes 41 e 42. A busca no pePI
+> continua sendo o que decide; não deposite nenhum dos dois antes dela.
+
 | | nome | por quê |
 | --- | --- | --- |
 | escolhido | **Chamaqui** | escolhido pelo dono na `/replica-brand`. Palavra inventada (composta de "chama aqui"), o que tende a dar marca forte; diz o ângulo (vende e atende); fácil de falar em português |
@@ -98,13 +105,13 @@ logotipo, a cor nem o mercado de cada marca.
 | --- | --- | --- | --- | --- |
 | INPI: marcas no Brasil | os termos acima, Radical e Exata | https://busca.inpi.gov.br/pePI/ | a executar | |
 | INPI: confirmar as classes | lista NCL 13-2026; classes pensadas: 9, 42 | https://www.gov.br/inpi/pt-br/servicos/marcas/classificacao-marcas | a executar | |
-| Marcas internacionais | o original pode ter registro via Protocolo de Madri designando o Brasil | https://branddb.wipo.int | a executar | |
-| Domínio .com.br | `whois chamaqui.com.br` e `chamaaqui.com.br` (registrar .br pede CPF ou CNPJ) | https://registro.br | a executar | |
-| Domínio .com | `whois chamaqui.com` | - | a executar | |
+| Marcas internacionais | o original pode ter registro via Protocolo de Madri designando o Brasil | https://branddb.wipo.int | a executar: a WIPO barra busca automatizada; você pesquisa "linktree" e eu organizo. No TMview, a reserva **Logali** tem registro internacional 1922021 (classes 41 e 42); conferir no Madrid Monitor se designa o Brasil | 2026-10-11 |
+| Domínio .com.br | `whois chamaqui.com.br` e `chamaaqui.com.br` (registrar .br pede CPF ou CNPJ) | https://registro.br | pelo RDAP do Registro.br (sem `whois` no WSL): chamaqui.com.br registrado por pessoa física, vencido em 2026-07-29, "inactive" (pode ir para a liberação); chamaaqui.com.br registrado e ativo até 2027, com a loja virtual "ChamaAqui E-commerce" no ar; logali.com.br registrado até 2027 | 2026-10-11 |
+| Domínio .com | `whois chamaqui.com` | - | pelo RDAP da Verisign: chamaqui.com registrado até 2027-04 (DNS de suspenso para verificação); chamaaqui.com vencido, em resgate; logali.com registrado desde 1997 | 2026-10-11 |
 | Nome empresarial | consulta de viabilidade de nome na Junta Comercial do seu estado (REDESIM) | https://www.gov.br/empresas-e-negocios/pt-br/redesim | a executar | |
-| App Store e Google Play (Brasil) | buscar "Chamaqui" | - | a executar | |
-| Redes | Instagram, TikTok, X, YouTube, GitHub: @chamaqui | - | a executar | |
-| Web | "Chamaqui" + link na bio | busca na web | nenhum app ou serviço com o nome; os resultados foram para o Cerro Champaquí (Argentina) | 2026-10-11 |
+| App Store e Google Play (Brasil) | buscar "Chamaqui" | - | App Store (API de busca): "chamaqui" 0; "chama aqui" traz "São Judas - Chama Aqui!" (Zellar Servicos de Conservacao Ltda); "logali" 0. Google Play: a executar, você | 2026-10-11 |
+| Redes | Instagram, TikTok, X, YouTube, GitHub: @chamaqui | - | GitHub e YouTube @chamaqui ocupados (e @logali também); @chamaaqui livre nos dois. Instagram, TikTok e X: a executar, você, no navegador | 2026-10-11 |
+| Web | "Chamaqui" + link na bio | busca na web | nenhum app ou serviço com o nome; os resultados foram para o Cerro Champaquí (Argentina). Pelo domínio, achada a "ChamaAqui E-commerce" (chamaaqui.com.br): mesmo som, software para lojas, no Brasil, no ar desde 2024. Incluir "chamaaqui" e "chama aqui" no pePI e olhar as classes 9, 35 e 42 com atenção | 2026-10-11 |
 
 O nome empresarial (Junta, vale no estado) e a marca (INPI, vale no país) são
 proteções diferentes: o nome do app é protegido pela marca.
