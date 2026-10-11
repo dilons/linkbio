@@ -20,10 +20,12 @@ nome de trabalho; as buscas de marca ainda precisam ser feitas).
 
 ## Rodar
 
-Precisa de Node 22 e Docker (para o Supabase local).
+Precisa de Node 22 (`nvm use` lê o `.nvmrc`), Python 3 e Docker (para o
+Supabase local).
 
 ```bash
 npm install
+npx playwright install chromium   # o Chromium da versão fixada, para os testes
 npm run db:start     # Supabase local: Postgres, Auth, Storage, API e Mailpit
 npm run db:reset     # migrações de supabase/migrations + supabase/seed.sql
 cp .env.example .env.local   # preencha com o que o db:start imprimiu

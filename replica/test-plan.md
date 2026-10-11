@@ -16,6 +16,14 @@ Cada caso de ponta a ponta falha com erro no console ou resposta 5xx, roda o
 axe nas telas que visita e se apresenta com um IP próprio (os limites de uso
 são por IP). As quatro últimas rodadas da suíte inteira passaram sem falha.
 
+**2026-10-11, WSL (Node 22.23.3, Docker 29.3.0):** na primeira rodada fora da
+nuvem, F03-E1 e F04-E9 falharam sempre. Era o teste, não o app: o esqueleto
+do Suspense da página pública já tem `data-theme="papel"`, e o conteúdo chega
+uns 300 ms depois do load (medido: load em 30 ms, `h1` em 330 ms). O axe rodava
+sobre o esqueleto e os Tabs passavam antes de haver um link. Agora o
+`semViolacoes` espera não haver `aria-busy` e o F04-E9 espera o link. Depois:
+87 de 87 e 37 de 37.
+
 ## Resultado
 
 | | casos | passaram | falharam |

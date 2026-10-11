@@ -111,6 +111,8 @@ test.describe("F04 visitante abre a página e clica", () => {
     const c = await contaPronta("tecla", [["Loja", "https://exemplo.com.br/loja"]]);
     await page.goto(`/${c.username}`);
     await page.route("https://exemplo.com.br/**", (r) => r.fulfill({ body: "destino" }));
+    // o esqueleto do Suspense não tem nada focável: Tab só depois do conteúdo
+    await page.getByRole("link", { name: "Loja" }).waitFor();
     for (let i = 0; i < 10; i++) {
       await page.keyboard.press("Tab");
       if ((await page.evaluate(() => document.activeElement?.textContent)) === "Loja") break;

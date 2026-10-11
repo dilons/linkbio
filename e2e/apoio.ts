@@ -60,8 +60,10 @@ export { expect };
 /** axe na tela atual: nenhuma violação. */
 export async function semViolacoes(page: Page, tela: string) {
   // só com a página assentada (título já no lugar); no meio de uma navegação o
-  // axe vê um documento pela metade
+  // axe vê um documento pela metade. Nem com o esqueleto do Suspense na tela:
+  // o React 19 revela o conteúdo uns 300 ms depois do load
   await expect(page).toHaveTitle(new RegExp(MARCA.nome));
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
   const r = await new AxeBuilder({ page }).analyze();
   expect(r.violations.map((v) => `${tela}: ${v.id} (${v.nodes.length})`)).toEqual([]);
 }
