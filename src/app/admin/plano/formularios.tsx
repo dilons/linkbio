@@ -4,6 +4,10 @@ import { useActionState } from "react";
 import { assinarPro, cancelarPro } from "@/app/acoes";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/field";
+import { semQuebrar } from "@/lib/acao-segura";
+
+const assinarSeguro = semQuebrar(assinarPro);
+const cancelarSeguro = semQuebrar(cancelarPro);
 
 const FORMAS = [
   { valor: "pix", rotulo: "Pix", detalhe: "cobrança todo mês, paga pelo app do banco" },
@@ -13,7 +17,7 @@ const FORMAS = [
 
 /** Assinar o Pro. O pagamento acontece na página do Asaas; aqui não entra cartão. */
 export function FormAssinar({ pedeDocumento }: { pedeDocumento: boolean }) {
-  const [estado, acao, enviando] = useActionState(assinarPro, {});
+  const [estado, acao, enviando] = useActionState(assinarSeguro, {});
   const forma = estado.valores?.forma ?? "pix";
   return (
     <form action={acao} className="flex flex-col gap-4" noValidate>
@@ -59,7 +63,7 @@ export function FormAssinar({ pedeDocumento }: { pedeDocumento: boolean }) {
 
 /** Cancelar é um clique. O Pro continua até o fim do período pago. */
 export function BotaoCancelar() {
-  const [estado, acao, enviando] = useActionState(cancelarPro, {});
+  const [estado, acao, enviando] = useActionState(cancelarSeguro, {});
   return (
     <form action={acao} className="flex flex-col items-start gap-2">
       {estado.erro && (

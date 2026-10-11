@@ -5,11 +5,14 @@ import { excluirMinhaConta } from "@/app/acoes";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { TextField } from "@/components/ui/field";
+import { semQuebrar } from "@/lib/acao-segura";
+
+const excluirSeguro = semQuebrar(excluirMinhaConta);
 
 /** Zona de perigo da S13: excluir a conta, confirmando pelo endereço da página. */
 export function ExcluirConta({ confirmacao }: { confirmacao: string }) {
   const [aberto, setAberto] = useState(false);
-  const [estado, acao, enviando] = useActionState(excluirMinhaConta, {});
+  const [estado, acao, enviando] = useActionState(excluirSeguro, {});
   return (
     <Dialog
       open={aberto}

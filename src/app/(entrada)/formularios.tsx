@@ -16,6 +16,17 @@ import {
 } from "@/app/acoes";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/field";
+import { semQuebrar } from "@/lib/acao-segura";
+
+// sem rede, a ação devolve uma mensagem em vez de derrubar a tela
+const acoes = {
+  cadastrar: semQuebrar(cadastrar),
+  reenviar: semQuebrar(reenviar),
+  fazerLogin: semQuebrar(fazerLogin),
+  pedirSenhaNova: semQuebrar(pedirSenhaNova),
+  salvarSenhaNova: semQuebrar(salvarSenhaNova),
+  escolherUsername: semQuebrar(escolherUsername),
+};
 
 function ErroGeral({ estado }: { estado: Estado }) {
   if (!estado.erro) return null;
@@ -51,7 +62,7 @@ function BotaoGoogle() {
 
 /** S02: o link foi para o email. Mostrada no lugar do formulário de cadastro e na rota /confirmar. */
 export function ConfirmeSeuEmail({ email }: { email?: string }) {
-  const [estado, acao, enviando] = useActionState(reenviar, {});
+  const [estado, acao, enviando] = useActionState(acoes.reenviar, {});
   return (
     <div className="flex flex-col gap-4">
       <MailCheck aria-hidden className="size-10 text-accent" />
@@ -88,7 +99,7 @@ export function ConfirmeSeuEmail({ email }: { email?: string }) {
 
 /** S01: criar conta. Depois de enviar, vira a S02. */
 export function FormCadastro() {
-  const [estado, acao, enviando] = useActionState(cadastrar, {});
+  const [estado, acao, enviando] = useActionState(acoes.cadastrar, {});
   if (estado.ok) return <ConfirmeSeuEmail email={estado.valores?.email} />;
   return (
     <div className="flex flex-col gap-4">
@@ -152,7 +163,7 @@ export function AvisoDaUrl() {
 
 /** S18: entrar. Email sem confirmar ganha o botão de mandar o link de novo. */
 export function FormLogin() {
-  const [estado, acao, enviando] = useActionState(fazerLogin, {});
+  const [estado, acao, enviando] = useActionState(acoes.fazerLogin, {});
   if (estado.naoConfirmado) {
     return (
       <div className="flex flex-col gap-4">
@@ -186,7 +197,7 @@ export function FormLogin() {
 
 /** S18 (recuperar): pede o link de senha nova. */
 export function FormRecuperar() {
-  const [estado, acao, enviando] = useActionState(pedirSenhaNova, {});
+  const [estado, acao, enviando] = useActionState(acoes.pedirSenhaNova, {});
   if (estado.ok) {
     return (
       <div className="flex flex-col gap-4">
@@ -221,7 +232,7 @@ export function FormRecuperar() {
 
 /** Depois do link de recuperação: a senha nova, duas vezes. */
 export function FormSenhaNova() {
-  const [estado, acao, enviando] = useActionState(salvarSenhaNova, {});
+  const [estado, acao, enviando] = useActionState(acoes.salvarSenhaNova, {});
   return (
     <form action={acao} className="flex flex-col gap-4" noValidate>
       <ErroGeral estado={estado} />
@@ -247,7 +258,7 @@ type Checagem = { livre: boolean; username: string; motivo?: string } | null;
 
 /** S03: escolher o endereço, com checagem enquanto digita. */
 export function FormUsername() {
-  const [estado, acao, enviando] = useActionState(escolherUsername, {});
+  const [estado, acao, enviando] = useActionState(acoes.escolherUsername, {});
   const [valor, setValor] = useState("");
   const [checagem, setChecagem] = useState<Checagem>(null);
 
@@ -273,6 +284,7 @@ export function FormUsername() {
 
   return (
     <form action={acao} className="flex flex-col gap-4" noValidate>
+      <ErroGeral estado={estado} />
       <TextField
         label="Seu endereço"
         name="username"

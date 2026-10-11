@@ -13,8 +13,13 @@ import { LinkCard } from "@/components/ui/link-card";
 import { PhonePreview } from "@/components/ui/phone-preview";
 import { SortableList } from "@/components/ui/sortable-list";
 import { useToast } from "@/components/ui/toast";
+import { SEM_CONEXAO, semQuebrar, tentar } from "@/lib/acao-segura";
 
 export type LinkEditor = { id: string; titulo: string; url: string; ativo: boolean };
+
+const novoLinkSeguro = semQuebrar(novoLink);
+const salvarLinkSeguro = semQuebrar(salvarLink);
+const salvarCabecalhoSeguro = semQuebrar(salvarCabecalho);
 
 type Props = {
   username: string;
@@ -33,24 +38,34 @@ export function Editor(props: Props) {
   const [editando, setEditando] = useState<LinkEditor | null>(null);
   const [excluindo, setExcluindo] = useState<LinkEditor | null>(null);
 
+  // As três mudam a lista na hora (otimista) e voltam atrás se o servidor não confirmar.
   async function alternar(link: LinkEditor, ativo: boolean) {
     setItens((ls) => ls.map((l) => (l.id === link.id ? { ...l, ativo } : l)));
-    if (!(await ligarDesligarLink(link.id, ativo))) toast("Não deu para salvar. Tente de novo.", "erro");
+    const ok = await tentar(() => ligarDesligarLink(link.id, ativo), null);
+    if (ok) return;
+    setItens((ls) => ls.map((l) => (l.id === link.id ? { ...l, ativo: !ativo } : l)));
+    toast(ok === null ? SEM_CONEXAO : "Não deu para salvar. Tente de novo.", "erro");
   }
 
   async function reordenar(novos: LinkEditor[]) {
+    const antes = itens;
     setItens(novos);
-    if (await mudarOrdem(novos.map((l) => l.id))) toast("Ordem salva");
-    else toast("Não deu para salvar a ordem.", "erro");
+    const ok = await tentar(() => mudarOrdem(novos.map((l) => l.id)), null);
+    if (ok) return toast("Ordem salva");
+    setItens(antes);
+    toast(ok === null ? SEM_CONEXAO : "Não deu para salvar a ordem.", "erro");
   }
 
   async function excluir() {
     if (!excluindo) return;
     const alvo = excluindo;
+    const antes = itens;
     setExcluindo(null);
     setItens((ls) => ls.filter((l) => l.id !== alvo.id));
-    if (await apagarLink(alvo.id)) toast("Link excluído");
-    else toast("Não deu para excluir.", "erro");
+    const ok = await tentar(() => apagarLink(alvo.id), null);
+    if (ok) return toast("Link excluído");
+    setItens(antes);
+    toast(ok === null ? SEM_CONEXAO : "Não deu para excluir.", "erro");
   }
 
   return (
@@ -170,7 +185,7 @@ function Foto({ avatarUrl }: { avatarUrl?: string }) {
       const envio = await r.json();
       if (!r.ok) return toast(envio.erro ?? "Não deu para enviar a foto.", "erro");
       const up = await fetch(envio.url, { method: "PUT", body: f, headers: { "content-type": f.type, "x-upsert": "false" } });
-      if (!up.ok || !(await salvarFoto(envio.caminho))) return toast("Não deu para enviar a foto.", "erro");
+      if (!up.ok || !(await tentar(() => salvarFoto(envio.caminho), false))) return toast("Não deu para enviar a foto.", "erro");
       toast("Foto salva");
     } catch {
       toast("Não deu para enviar a foto.", "erro");
@@ -188,7 +203,7 @@ function Foto({ avatarUrl }: { avatarUrl?: string }) {
             variant="ghost"
             size="sm"
             onClick={async () => {
-              const ok = await salvarFoto(null);
+              const ok = await tentar(() => salvarFoto(null), false);
               toast(ok ? "Foto removida" : "Não deu para remover.", ok ? "sucesso" : "erro");
             }}
           >
@@ -203,7 +218,7 @@ function Foto({ avatarUrl }: { avatarUrl?: string }) {
 function Cabecalho({ titulo, bio, avatarUrl }: { titulo: string; bio: string; avatarUrl?: string }) {
   const [aberto, setAberto] = useState(false);
   const [estado, acao, enviando] = useActionState(async (anterior: Estado, form: FormData) => {
-    const r = await salvarCabecalho(anterior, form);
+    const r = await salvarCabecalhoSeguro(anterior, form);
     if (r.ok) setAberto(false);
     return r;
   }, {});
@@ -212,7 +227,7 @@ function Cabecalho({ titulo, bio, avatarUrl }: { titulo: string; bio: string; av
     <section className="flex items-start justify-between gap-3 rounded-lg border border-border bg-bg p-4 shadow-card">
       <div className="min-w-0">
         <p className="truncate text-base font-semibold text-fg">{titulo || "Sem título"}</p>
-        <p className="text-sm text-muted">{bio || "Sem bio. Conte em uma frase o que você faz."}</p>
+        <p className="text-sm text-muted wrap-anywhere">{bio || "Sem bio. Conte em uma frase o que você faz."}</p>
       </div>
       <Dialog
         open={aberto}
@@ -229,6 +244,11 @@ function Cabecalho({ titulo, bio, avatarUrl }: { titulo: string; bio: string; av
         <form action={acao} className="mt-4 flex flex-col gap-4">
           <TextField label="Título" name="titulo" defaultValue={estado.valores?.titulo ?? titulo} maxLength={60} error={estado.erros?.titulo} />
           <TextArea label="Bio" name="bio" value={bioAtual} onChange={(e) => setBioAtual(e.target.value)} maxLength={160} error={estado.erros?.bio} />
+          {estado.erro && (
+            <p role="alert" className="text-sm font-medium text-danger">
+              {estado.erro}
+            </p>
+          )}
           <div className="flex justify-end">
             <Button type="submit" loading={enviando}>
               Salvar
@@ -243,9 +263,11 @@ function Cabecalho({ titulo, bio, avatarUrl }: { titulo: string; bio: string; av
 function NovoLink() {
   const toast = useToast();
   const [estado, acao, enviando] = useActionState(async (anterior: Estado, form: FormData) => {
-    const r = await novoLink(anterior, form);
+    const r = await novoLinkSeguro(anterior, form);
     if (r.ok) toast("Link adicionado");
-    return r;
+    else if (r.erro) toast(r.erro, "erro");
+    // sem rede, o que foi digitado volta para os campos
+    return r.erro && !r.valores ? { ...r, valores: { titulo: String(form.get("titulo") ?? ""), url: String(form.get("url") ?? "") } } : r;
   }, {});
   return (
     <form action={acao} className="flex flex-col gap-3 rounded-lg border border-border bg-bg p-4 shadow-card" noValidate>
@@ -278,7 +300,7 @@ function NovoLink() {
 
 function EditarLink({ link, onFechar }: { link: LinkEditor; onFechar: () => void }) {
   const [estado, acao, enviando] = useActionState(async (anterior: Estado, form: FormData) => {
-    const r = await salvarLink(anterior, form);
+    const r = await salvarLinkSeguro(anterior, form);
     if (r.ok) onFechar();
     return r;
   }, {});
