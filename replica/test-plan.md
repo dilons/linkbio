@@ -1,14 +1,15 @@
 # Plano de teste: linkbio
 
-Build: as correções de `e14ae69` a `9666c81` (suíte escrita sobre `74e2040`).
+Build: `ecb2243` (suíte escrita sobre `74e2040`; 23 casos novos na segunda
+`/replica-build`, para S06, S08, S10, S11, S13, S15 e S17).
 Data: 2026-10-11. Ambiente: build de produção local (`next start`), Supabase
 local (Postgres, Auth, Storage, Mailpit) com o seed, Asaas falso
 (`tests/asaas-falso.mjs`), Chromium 141.
 
 ```bash
 npm run db:start && npm run db:reset && npm run build
-npm run test:e2e          # 64 casos, Playwright (e2e/)
-npm run test:backend      # 30 casos, node:test (tests/backend/)
+npm run test:e2e          # 87 casos, Playwright (e2e/)
+npm run test:backend      # 37 casos, node:test (tests/backend/)
 ```
 
 Cada caso de ponta a ponta falha com erro no console ou resposta 5xx, roda o
@@ -19,9 +20,9 @@ são por IP). As quatro últimas rodadas da suíte inteira passaram sem falha.
 
 | | casos | passaram | falharam |
 | --- | --- | --- | --- |
-| ponta a ponta (Playwright) | 64 | 64 | 0 |
-| backend (node:test) | 30 | 30 | 0 |
-| bloqueados (fluxo não construído) | 15 | | |
+| ponta a ponta (Playwright) | 87 | 87 | 0 |
+| backend (node:test) | 37 | 37 | 0 |
+| bloqueados (fluxo não construído) | 9 | | |
 | manuais (precisam de conta real) | 7 | | pendentes |
 
 Na primeira rodada, 12 de 61 falharam: 6 por defeito do app (BUG-002 a
@@ -32,6 +33,15 @@ casos F09-E8 e F12-N3 foram escritos depois, caçando um defeito suspeito
 (BUG-001 e BUG-011), e falharam antes da correção. Bugs em
 `replica/bugs.md`: 11 no total, todos os S1 a S3 corrigidos com o teste
 falhando antes.
+
+Na segunda `/replica-build`, os 23 casos novos rodaram junto com a suíte
+inteira, que passou. Dois tropeços foram do teste: o campo do formulário
+ainda escondido logo depois do `load` (o React revela o streaming um pouco
+depois) e seletores de "Adicionar" que ficaram ambíguos com os botões novos.
+O primeiro mostrou um risco real, corrigido junto: enviar o formulário antes
+da hidratação punha o email na URL. Outro achado do teste de teclado: os
+modais abertos pelo estado não devolviam o foco a quem os abriu (corrigido
+no `Dialog`).
 
 ## Casos automatizados
 
@@ -62,6 +72,13 @@ falhando antes.
 | F02-E9 | adiciona e organiza links | borda | duas abas: excluído numa, editar na outra avisa que o link não existe mais | e2e `f02-links.spec.ts` | passou |
 | F02-E10 | adiciona e organiza links | borda | título e bio longos: limites respeitados e nada vaza a 390 px | e2e `f02-links.spec.ts` | passou (achou BUG-004) |
 | F02-N1 | adiciona e organiza links | negativo | sessão perdida no meio: salvar leva ao login sem perder o painel dos outros | e2e `f02-links.spec.ts` | passou (achou BUG-002) |
+| F02-H3 | adiciona e organiza links | feliz | redes sociais: pôr pelo @ e pelo número, reordenar com teclado, mudar para o rodapé e tirar, com a prévia e a página acompanhando | e2e `f02-redes.spec.ts` | passou |
+| F02-E11 | adiciona e organiza links | borda | endereço de outro site, @ inválido ou número sem DDD são recusados e nada é gravado | e2e `f02-redes.spec.ts` | passou |
+| F02-E12 | adiciona e organiza links | borda | a 390 px a prévia abre em tela cheia, acompanha o que mudou e devolve o foco ao fechar | e2e `f02-redes.spec.ts` | passou (achou o foco perdido nos modais) |
+| F03-H1 | personaliza a aparência | feliz | escolher um tema muda a prévia na hora, salva e vale na página pública | e2e `f03-aparencia.spec.ts` | passou |
+| F03-E1 | personaliza a aparência | borda | cada tema pronto passa no axe na página pública (contraste) | e2e `f03-aparencia.spec.ts` | passou |
+| F03-E2 | personaliza a aparência | borda | só teclado e a 390 px: chega no tema e escolhe com Enter | e2e `f03-aparencia.spec.ts` | passou |
+| F03-E3 | personaliza a aparência | borda | sem rede: o tema volta ao salvo e avisa | e2e `f03-aparencia.spec.ts` | passou |
 | F04-H1 | visitante abre e clica | feliz | abre a página, a visita conta, o clique conta e leva ao destino | e2e `f04-visitante.spec.ts` | passou |
 | F04-E1 | visitante abre e clica | borda | endereço livre: 404 de verdade para robô de prévia, página de 404 com noindex no navegador | e2e `f04-visitante.spec.ts` | passou (achou BUG-009) |
 | F04-E2 | visitante abre e clica | borda | perfil excluído some (404) e o clique antigo não redireciona | e2e `f04-visitante.spec.ts` | passou |
@@ -73,9 +90,23 @@ falhando antes.
 | F04-E8 | visitante abre e clica | borda | link agendado fora da janela não aparece nem redireciona | e2e `f04-visitante.spec.ts` | passou |
 | F04-E9 | visitante abre e clica | borda | só teclado: Tab até o link e Enter abre o destino | e2e `f04-visitante.spec.ts` | passou |
 | F04-E10 | visitante abre e clica | borda | a prévia do link no WhatsApp tem título e descrição do perfil | e2e `f04-visitante.spec.ts` | passou |
+| F05-H1 | visitante deixa o email | feliz | o criador põe o formulário e ajusta os textos (S11); o visitante se inscreve (S17) com o consentimento gravado | e2e `f05-formulario.spec.ts` | passou |
+| F05-E1 | visitante deixa o email | borda | email inválido ou sem marcar o aceite: avisa e não grava nada | e2e `f05-formulario.spec.ts` | passou |
+| F05-E2 | visitante deixa o email | borda | o mesmo email de novo, em outra caixa: mesma resposta, uma inscrição só | e2e `f05-formulario.spec.ts` | passou |
+| F05-E3 | visitante deixa o email | borda | dois cliques seguidos em Quero receber: uma inscrição | e2e `f05-formulario.spec.ts` | passou |
+| F05-E4 | visitante deixa o email | borda | robô (campo isca ou navegador de robô) recebe ok e nada é gravado | e2e `f05-formulario.spec.ts` | passou |
+| F05-E5 | visitante deixa o email | negativo | sem aceite pela API, formulário desligado ou inexistente: nada é gravado | e2e `f05-formulario.spec.ts` | passou |
+| F05-E6 | visitante deixa o email | borda | muitos envios do mesmo visitante no mesmo formulário: o sexto espera | e2e `f05-formulario.spec.ts` | passou |
+| F05-E7 | visitante deixa o email | borda | textos do formulário são validados no editor (S11) | e2e `f05-formulario.spec.ts` | passou |
+| F05-E8 | visitante deixa o email | borda | a 390 px e só com teclado: o visitante se inscreve | e2e `f05-formulario.spec.ts` | passou (achou o envio antes da hidratação) |
 | F06-H1 | acompanha os resultados | feliz | a demo vê os totais da semana e o ranking dos links | e2e `f06-resultados.spec.ts` | passou |
 | F06-E1 | acompanha os resultados | borda | sem dados ainda: zeros, taxa sem número, e convite quando não há links | e2e `f06-resultados.spec.ts` | passou |
 | F06-E2 | acompanha os resultados | borda | outra conta só vê os próprios números | e2e `f06-resultados.spec.ts` | passou |
+| F07-H1 | exporta os inscritos | feliz | a lista mostra os inscritos e o CSV vem certo (BOM, ponto e vírgula, sem fórmula) | e2e `f07-audiencia.spec.ts` | passou |
+| F07-E1 | exporta os inscritos | borda | lista vazia: convite para pôr o formulário e nenhum botão de CSV | e2e `f07-audiencia.spec.ts` | passou |
+| F07-E2 | exporta os inscritos | borda | tirar uma pessoa da lista: some da tela e do CSV | e2e `f07-audiencia.spec.ts` | passou |
+| F07-E3 | exporta os inscritos | negativo | o CSV é só do dono: sem sessão 401, outra conta não vê os inscritos | e2e `f07-audiencia.spec.ts` | passou |
+| F07-E4 | exporta os inscritos | borda | a 390 px a tabela rola dentro dela, sem rolar a página | e2e `f07-audiencia.spec.ts` | passou |
 | F09-H1 | assina o plano | feliz | assina por Pix, paga, perde a marca e cancela em um clique | e2e `f09-plano.spec.ts` | passou |
 | F09-E1 | assina o plano | borda | CPF inválido é recusado antes de falar com o Asaas | e2e `f09-plano.spec.ts` | passou |
 | F09-E2 | assina o plano | borda | dois cliques seguidos em Assinar criam uma assinatura só no Asaas | e2e `f09-plano.spec.ts` | passou |
@@ -89,6 +120,8 @@ falhando antes.
 | F10-E1 | exclui a conta | borda | com o Pro ativo, a assinatura é cancelada no Asaas antes de excluir | e2e `f10-conta.spec.ts` | passou |
 | F10-E2 | exclui a conta | borda | Asaas fora do ar com o Pro ativo: a conta não é excluída e a pessoa sabe por quê | e2e `f10-conta.spec.ts` | passou |
 | F10-E3 | exclui a conta | borda | recadastro com o mesmo email depois de excluir: conta nova, endereço antigo ainda reservado | e2e `f10-conta.spec.ts` | passou |
+| F10-H2 | exclui a conta ou a página | feliz | excluir só a página: tudo dela apagado, email, a conta continua e o endereço pode ser retomado por ela | e2e `f10-conta.spec.ts` | passou |
+| F10-E5 | exclui a conta ou a página | borda | com o Pro ativo, excluir só a página não mexe na assinatura | e2e `f10-conta.spec.ts` | passou |
 | F12-H1 | acesso (derivado) | feliz | entrar e sair deste aparelho | e2e `f12-acesso.spec.ts` | passou (achou BUG-008) |
 | F12-E1 | acesso (derivado) | borda | recuperar a senha: resposta neutra, link abre em outro navegador, senha nova vale e avisa por email | e2e `f12-acesso.spec.ts` | passou |
 | F12-E2 | acesso (derivado) | borda | sair de todos os aparelhos derruba a outra sessão na hora | e2e `f12-acesso.spec.ts` | passou |
@@ -107,27 +140,26 @@ usuário não lê nem altera nada do primeiro (F02, F06); API REST e Storage
 fechados para a chave pública, anônimo e logado; webhook idempotente, fora de
 ordem e em paralelo (F09); limites atômicos; job diário no fuso do perfil
 (F06, fuso horário; o Brasil não tem horário de verão desde 2019); exclusão
-apaga na hora e libera o endereço depois de 14 dias (F10).
+apaga na hora e libera o endereço depois de 14 dias (F10); página excluída:
+outra conta não pega o endereço guardado e a dona retoma; redes sociais
+(endereço de outro site recusado, número do WhatsApp, segunda conta).
 
 ## Bloqueados: fluxo ainda não construído
 
 | case | flow | o que testar quando existir |
 | --- | --- | --- |
-| F03-H1 | personaliza a aparência | escolher tema, ver na prévia e na página pública |
-| F03-E1 | | cor com contraste ruim é recusada ou avisada |
-| F03-E2 | | imagem de fundo pesada é recusada (5 MB) |
-| F03-E3 | | tema pago no plano grátis |
-| F05-H1 | visitante deixa o email | formulário na página, consentimento gravado, S17 |
-| F05-E1 | | email inválido, repetido (sem duplicar), envio duplo |
-| F05-E2 | | robô (campo isca e limite por visitante) |
+| F03-E4 | personaliza a aparência | tema customizado: cor com contraste ruim é recusada ou avisada |
+| F03-E5 | | imagem de fundo pesada é recusada (5 MB) |
+| F03-E6 | | tema pago no plano grátis |
 | F06-E4 | acompanha os resultados | escolher o período e o limite do plano |
-| F07-H1 | exporta os inscritos | CSV com os inscritos |
-| F07-E1 | | lista vazia, lista grande |
 | F08-H1 | agenda ou destaca um link | agendar no editor com fuso (o lado público já é testado em F04-E8) |
 | F08-E1 | | fim antes do começo é recusado; recurso pago no grátis |
 | F10-E4 | troca o username | uma vez a cada 7 dias; o antigo segurado por 14 dias |
 | F11-H1 | marca como sensível | aviso S16 antes da página ou do link |
 | F11-E1 | | idade insuficiente |
+
+Construído e ainda sem caso: lista grande na Audiência (mais de 1000: a tela
+mostra os 1000 mais novos e o CSV traz todos).
 
 ## Passada manual (precisa das contas reais)
 

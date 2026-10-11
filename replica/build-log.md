@@ -16,23 +16,27 @@ axe 0 violações em 17 telas; console sem erros). Capturas em
 | S03 endereço | 2026-10-11 | feito | | o Postgres recusa o mesmo `$2` numa coluna `citext` e numa `text` no mesmo insert; o teste pegou |
 | S04 modelo por categoria | 2026-10-11 | stub | tudo (should-have, etapa 6) | |
 | S05 plano no onboarding | 2026-10-11 | stub | tudo (etapa 5) | |
-| S06 editor de links | 2026-10-11 | parcial | editor das redes sociais; coleções; prévia no celular (hoje só o botão Abrir); estado "muitos links" não testado | o editor guarda o estado local para a prévia reagir na hora e remonta quando o servidor muda (chave pelos dados); reordenar pelo teclado anuncia em português |
+| S06 editor de links | 2026-10-11 | feito | coleções (could-have) | o editor guarda o estado local para a prévia reagir na hora e remonta quando o servidor muda (chave pelos dados); reordenar pelo teclado anuncia em português. Redes: o endereço tem que ser do domínio da rede, senão um ícone do Instagram levaria a qualquer site. Prévia no celular em tela cheia: o Dialog do Radix só devolvia o foco a quem abriu quando havia `trigger` |
 | S07 editar link | 2026-10-11 | parcial | miniatura, agendamento com fuso, trava, destaque, selo de recurso pago | |
-| S08 aparência | 2026-10-11 | stub | galeria de temas (etapa 2), tema customizado (etapa 6) | |
+| S08 aparência | 2026-10-11 | parcial | tema customizado e fundo com imagem (should, etapa 6) | pouco: os 5 temas já estavam nos tokens desde a /replica-design, com contraste conferido |
 | S09 insights | 2026-10-11 | parcial | gráfico por dia, período, fontes e locais, soma diária (`daily_stats`) | o Chromium headless se apresenta como "HeadlessChrome" e o isbot (certo) não conta; o teste usa um user-agent comum |
-| S10 audiência | 2026-10-11 | stub | tabela de inscritos e CSV (etapa 4) | |
-| S11 editor do formulário | | não começou | tudo (etapa 4) | |
+| S10 audiência | 2026-10-11 | feito | | CSV que abre certo no Excel em português: BOM, ponto e vírgula, horário de Brasília e fórmulas neutralizadas (`=`, `+`, `-`, `@` no começo) |
+| S11 editor do formulário | 2026-10-11 | feito | campo de telefone | o bloco entrou na lista dos links (`kind = 'form'`): ordenar, ligar e excluir vieram de graça, mas toda consulta de link passou a dizer quais tipos aceita |
 | S12 configurações | 2026-10-11 | stub | conteúdo sensível e QR code (etapa 6) | |
-| S13 conta | 2026-10-11 | parcial (backend) | troca de username, baixar os dados (LGPD) | sair de todos os aparelhos só valeu na hora com getUser no proxy |
+| S13 conta | 2026-10-11 | parcial | troca de username, baixar os dados (LGPD) | sair de todos os aparelhos só valeu na hora com getUser no proxy. Excluir só a página: o endereço fica guardado 14 dias e só a mesma conta retoma (a linha vazia sai na mesma transação) |
 | S14 assinatura | 2026-10-11 | parcial (backend) | validar no sandbox real do Asaas | o sandbox está bloqueado pela rede daqui: testado contra um Asaas falso que segue a documentação |
-| S15 página pública | 2026-10-11 | parcial | aviso de conteúdo sensível, formulário, cache da página | o 404: com streaming o status sai no primeiro pedaço. Robôs de prévia (WhatsApp, Facebook) recebem 404 de verdade; navegadores recebem a página de 404 com `noindex` |
+| S15 página pública | 2026-10-11 | parcial | aviso de conteúdo sensível, cache da página | o 404: com streaming o status sai no primeiro pedaço. Robôs de prévia (WhatsApp, Facebook) recebem 404 de verdade; navegadores recebem a página de 404 com `noindex` |
 | S16 aviso de conteúdo sensível | | não começou | tudo (etapa 6); o componente `GateScreen` já existe | |
-| S17 inscrição enviada | | não começou | tudo (etapa 4) | |
+| S17 inscrição enviada | 2026-10-11 | feito | | o React 19 revela o conteúdo do streaming uns 300 ms depois do load, e antes de hidratar o navegador mandaria o formulário sozinho, com o email na URL: o form é POST e o botão só liga depois da hidratação |
 | S18 entrar | 2026-10-11 | parcial | Google (pronto, falta testar) | o limite de login por email barrou os próprios testes repetidos: os testes zeram a tabela de limites |
 | S19 QR code | | não começou | tudo (etapa 6) | |
 
 Placar depois da /replica-backend: 2 feitas, 8 parciais, 5 stubs, 4 por
 começar, de 19. Must-haves: 11 sim e 4 parciais de 18.
+
+Placar depois da segunda /replica-build: 6 feitas, 8 parciais, 3 stubs, 2 por
+começar, de 19. Must-haves: 17 de 18 (falta validar a cobrança no sandbox do
+Asaas, que depende da conta do dono).
 
 ## Maior do que parecia
 
@@ -61,6 +65,28 @@ validar com as contas do dono em `replica/backend.md`.
 - O teste de ponta a ponta da fatia ganhou a confirmação por email (lida no
   Mailpit) e deixou de esperar "rede ociosa" nos insights: os pré-carregamentos
   do menu em voo seguravam a espera.
+
+## Depois da /replica-diff (2026-10-11)
+
+As lacunas da `parity.md`, na ordem: temas (S08, `db83033`), formulário de
+email (S11, S15, S17, `9677e3b`), audiência e CSV (S10, `e27e8f4`), redes
+sociais e prévia no celular (S06, `17eae68`) e excluir só a página (S13,
+`ecb2243`). Paridade de 48,9 para 64,2.
+
+- **O formulário antes de hidratar.** O teste de teclado falhou porque o
+  campo ainda estava escondido: o React 19 junta as revelações do streaming e
+  mostra o conteúdo um pouco depois do `load`. Olhando isso apareceu um risco
+  de verdade: antes do JavaScript carregar, enviar o formulário fazia um GET e
+  punha o email na URL (logs, histórico, referer). Agora o formulário é POST e
+  o botão só liga depois da hidratação.
+- **Seletores que ficaram ambíguos.** O botão "Adicionar formulário de email"
+  fez o `getByRole("button", { name: "Adicionar" })` dos testes de F01 e F02
+  achar dois botões. O commit do formulário entrou sem rodar esses arquivos;
+  a suíte inteira pegou, e os seletores ficaram exatos.
+- **`server-only` nos testes do backend.** `lib/data/conta.ts` usa o cliente
+  admin do Supabase, que só carrega no servidor do Next. Os testes do backend
+  simulam a exclusão com `apagar_perfil` no SQL, e a exclusão completa fica no
+  ponta a ponta (F10-H2, F10-E4).
 
 ## Ferramentas
 

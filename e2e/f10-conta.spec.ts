@@ -136,7 +136,7 @@ test.describe("F10 exclui a conta ou a página", () => {
     await expect(page.getByText("Sua página ainda não tem links.")).toBeVisible();
   });
 
-  test("F10-E4 com o Pro ativo, excluir só a página não mexe na assinatura", async ({ page }) => {
+  test("F10-E5 com o Pro ativo, excluir só a página não mexe na assinatura", async ({ page }) => {
     const c = await contaPronta("sopro");
     const sub = `sub_pagina_${c.perfil.slice(0, 8)}`;
     await sql`insert into subscriptions (account_id, provider_customer_id, provider_subscription_id, plan, billing_type, status, price_cents, current_period_end)

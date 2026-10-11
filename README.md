@@ -39,7 +39,7 @@ Outros comandos:
 npm run typecheck && npm run lint && npm run build
 npm run tokens       # depois de mudar replica/design/tokens.json
 npm run db:types     # depois de uma migração nova: regera src/lib/db/schema.ts
-npm run test:backend # 30 testes do backend contra o banco local
+npm run test:backend # 37 testes do backend contra o banco local
 ```
 
 Testes de ponta a ponta (Playwright, um arquivo por fluxo em `e2e/`). O
@@ -47,7 +47,7 @@ Playwright sobe o app em produção e o Asaas falso sozinho:
 
 ```bash
 npm run build
-npm run test:e2e     # 64 casos; plano e resultados em replica/test-plan.md
+npm run test:e2e     # 87 casos; plano e resultados em replica/test-plan.md
 # CHROMIUM_PATH=... se o Chromium do Playwright não estiver baixado
 ```
 
@@ -68,11 +68,11 @@ escrever código.
 | `/replica-recon` | feito: `replica/recon.md`, `replica/features.csv` (faltam screenshots) |
 | `/replica-architect` | feito: `replica/architecture.md`, `replica/schema.sql` (testado no PGlite) |
 | `/replica-design` | feito: `replica/design/` (tokens, componentes, contraste 0 falhas, capturas) e a rota `/design` |
-| `/replica-build` | etapa 1 (fatia vertical) feita: `replica/build-log.md`, `replica/clone-screens/` |
+| `/replica-build` | fatia vertical e as lacunas da paridade feitas (temas, formulário de email, audiência e CSV, redes sociais, prévia no celular, excluir só a página): 6 telas feitas e 8 parciais de 19; `replica/build-log.md`, `replica/clone-screens/` |
 | `/replica-backend` | feito: Supabase (banco, login, Storage), Asaas, emails, jobs, limites; `replica/backend.md` |
 | `/replica-lgpd` | |
-| `/replica-test` | feito: 64 casos de ponta a ponta + 30 do backend, 11 bugs (1 S1 e 7 S3 corrigidos); `replica/test-plan.md`, `replica/bugs.md` |
-| `/replica-diff` | feito: funcionalidades 48,9/100, must-haves 11 de 18, não lança ainda; layout contra o original sem medir (rede bloqueia linktr.ee); `replica/parity.md` |
+| `/replica-test` | feito: 87 casos de ponta a ponta + 37 do backend (com os da segunda `/replica-build`), 11 bugs (1 S1 e 7 S3 corrigidos); `replica/test-plan.md`, `replica/bugs.md` |
+| `/replica-diff` | feito e atualizado: funcionalidades 64,2/100 (era 48,9), must-haves 17 de 18 (falta validar o Asaas no sandbox); layout contra o original sem medir (rede bloqueia linktr.ee); `replica/parity.md` |
 | `/replica-entrepreneur` | |
 | `/replica-brand` | |
 | `/replica-inpi` | |
