@@ -70,7 +70,7 @@ Nada de robô de raspagem nesses sites.
 Depois:
 
 ```bash
-python3 ~/.claude/skills/replica-entrepreneur/reviews.py replica/reviews.csv \
+python3 .claude/skills/replica-entrepreneur/reviews.py replica/reviews.csv \
   --themes replica/temas.json --out replica/feedback.md
 ```
 

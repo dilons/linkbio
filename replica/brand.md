@@ -174,7 +174,7 @@ fazer). Os testes de ponta a ponta acompanharam os textos novos.
 ## O sweep
 
 ```bash
-python3 ~/.claude/skills/replica-brand/sweep.py . --config replica/brand.json
+python3 .claude/skills/replica-brand/sweep.py . --config replica/brand.json
 ```
 
 **Limpo** em 2026-10-11 (saída 0). Antes da troca eram 10 achados: o README

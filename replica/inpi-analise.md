@@ -4,7 +4,7 @@
 > como resultado de INPI.** Refazer depois de colar a busca:
 >
 > ```bash
-> python3 ~/.claude/skills/replica-inpi/marca.py analisar replica/inpi.csv \
+> python3 .claude/skills/replica-inpi/marca.py analisar replica/inpi.csv \
 >   --candidatos "Chamaqui,Logali" --classes 9,42 \
 >   --avoid "Linktree,Beacons,Taplink,Campsite,Linkin.bio,Bio.link" \
 >   --descritivos "link,links,bio,pagina,página,perfil" --out replica/inpi-analise.md

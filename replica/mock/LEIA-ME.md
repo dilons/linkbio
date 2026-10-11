@@ -28,7 +28,7 @@ inventadas.
 
 ```bash
 python3 replica/ferramentas/coletar_avaliacoes.py      # ou cole à mão (replica/coleta.md)
-python3 ~/.claude/skills/replica-entrepreneur/reviews.py replica/reviews.csv \
+python3 .claude/skills/replica-entrepreneur/reviews.py replica/reviews.csv \
   --themes replica/temas.json --out replica/feedback.md
 ```
 
