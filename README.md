@@ -21,8 +21,8 @@ original.
 | skill | estado |
 | --- | --- |
 | `/replica-recon` | feito: `replica/recon.md`, `replica/features.csv` (faltam screenshots) |
-| `/replica-architect` | próximo |
-| `/replica-design` | |
+| `/replica-architect` | feito: `replica/architecture.md`, `replica/schema.sql` (testado no PGlite) |
+| `/replica-design` | próximo |
 | `/replica-build` | |
 | `/replica-backend` | |
 | `/replica-lgpd` | |
