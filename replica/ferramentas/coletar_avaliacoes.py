@@ -21,6 +21,10 @@ Hacker News e do Reddit (as entidades viram os caracteres e <p> vira quebra de
 linha), que é o texto que a pessoa vê na página. Nada é resumido nem traduzido.
 Linhas que já estão no CSV (inclusive as coladas à mão) são mantidas; a mesma
 URL não entra duas vezes. Não grava o nome de quem escreveu.
+
+O que foi lido e não é avaliação (no Hacker News, a maioria só cita o nome:
+link de currículo, divulgação, notícia) vai para replica/reviews-fora.csv,
+com o motivo. Essas URLs não voltam numa coleta nova.
 """
 
 import argparse
@@ -30,6 +34,7 @@ import html
 import json
 import os
 import re
+import socket
 import sys
 import time
 import urllib.parse
@@ -47,6 +52,13 @@ def pegar(url, cabecalhos=None, dados=None):
         corpo = r.read().decode("utf-8")
     time.sleep(PAUSA)
     return json.loads(corpo)
+
+
+def so_ipv4():
+    """Para redes com o IPv6 quebrado (o WSL, por exemplo): o urllib tenta cada
+    endereço IPv6 até estourar o tempo antes de cair no IPv4."""
+    original = socket.getaddrinfo
+    socket.getaddrinfo = lambda host, port, family=0, *a, **k: original(host, port, socket.AF_INET, *a, **k)
 
 
 def texto_de_html(trecho):
@@ -162,7 +174,15 @@ def e_mock(r):
     return r.get("source", "").startswith("mock") or host.endswith(".invalid")
 
 
-def juntar(caminho, novas):
+def lidas_e_fora(caminho):
+    """URLs lidas à mão que não são avaliação (replica/reviews-fora.csv)."""
+    if not caminho or not os.path.exists(caminho):
+        return set()
+    with open(caminho, newline="", encoding="utf-8-sig") as f:
+        return {r["url"] for r in csv.DictReader(f) if r.get("url")}
+
+
+def juntar(caminho, novas, fora=frozenset()):
     existentes = []
     if os.path.exists(caminho):
         with open(caminho, newline="", encoding="utf-8-sig") as f:
@@ -171,7 +191,11 @@ def juntar(caminho, novas):
     if mock:
         print(f"  {len(mock)} linhas do mock tiradas de {caminho}: avaliação inventada não entra nos dados reais", file=sys.stderr)
         existentes = [r for r in existentes if not e_mock(r)]
-    novas = [r for r in novas if not e_mock(r)]
+    tiradas = [r for r in existentes if r["url"] in fora]
+    if tiradas:
+        print(f"  {len(tiradas)} linhas tiradas de {caminho}: estão na lista do que não é avaliação", file=sys.stderr)
+        existentes = [r for r in existentes if r["url"] not in fora]
+    novas = [r for r in novas if not e_mock(r) and r["url"] not in fora]
     vistas = {r["url"] for r in existentes}
     acrescentadas = 0
     for r in novas:
@@ -191,12 +215,16 @@ def juntar(caminho, novas):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--saida", default="replica/reviews.csv")
+    ap.add_argument("--fora", default="replica/reviews-fora.csv", help="URLs lidas que não são avaliação, com o motivo")
     ap.add_argument("--paises", default="br,us", help="lojas da App Store, separadas por vírgula")
     ap.add_argument("--paginas", type=int, default=10, help="páginas do feed por país (50 avaliações cada, a Apple dá até 10)")
     ap.add_argument("--sem-app-store", action="store_true")
     ap.add_argument("--sem-hn", action="store_true")
     ap.add_argument("--reddit", action="store_true", help="precisa da sua chave da API oficial do Reddit")
+    ap.add_argument("--ipv4", action="store_true", help="só IPv4, se a rede tiver o IPv6 quebrado (pedidos que nunca respondem)")
     a = ap.parse_args()
+    if a.ipv4:
+        so_ipv4()
 
     novas = []
     if not a.sem_app_store:
@@ -205,7 +233,7 @@ def main():
         novas += hacker_news(["linktree", "linktr.ee"], 3)
     if a.reddit:
         novas += reddit(["linktree", "linktree alternative", "linktree vs", "alternativa ao linktree"], 40)
-    acrescentadas, total = juntar(a.saida, novas)
+    acrescentadas, total = juntar(a.saida, novas, lidas_e_fora(a.fora))
     print(f"{acrescentadas} novas; {total} no total em {a.saida}")
 
 

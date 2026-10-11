@@ -1,386 +1,558 @@
 {
- "_about": "Temas do linkbio para o reviews.py da replica-entrepreneur: os da skill adaptados a link na bio, com as palavras em português e inglês. Use com --themes replica/temas.json.",
- "request_patterns": [
-  "\\bi wish\\b",
-  "\\bplease add\\b",
-  "\\bwould be (nice|great|good|helpful)\\b",
-  "\\bwould love\\b",
-  "\\bneeds? (a|an|the|to|more)\\b",
-  "\\bno way to\\b",
-  "\\bthere'?s no (way|option)\\b",
-  "\\b(can'?t|cannot|unable to) (even )?(add|change|edit|set|choose|export|import|customi[sz]e|connect|undo|delete|turn off)\\b",
-  "\\b(missing|lacks|lacking)\\b",
-  "\\bdoesn'?t (have|support|let|allow)\\b",
-  "\\bif only\\b",
-  "\\bfeature request\\b",
-  "\\bwhy (can'?t|isn'?t|doesn'?t)\\b",
-  "\\bqueria que\\b",
-  "\\bpoderia(m)? (ter|adicionar|colocar)\\b",
-  "\\bseria (bom|ótimo|legal|bacana)\\b",
-  "\\bfalta(m)?\\b",
-  "\\bpor favor (adicionem|coloquem)\\b",
-  "\\bsugiro\\b",
-  "\\bsugestão\\b",
-  "\\bdeveria(m)?\\b",
-  "\\bpor que não\\b",
-  "\\bnão (tem|dá) (como|para|pra|opção)\\b",
-  "\\bsem (opção|como)\\b"
- ],
- "themes": [
-  {
-   "id": "preco",
-   "label": "Preço, plano pago e cobrança em dólar",
-   "kind": "complaint",
-   "patterns": [
-    "\\bexpensive\\b",
-    "\\boverpriced\\b",
-    "\\bpric(e|es|ey|ing)\\b",
-    "\\bpaywall",
-    "\\bper month\\b",
-    "\\bfree (plan|tier|version)\\b",
-    "\\bupgrad",
-    "\\bpro plan\\b",
-    "\\bpremium\\b",
-    "\\bnot worth\\b",
-    "\\bcaro\\b",
-    "\\bpreço",
-    "\\bassinatura (cara|mais cara)\\b",
-    "\\bplano (pago|pro|grátis|gratuito)\\b",
-    "\\bdólar",
-    "\\bmensalidade\\b",
-    "\\bnão vale a pena\\b"
-   ]
-  },
-  {
-   "id": "cobranca",
-   "label": "Cobrança, cancelamento e reembolso",
-   "kind": "complaint",
-   "patterns": [
-    "\\bcharged\\b",
-    "\\brefund",
-    "\\bcancel",
-    "\\bauto.?renew",
-    "\\bbilling\\b",
-    "\\bscam\\b",
-    "\\bcredit card\\b",
-    "\\bcobra(do|ram|nça)\\b",
-    "\\breembolso\\b",
-    "\\bestorno\\b",
-    "\\bcancelar\\b",
-    "\\bcancelamento\\b",
-    "\\bcartão\\b",
-    "\\bgolpe\\b",
-    "\\bfraude\\b"
-   ]
-  },
-  {
-   "id": "conta_suspensa",
-   "label": "Conta suspensa, banida ou removida sem aviso",
-   "kind": "complaint",
-   "patterns": [
-    "\\bsuspend",
-    "\\bbann?ed\\b",
-    "\\bban\\b",
-    "\\bdeactivat",
-    "\\bremoved my (account|page|links?)\\b",
-    "\\bterminat",
-    "\\baccount (was |got )?(flagged|closed|disabled)\\b",
-    "\\bviolat",
-    "\\bconta (foi )?(suspensa|banida|bloqueada|desativada|removida|excluída)\\b",
-    "\\bsuspens",
-    "\\bexcluíram (a )?minha conta\\b",
-    "\\bdesativaram\\b"
-   ]
-  },
-  {
-   "id": "login",
-   "label": "Login, verificação e acesso à conta",
-   "kind": "complaint",
-   "patterns": [
-    "\\blog ?in\\b",
-    "\\bsign ?in\\b",
-    "\\bpassword\\b",
-    "\\blocked out\\b",
-    "\\bverif",
-    "\\bcaptcha\\b",
-    "\\bpuzzle\\b",
-    "\\b2fa\\b",
-    "\\bentrar\\b",
-    "\\bsenha\\b",
-    "\\bverificação\\b",
-    "\\bcódigo\\b",
-    "\\bquebra.?cabeça\\b",
-    "\\bnão consigo (entrar|acessar|logar)\\b"
-   ]
-  },
-  {
-   "id": "suporte",
-   "label": "Suporte que não responde",
-   "kind": "complaint",
-   "patterns": [
-    "\\bcustomer (service|support)\\b",
-    "\\bsupport\\b",
-    "\\bno (response|reply)\\b",
-    "\\bnever (replied|responded|heard back)\\b",
-    "\\bticket\\b",
-    "\\bchat ?bot\\b",
-    "\\bsuporte\\b",
-    "\\batendimento\\b",
-    "\\bnão respond",
-    "\\bninguém respond",
-    "\\bsem resposta\\b"
-   ]
-  },
-  {
-   "id": "bugs",
-   "label": "Bugs, erros e travamentos",
-   "kind": "complaint",
-   "patterns": [
-    "\\bcrash",
-    "\\bbugs?\\b",
-    "\\bbuggy\\b",
-    "\\bglitch",
-    "\\bfreez",
-    "\\bbroken\\b",
-    "\\b(doesn'?t|does not|stopped) work",
-    "\\bnot working\\b",
-    "\\berror\\b",
-    "\\btrava",
-    "\\berro\\b",
-    "\\bnão funciona",
-    "\\bparou de funcionar\\b",
-    "\\bfecha sozinho\\b",
-    "\\bnão (abre|carrega|salva)\\b"
-   ]
-  },
-  {
-   "id": "lento",
-   "label": "Lento ou pesado",
-   "kind": "complaint",
-   "patterns": [
-    "\\bslow(ly)?\\b",
-    "\\blag(gy|s)?\\b",
-    "\\btakes forever\\b",
-    "\\bsluggish\\b",
-    "\\blento\\b",
-    "\\bdemora (para|pra|a) (carregar|abrir)\\b",
-    "\\bpesad[ao]\\b",
-    "\\bcarregando\\b"
-   ]
-  },
-  {
-   "id": "links_bloqueados",
-   "label": "Link bloqueado ou marcado pelo Instagram, TikTok e outros",
-   "kind": "complaint",
-   "patterns": [
-    "\\b(instagram|tiktok|facebook)\\b.{0,40}\\b(flag|spam|unsafe|block|bloque|marc|insegur)",
-    "\\b(link|url) (is |was )?(blocked|flagged|broken)\\b",
-    "\\bshadow.?ban",
-    "\\bspam link\\b",
-    "\\blink (ficou )?(bloqueado|quebrado|marcado)\\b"
-   ]
-  },
-  {
-   "id": "editor",
-   "label": "Editor confuso ou difícil",
-   "kind": "complaint",
-   "patterns": [
-    "\\bconfus",
-    "\\bhard to (use|find|navigate|understand)\\b",
-    "\\bcomplicated\\b",
-    "\\bcluttered\\b",
-    "\\bunintuitive\\b",
-    "\\bclunky\\b",
-    "\\btoo many (steps|clicks|taps)\\b",
-    "\\bcan'?t find\\b",
-    "\\bdifícil\\b",
-    "\\bcomplicado\\b",
-    "\\bconfuso\\b",
-    "\\bnão (acho|encontro)\\b"
-   ]
-  },
-  {
-   "id": "atualizacao",
-   "label": "Uma atualização piorou",
-   "kind": "complaint",
-   "patterns": [
-    "\\b(new|latest|recent) (update|version|design)\\b",
-    "\\bredesign",
-    "\\bused to be\\b",
-    "\\bbring back\\b",
-    "\\bsince the update\\b",
-    "\\batualização\\b",
-    "\\bversão nova\\b",
-    "\\bera melhor\\b",
-    "\\bvoltem\\b"
-   ]
-  },
-  {
-   "id": "marca",
-   "label": "Marca do Linktree na página e domínio próprio",
-   "kind": "request",
-   "patterns": [
-    "\\b(remove|hide) (the )?(linktree )?(logo|branding)\\b",
-    "\\bbranding\\b",
-    "\\bwhite.?label\\b",
-    "\\bcustom domain\\b",
-    "\\bown domain\\b",
-    "\\blogo do linktree\\b",
-    "\\bmarca d.?água\\b",
-    "\\bdomínio (próprio|personalizado)\\b",
-    "\\btirar a marca\\b"
-   ]
-  },
-  {
-   "id": "personalizacao",
-   "label": "Personalização: temas, fontes, cores e fundo",
-   "kind": "request",
-   "patterns": [
-    "\\bcustomi[sz]",
-    "\\btheme",
-    "\\bfont",
-    "\\bbackground\\b",
-    "\\bcolou?rs?\\b",
-    "\\blayout\\b",
-    "\\btemplates?\\b",
-    "\\bdesign\\b",
-    "\\bpersonaliz",
-    "\\btema",
-    "\\bfonte",
-    "\\bfundo\\b",
-    "\\bcores?\\b",
-    "\\bmodelos?\\b",
-    "\\bdark mode\\b",
-    "\\bmodo escuro\\b",
-    "\\b(look|looks|parecem?) (all )?(the same|identical|iguais)\\b"
-   ]
-  },
-  {
-   "id": "metricas",
-   "label": "Métricas e insights",
-   "kind": "request",
-   "patterns": [
-    "\\banalytics\\b",
-    "\\binsights?\\b",
-    "\\bstats\\b",
-    "\\bstatistics\\b",
-    "\\bclicks?\\b",
-    "\\bviews\\b",
-    "\\btraffic (sources?|data)\\b",
-    "\\bmétricas\\b",
-    "\\bestatísticas\\b",
-    "\\bcliques\\b",
-    "\\bvisitas\\b",
-    "\\bacessos\\b",
-    "\\bde onde vem\\b"
-   ]
-  },
-  {
-   "id": "audiencia",
-   "label": "Captura de email, contatos e exportação",
-   "kind": "request",
-   "patterns": [
-    "\\bemail (list|capture|signup|sign.?up)\\b",
-    "\\bnewsletter\\b",
-    "\\bsubscribers?\\b",
-    "\\bmailchimp\\b",
-    "\\bexport",
-    "\\bcsv\\b",
-    "\\blista de (emails?|contatos)\\b",
-    "\\binscritos\\b",
-    "\\bformulário de email\\b",
-    "\\bleads?\\b"
-   ]
-  },
-  {
-   "id": "brasil",
-   "label": "Brasil: Pix, reais, português e WhatsApp",
-   "kind": "request",
-   "patterns": [
-    "\\bpix\\b",
-    "\\bboleto\\b",
-    "\\breais\\b",
-    "\\bR\\$",
-    "\\bem real\\b",
-    "\\bportuguês\\b",
-    "\\btradução\\b",
-    "\\bem inglês\\b",
-    "\\bwhats(app)?\\b",
-    "\\bzap\\b"
-   ]
-  },
-  {
-   "id": "app",
-   "label": "App do celular",
-   "kind": "request",
-   "patterns": [
-    "\\bmobile (app|version)\\b",
-    "\\bthe app\\b",
-    "\\bipad\\b",
-    "\\bandroid\\b",
-    "\\bpelo celular\\b",
-    "\\bno celular\\b",
-    "\\baplicativo\\b"
-   ]
-  },
-  {
-   "id": "loja",
-   "label": "Vender, receber pagamento e afiliados",
-   "kind": "request",
-   "patterns": [
-    "\\bsell(ing)?\\b",
-    "\\bcheckout\\b",
-    "\\baccept payments\\b",
-    "\\bstorefront\\b",
-    "\\baffiliate",
-    "\\bvender\\b",
-    "\\bvendas\\b",
-    "\\bcatálogo\\b",
-    "\\bbotão de comprar\\b",
-    "\\breceber pagamento"
-   ]
-  },
-  {
-   "id": "privacidade",
-   "label": "Privacidade e rastreamento",
-   "kind": "complaint",
-   "patterns": [
-    "\\bprivacy\\b",
-    "\\btracking\\b",
-    "\\bsell(s|ing)? (my )?data\\b",
-    "\\bcookies?\\b",
-    "\\bprivacidade\\b",
-    "\\brastre",
-    "\\bmeus dados\\b",
-    "\\blgpd\\b"
-   ]
-  },
-  {
-   "id": "equipes",
-   "label": "Agências e equipes: várias páginas num login só",
-   "kind": "request",
-   "patterns": [
-    "\\bagenc(y|ies|ia|ias)\\b",
-    "\\bteams?\\b",
-    "\\bclient pages\\b",
-    "\\bclientes\\b.{0,30}\\bpáginas\\b",
-    "\\bvári[ao]s (perfis|páginas|contas)\\b",
-    "\\bmultiple (pages|profiles|accounts)\\b",
-    "\\bone login\\b",
-    "\\bum login só\\b"
-   ]
-  },
-  {
-   "id": "agendamento",
-   "label": "Agendar links (aparecer e sumir)",
-   "kind": "request",
-   "patterns": [
-    "\\bschedul",
-    "\\bagendar\\b",
-    "\\bagendamento\\b",
-    "\\bsumir depois\\b",
-    "\\bexpire\\b"
-   ]
-  }
- ]
+  "_about": "Temas do linkbio para o reviews.py da replica-entrepreneur: os da skill adaptados a link na bio, com as palavras em português e inglês. Use com --themes replica/temas.json. Revisado em 2026-10-11 com as avaliações reais: 'App do celular' virou 'App pior que o site' (em avaliação da App Store todo mundo diz 'the app'), 'team' saiu de Agências (pegava 'support team'), 'sell' saiu de Vender (pegava 'trying to sell you something'), idioma separado de Pix e WhatsApp, e cinco temas novos que a leitura à mão mostrou: acessibilidade, IA e termos, upsell, reordenar e idioma.",
+  "request_patterns": [
+    "\\bi wish\\b",
+    "\\bplease add\\b",
+    "\\bwould be (nice|great|good|helpful)\\b",
+    "\\bwould love\\b",
+    "\\bneeds? (a|an|the|to|more)\\b",
+    "\\bno way to\\b",
+    "\\bthere['’]?s no (way|option)\\b",
+    "\\b(can['’]?t|cannot|unable to) (even )?(add|change|edit|set|choose|export|import|customi[sz]e|connect|undo|delete|turn off)\\b",
+    "\\b(missing|lacks|lacking)\\b",
+    "\\bdoesn['’]?t (have|support|let|allow)\\b",
+    "\\bif only\\b",
+    "\\bfeature request\\b",
+    "\\bwhy (can['’]?t|isn['’]?t|doesn['’]?t)\\b",
+    "\\bqueria que\\b",
+    "\\bpoderia(m)? (ter|adicionar|colocar)\\b",
+    "\\bseria (bom|ótimo|legal|bacana)\\b",
+    "\\bfalta(m)?\\b",
+    "\\bpor favor (adicionem|coloquem)\\b",
+    "\\bsugiro\\b",
+    "\\bsugestão\\b",
+    "\\bdeveria(m)?\\b",
+    "\\bpor que não\\b",
+    "\\bnão (tem|dá) (como|para|pra|opção)\\b",
+    "\\bsem (opção|como)\\b"
+  ],
+  "themes": [
+    {
+      "id": "preco",
+      "label": "Preço, plano pago e cobrança em dólar",
+      "kind": "complaint",
+      "patterns": [
+        "\\bexpensive\\b",
+        "\\boverpriced\\b",
+        "\\bpric(e|es|ey|ing)\\b",
+        "\\bpaywall",
+        "\\bper month\\b",
+        "\\bfree (plan|tier|version)\\b",
+        "\\bpro plan\\b",
+        "\\bpremium\\b",
+        "\\bnot worth\\b",
+        "\\bcaro\\b",
+        "\\bpreço",
+        "\\bassinatura (cara|mais cara)\\b",
+        "\\bplano (pago|pro|grátis|gratuito)\\b",
+        "\\bdólar",
+        "\\bmensalidade\\b",
+        "\\bnão vale a pena\\b",
+        "\\bpay for everything\\b",
+        "\\beverything (cool )?costs\\b",
+        "\\bcosts? money\\b",
+        "\\btudo (é )?pago\\b",
+        "\\bfree version\\b",
+        "\\bprice (raise|jump|gouge|gouging)\\b",
+        "\\bpaid (functions|features|theme)\\b",
+        "\\bwaste (of )?(your |my )?money\\b",
+        "\\$\\s?\\d+",
+        "\\bpay for basic\\b",
+        "\\bliberar somente\\b",
+        "\\baumentaram o valor\\b"
+      ]
+    },
+    {
+      "id": "cobranca",
+      "label": "Cobrança, cancelamento e reembolso",
+      "kind": "complaint",
+      "patterns": [
+        "\\bcharged\\b",
+        "\\brefund",
+        "\\bcancel",
+        "\\bauto.?renew",
+        "\\bbilling\\b",
+        "\\bscam\\b",
+        "\\bcredit card\\b",
+        "\\bcobra(do|ram|nça)\\b",
+        "\\breembolso\\b",
+        "\\bestorno\\b",
+        "\\bcancelar\\b",
+        "\\bcancelamento\\b",
+        "\\bgolpe\\b",
+        "\\bfraude\\b",
+        "\\bcharg(e|es|ing)\\b",
+        "\\bfree trial\\b",
+        "\\bmoney back\\b",
+        "\\btook (my )?money\\b",
+        "\\bdouble charge",
+        "\\bdescontaram\\b",
+        "\\bdebitaram\\b",
+        "\\bdescontou\\b",
+        "\\bme roubaram\\b",
+        "\\bduas cobranças\\b",
+        "\\b(no|do) (meu )?cartão\\b",
+        "\\bno exit\\b",
+        "\\blocks you in\\b",
+        "\\bremove your bank card\\b",
+        "\\bcontinuam cobrando\\b"
+      ]
+    },
+    {
+      "id": "conta_suspensa",
+      "label": "Conta suspensa, banida ou removida sem aviso",
+      "kind": "complaint",
+      "patterns": [
+        "\\bsuspend",
+        "\\bbann?ed\\b",
+        "\\bban\\b",
+        "\\bdeactivat",
+        "\\bremoved my (account|page|links?)\\b",
+        "\\bterminat",
+        "\\baccount (was |got )?(flagged|closed|disabled)\\b",
+        "\\bviolat",
+        "\\bconta (foi )?(suspensa|banida|bloqueada|desativada|removida|excluída)\\b",
+        "\\bsuspens",
+        "\\bexcluíram (a )?minha conta\\b",
+        "\\bdesativaram\\b",
+        "\\bcensor",
+        "\\bmoderat",
+        "\\bunbann?ed\\b",
+        "\\bsensitive (material|content)\\b",
+        "\\bwas restricted\\b",
+        "\\bpage just disappeared\\b",
+        "\\bwill delete it\\b",
+        "\\bappeal(s|ed)?\\b"
+      ]
+    },
+    {
+      "id": "login",
+      "label": "Login, verificação e acesso à conta",
+      "kind": "complaint",
+      "patterns": [
+        "\\blog ?in\\b",
+        "\\bsign ?in\\b",
+        "\\bpassword\\b",
+        "\\blocked out\\b",
+        "\\bverif",
+        "\\bcaptcha\\b",
+        "\\bpuzzle\\b",
+        "\\b2fa\\b",
+        "\\bentrar\\b",
+        "\\bsenha\\b",
+        "\\bverificação\\b",
+        "\\bcódigo\\b",
+        "\\bquebra.?cabeça\\b",
+        "\\bnão consigo (entrar|acessar|logar)\\b",
+        "\\blogg(ed|ing) (me )?out\\b",
+        "\\bkick(s|ed|ing)? me (out|back)\\b",
+        "\\bdeslog",
+        "\\blogar\\b",
+        "\\bsession\\b"
+      ]
+    },
+    {
+      "id": "suporte",
+      "label": "Suporte que não responde",
+      "kind": "complaint",
+      "patterns": [
+        "\\bcustomer (service|support)\\b",
+        "\\bno (response|reply)\\b",
+        "\\bnever (replied|responded|heard back)\\b",
+        "\\bticket\\b",
+        "\\bchat ?bot\\b",
+        "\\bsuporte\\b",
+        "\\bnão respond",
+        "\\bninguém respond",
+        "\\bsem resposta\\b",
+        "\\b(no|terrible|bad|poor|mindless|zero|any|enough|contacted|from) support\\b",
+        "\\bsupport (team|email|told|will|said|did|didn)\\b",
+        "\\batendimento (péssimo|ruim|horrível)\\b",
+        "\\bsem atendimento\\b",
+        "\\bno (one|body) (at \\w+ )?(is|will) (any )?help\\b",
+        "\\bno help\\b"
+      ]
+    },
+    {
+      "id": "bugs",
+      "label": "Bugs, erros e travamentos",
+      "kind": "complaint",
+      "patterns": [
+        "\\bcrash",
+        "\\bbugs?\\b",
+        "\\bbuggy\\b",
+        "\\bglitch",
+        "\\bfreez",
+        "\\bbroken\\b",
+        "\\b(doesn['’]?t|does not|stopped) work",
+        "\\bnot working\\b",
+        "\\berror\\b",
+        "\\btrava",
+        "\\berro\\b",
+        "\\bnão funciona",
+        "\\bparou de funcionar\\b",
+        "\\bfecha sozinho\\b",
+        "\\bnão (abre|carrega|salva)\\b",
+        "\\bwhite screen\\b",
+        "\\bblank (screen|page)\\b",
+        "\\bgr[ae]y screen\\b",
+        "\\bkeeps closing\\b",
+        "\\bw?hoops\\b",
+        "\\boops\\b",
+        "\\bsomething went wrong\\b",
+        "\\btela branca\\b",
+        "\\bfrozen\\b",
+        "\\bserver cannot be found\\b"
+      ]
+    },
+    {
+      "id": "lento",
+      "label": "Lento ou pesado",
+      "kind": "complaint",
+      "patterns": [
+        "\\bslow(ly)?\\b",
+        "\\blag(gy|s)?\\b",
+        "\\btakes forever\\b",
+        "\\bsluggish\\b",
+        "\\blento\\b",
+        "\\bdemora (para|pra|a) (carregar|abrir)\\b",
+        "\\bpesad[ao]\\b",
+        "\\bcarregando\\b"
+      ]
+    },
+    {
+      "id": "links_bloqueados",
+      "label": "Link que não abre ou é bloqueado no Instagram, TikTok e outros",
+      "kind": "complaint",
+      "patterns": [
+        "\\b(instagram|tiktok|facebook)\\b.{0,40}\\b(flag|spam|unsafe|block|bloque|marc|insegur)",
+        "\\b(link|url) (is |was )?(blocked|flagged|broken)\\b",
+        "\\bshadow.?ban",
+        "\\bspam link\\b",
+        "\\blink (ficou )?(bloqueado|quebrado|marcado)\\b",
+        "\\bunsafe\\b",
+        "\\bsecurity certificate\\b",
+        "\\bblocks? onlyfans\\b",
+        "\\bgrays? out\\b",
+        "\\binsta(gram)? não está aceitando\\b",
+        "\\blink de instagram não\\b",
+        "\\btiktok (bio|account)\\b",
+        "\\bgo to my tiktok\\b",
+        "\\bterrible for tiktok\\b"
+      ]
+    },
+    {
+      "id": "editor",
+      "label": "Editor confuso ou difícil",
+      "kind": "complaint",
+      "patterns": [
+        "\\bconfus",
+        "\\bhard to (use|find|navigate|understand)\\b",
+        "\\bcomplicated\\b",
+        "\\bcluttered\\b",
+        "\\bunintuitive\\b",
+        "\\bclunky\\b",
+        "\\btoo many (steps|clicks|taps)\\b",
+        "\\bcan['’]?t find\\b",
+        "\\bdifícil\\b",
+        "\\bcomplicado\\b",
+        "\\bconfuso\\b",
+        "\\bnão (acho|encontro)\\b",
+        "\\bdeliberately difficult\\b",
+        "\\bdifficult to navigate\\b",
+        "\\bnowhere near intuitive\\b"
+      ]
+    },
+    {
+      "id": "atualizacao",
+      "label": "Uma atualização piorou",
+      "kind": "complaint",
+      "patterns": [
+        "\\b(new|latest|recent) (update|version|design)\\b",
+        "\\bredesign",
+        "\\bused to be\\b",
+        "\\bbring back\\b",
+        "\\bsince the update\\b",
+        "\\batualização\\b",
+        "\\bversão nova\\b",
+        "\\bera melhor\\b",
+        "\\bvoltem\\b",
+        "\\b(last|latest|recent) (few |couple )?updates?\\b",
+        "\\bupdate (broke|ruined|made)\\b",
+        "\\bforced updates?\\b",
+        "\\bdepois das? (últimas? )?atualizaç",
+        "\\bpor conta das atualizações\\b"
+      ]
+    },
+    {
+      "id": "marca",
+      "label": "Marca do Linktree na página e domínio próprio",
+      "kind": "request",
+      "patterns": [
+        "\\b(remove|hide) (the )?(linktree )?(logo|branding)\\b",
+        "\\bbranding\\b",
+        "\\bwhite.?label\\b",
+        "\\bcustom domain\\b",
+        "\\bown domain\\b",
+        "\\blogo do linktree\\b",
+        "\\bmarca d.?água\\b",
+        "\\bdomínio (próprio|personalizado)\\b",
+        "\\btirar a marca\\b"
+      ]
+    },
+    {
+      "id": "personalizacao",
+      "label": "Personalização: temas, fontes, cores e fundo",
+      "kind": "request",
+      "patterns": [
+        "\\bcustomi[sz]",
+        "\\btheme",
+        "\\bfont",
+        "\\bbackground\\b",
+        "\\bcolou?rs?\\b",
+        "\\blayout\\b",
+        "\\btemplates?\\b",
+        "\\bdesign\\b",
+        "\\bpersonaliz",
+        "\\btema",
+        "\\bfonte",
+        "\\bfundo\\b",
+        "\\bcores?\\b",
+        "\\bmodelos?\\b",
+        "\\bdark mode\\b",
+        "\\bmodo escuro\\b",
+        "\\b(look|looks|parecem?) (all )?(the same|identical|iguais)\\b"
+      ]
+    },
+    {
+      "id": "metricas",
+      "label": "Métricas e insights",
+      "kind": "request",
+      "patterns": [
+        "\\banalytics\\b",
+        "\\binsights?\\b",
+        "\\bstats\\b",
+        "\\bstatistics\\b",
+        "\\bclicks?\\b",
+        "\\bviews\\b",
+        "\\btraffic (sources?|data)\\b",
+        "\\bmétricas\\b",
+        "\\bestatísticas\\b",
+        "\\bcliques\\b",
+        "\\bvisitas\\b",
+        "\\bacessos\\b",
+        "\\bde onde vem\\b"
+      ]
+    },
+    {
+      "id": "audiencia",
+      "label": "Captura de email, contatos e exportação",
+      "kind": "request",
+      "patterns": [
+        "\\bemail (list|capture|signup|sign.?up)\\b",
+        "\\bnewsletter\\b",
+        "\\bsubscribers?\\b",
+        "\\bmailchimp\\b",
+        "\\bexport",
+        "\\bcsv\\b",
+        "\\blista de (emails?|contatos)\\b",
+        "\\binscritos\\b",
+        "\\bformulário de email\\b",
+        "\\bleads?\\b"
+      ]
+    },
+    {
+      "id": "brasil",
+      "label": "Brasil: Pix, reais e WhatsApp",
+      "kind": "request",
+      "patterns": [
+        "\\bpix\\b",
+        "\\bboleto\\b",
+        "\\breais\\b",
+        "\\bR\\$",
+        "\\bem real\\b",
+        "\\bwhats(app)?\\b",
+        "\\bzap\\b"
+      ]
+    },
+    {
+      "id": "app",
+      "label": "App do celular pior que o site",
+      "kind": "complaint",
+      "patterns": [
+        "\\b(browser|web) (version|interface)\\b",
+        "\\bon (a|my|the) (computer|desktop|laptop)\\b",
+        "\\bfrom (my|a|the) (computer|desktop|browser)\\b",
+        "\\bonly (available )?on the (website|web)\\b",
+        "\\b(go|use) (on )?the (actual )?website\\b",
+        "\\bon a browser\\b",
+        "\\bnot on the app\\b",
+        "\\bpelo (computador|navegador)\\b",
+        "\\bno computador\\b",
+        "\\bdo que usar pelo navegador\\b",
+        "\\bmobile app\\b",
+        "\\bharder on (the )?phone\\b"
+      ]
+    },
+    {
+      "id": "loja",
+      "label": "Vender, receber dos clientes, comissões e afiliados",
+      "kind": "request",
+      "patterns": [
+        "\\bcheckout\\b",
+        "\\baccept payments\\b",
+        "\\bstorefront\\b",
+        "\\baffiliate",
+        "\\bvender\\b",
+        "\\bvendas\\b",
+        "\\bcatálogo\\b",
+        "\\bbotão de comprar\\b",
+        "\\breceber pagamento",
+        "\\bsell(ing)? (my |our )?(products?|merch|digital|training)\\b",
+        "\\bdigital products?\\b",
+        "\\bshopify\\b",
+        "\\bstripe\\b",
+        "\\bcommissions?\\b",
+        "\\bearnings\\b",
+        "\\bget(ting)? paid\\b",
+        "\\bpay(out)? system\\b",
+        "\\bmonetiz"
+      ]
+    },
+    {
+      "id": "privacidade",
+      "label": "Privacidade e rastreamento",
+      "kind": "complaint",
+      "patterns": [
+        "\\bprivacy\\b",
+        "\\bsell(s|ing)? (my )?data\\b",
+        "\\bcookies?\\b",
+        "\\bprivacidade\\b",
+        "\\brastre",
+        "\\bmeus dados\\b",
+        "\\blgpd\\b",
+        "\\btaking my data\\b",
+        "\\btrack(s|ing)? (me|users|you|visitors)\\b"
+      ]
+    },
+    {
+      "id": "equipes",
+      "label": "Agências e equipes: várias páginas num login só",
+      "kind": "request",
+      "patterns": [
+        "\\bagenc(y|ies|ia|ias)\\b",
+        "\\bclient pages\\b",
+        "\\bclientes\\b.{0,30}\\bpáginas\\b",
+        "\\bvári[ao]s (perfis|páginas|contas)\\b",
+        "\\bmultiple (pages|profiles|accounts)\\b",
+        "\\bone login\\b",
+        "\\bum login só\\b",
+        "\\bmanage multiple\\b",
+        "\\bmore accounts\\b",
+        "\\bmais contas\\b",
+        "\\b(2|two|second) linktrees\\b",
+        "\\bswitch (my )?linktrees\\b"
+      ]
+    },
+    {
+      "id": "agendamento",
+      "label": "Agendar links (aparecer e sumir)",
+      "kind": "request",
+      "patterns": [
+        "\\bschedul",
+        "\\bagendar\\b",
+        "\\bagendamento\\b",
+        "\\bsumir depois\\b",
+        "\\bexpire\\b"
+      ]
+    },
+    {
+      "id": "idioma",
+      "label": "Idioma: app só em inglês",
+      "kind": "request",
+      "patterns": [
+        "\\bportuguês\\b",
+        "\\bidiomas?\\b",
+        "\\btradu[zç]",
+        "\\bem inglês\\b",
+        "\\bpt-?br\\b",
+        "\\bespañol\\b",
+        "\\bem outros idiomas\\b",
+        "\\b(change|other|more) languages?\\b",
+        "\\bin (spanish|portuguese)\\b"
+      ]
+    },
+    {
+      "id": "acessibilidade",
+      "label": "Acessibilidade: leitor de tela (VoiceOver)",
+      "kind": "complaint",
+      "patterns": [
+        "\\bvoice ?over\\b",
+        "\\bscreen ?reader\\b",
+        "\\btalk ?back\\b",
+        "\\bblind\\b",
+        "\\bvisually impaired\\b",
+        "\\bacessibilidade\\b",
+        "\\bleitor de tela\\b",
+        "\\bcegos?\\b",
+        "\\baccessibility\\b",
+        "\\binaccessible\\b",
+        "\\bno longer accessible\\b"
+      ]
+    },
+    {
+      "id": "ia_termos",
+      "label": "IA e termos de uso: conteúdo dos usuários para IA",
+      "kind": "complaint",
+      "patterns": [
+        "\\bgenerative\\b",
+        "\\bopen ?ai\\b",
+        "\\bdall.?e\\b",
+        "\\bslop",
+        "\\bterms of (service|use)\\b",
+        "(?-i:\\bTOS\\b)",
+        "\\bderivat(iv)?e copies\\b",
+        "\\bai bs\\b",
+        "\\binteligência artificial\\b",
+        "\\btermos de uso\\b"
+      ]
+    },
+    {
+      "id": "upsell",
+      "label": "Empurra o plano pago: pop-ups, avisos e emails",
+      "kind": "complaint",
+      "patterns": [
+        "\\bupsell",
+        "\\bconstantly (trying|prompting|asking)\\b",
+        "\\bspams? me\\b",
+        "\\bpredatory\\b",
+        "\\btelling me to upgrade\\b",
+        "\\bprompting me to upgrade\\b",
+        "\\btrying to make me subscribe\\b",
+        "\\byou may also like\\b",
+        "\\bspecial offers\\b",
+        "\\bpopups?\\b",
+        "\\bpop-ups?\\b",
+        "\\bpop up came\\b"
+      ]
+    },
+    {
+      "id": "reordenar",
+      "label": "Reordenar e organizar links (coleções) não funciona",
+      "kind": "complaint",
+      "patterns": [
+        "\\breorder",
+        "\\bre-?arrang",
+        "\\b(move|moving|sort|sorting) (my |the )?(links|items|events)\\b",
+        "\\bmove items\\b",
+        "\\bsorting\\b",
+        "\\breorganiz",
+        "\\bordenar\\b",
+        "\\bposicionar os links\\b",
+        "\\binto a collection\\b",
+        "\\bpart of collection\\b",
+        "\\bgrouping of links\\b"
+      ]
+    }
+  ]
 }

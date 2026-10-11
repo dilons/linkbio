@@ -1,9 +1,15 @@
 # Coleta de avaliações do Linktree
 
-Enquanto as reais não chegam, `replica/mock/` tem o caminho inteiro rodando
-com 60 avaliações fictícias (ver o `LEIA-ME.md` de lá). Mock não é pesquisa e
-não entra aqui: o script de coleta tira do `reviews.csv` qualquer linha
-`mock-*` ou com link `.invalid`.
+**Estado em 2026-10-11:** 605 avaliações de 2 plataformas no `reviews.csv`
+(App Store, pelo feed RSS: EUA 500, Brasil 83, Portugal 6; Hacker News, pela
+API do Algolia: 18 que opinam, de 285 que citam o nome). Passa das 100, mas
+falta a terceira fonte: qualquer uma das de "À mão" abaixo, ou o Reddit com a
+sua chave. Análise em `replica/fixes.md`.
+
+Mock não é pesquisa e não entra aqui: o script de coleta tira do
+`reviews.csv` qualquer linha `mock-*` ou com link `.invalid`. O que foi lido
+e não é avaliação vai para `replica/reviews-fora.csv`, com o motivo, e não
+volta numa coleta nova.
 
 Para a `/replica-entrepreneur`: o que os usuários do Linktree reclamam e
 pedem, nas palavras deles, com o link de cada uma. Meta: **100 ou mais
@@ -37,6 +43,7 @@ Linha sem link ou sem texto é descartada pelo `reviews.py`.
 ```bash
 python3 replica/ferramentas/coletar_avaliacoes.py                   # App Store Brasil e EUA (até 500 cada) e Hacker News
 python3 replica/ferramentas/coletar_avaliacoes.py --paises br,us,pt # mais lojas da App Store
+python3 replica/ferramentas/coletar_avaliacoes.py --ipv4            # se travar: rede com IPv6 quebrado (o WSL)
 ```
 
 Só biblioteca padrão do Python, roda em qualquer máquina com Python 3. Mantém

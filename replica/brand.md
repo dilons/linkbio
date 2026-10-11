@@ -14,6 +14,15 @@ Do `replica/mock/fixes.mock.md`, que é **mock** (avaliações fictícias, ver o
 com cobrança em reais e Pix e resposta em português. O nome e a voz partem
 dessa hipótese. Se as avaliações reais apontarem outro ângulo, revisar.
 
+**2026-10-11, avaliações reais** (`replica/fixes.md`, 605 de 2
+plataformas): esse ângulo **não se sustentou**. Pix, reais e boleto têm 0
+menções, inclusive nas 83 do Brasil, e o português o original já resolveu.
+O recomendado, ainda provisório até chegarem as fontes coladas à mão, é
+"sem pegadinha no dinheiro": preço só um, avisado antes de cobrar, cancelar
+em um clique, nada de empurrar o plano. A voz quase não muda (já é
+"confiável, não burocrática"); os textos sobre "o que você vende" e o nome
+dependem da decisão do dono.
+
 ## O nome
 
 ### Os 20 candidatos e o corte
