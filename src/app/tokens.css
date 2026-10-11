@@ -1,0 +1,85 @@
+/* Gerado por scripts/tokens.mjs a partir de replica/design/tokens.json. Não edite. */
+
+:root {
+  --bg: #ffffff;
+  --surface: #f5f6f8;
+  --surface-2: #eceef2;
+  --border: #e2e5ea;
+  --border-input: #7d8592;
+  --text: #15181d;
+  --text-muted: #555d6b;
+  --accent: #4338ca;
+  --accent-hover: #3730a3;
+  --accent-soft: #eef0ff;
+  --on-accent: #ffffff;
+  --danger: #b42318;
+  --on-danger: #ffffff;
+  --success: #1a7f45;
+  --warning: #8f5300;
+  --paid: #7a4d00;
+  --paid-soft: #fff4dc;
+  --focus: #4338ca;
+  --font-sans-stack: Inter Variable, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --tk-radius-sm: 6px;
+  --tk-radius-md: 10px;
+  --tk-radius-lg: 16px;
+  --tk-radius-pill: 999px;
+  --tk-shadow-card: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10);
+  --tk-shadow-pop: 0 12px 32px rgba(16,24,40,.16);
+  --tk-shadow-button-sombra: 0 4px 0 rgba(0,0,0,.18);
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-ease: cubic-bezier(.2,.8,.2,1);
+  --layout-public-max: 600px;
+  --layout-public-gutter: 16px;
+  --layout-public-link-height: 56px;
+  --layout-admin-sidebar: 240px;
+  --layout-admin-header: 56px;
+  --layout-preview-width: 320px;
+  --layout-preview-height: 660px;
+}
+
+[data-theme="papel"] {
+  --t-bg: #fafafa;
+  --t-text: #1c1c1f;
+  --t-text-muted: #5b5b66;
+  --t-button-bg: #ffffff;
+  --t-button-text: #1c1c1f;
+  --t-button-border: #85858f;
+}
+
+[data-theme="noite"] {
+  --t-bg: #121317;
+  --t-text: #f3f4f6;
+  --t-text-muted: #a6abb5;
+  --t-button-bg: #262830;
+  --t-button-text: #f3f4f6;
+  --t-button-border: #6b7080;
+}
+
+[data-theme="areia"] {
+  --t-bg: #f3ebe0;
+  --t-text: #2b2118;
+  --t-text-muted: #6b5847;
+  --t-button-bg: #2b2118;
+  --t-button-text: #f3ebe0;
+  --t-button-border: #2b2118;
+}
+
+[data-theme="oceano"] {
+  --t-bg: #0f3b57;
+  --t-text: #ffffff;
+  --t-text-muted: #c4dbe9;
+  --t-button-bg: #ffffff;
+  --t-button-text: #0f3b57;
+  --t-button-border: #ffffff;
+}
+
+[data-theme="contraste"] {
+  --t-bg: #000000;
+  --t-text: #ffffff;
+  --t-text-muted: #d9d9d9;
+  --t-button-bg: #ffe14d;
+  --t-button-text: #000000;
+  --t-button-border: #ffe14d;
+}

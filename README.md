@@ -16,14 +16,27 @@ original.
   [dilons/random](https://github.com/dilons/random) (`replica-skill/` e
   `replica-br/`), para qualquer sessão do Claude Code neste repositório.
 
+## Rodar
+
+```bash
+npm install
+npm run dev          # http://localhost:3000/design mostra o design system
+npm run tokens       # depois de mudar replica/design/tokens.json
+npm run typecheck && npm run lint && npm run build
+```
+
+Next.js 16 (App Router), React 19, Tailwind 4, TypeScript. O `AGENTS.md` aponta
+para a documentação do Next que vem em `node_modules/next/dist/docs/`: esta
+versão mudou APIs, então leia lá antes de escrever código.
+
 ## Andamento
 
 | skill | estado |
 | --- | --- |
 | `/replica-recon` | feito: `replica/recon.md`, `replica/features.csv` (faltam screenshots) |
 | `/replica-architect` | feito: `replica/architecture.md`, `replica/schema.sql` (testado no PGlite) |
-| `/replica-design` | próximo |
-| `/replica-build` | |
+| `/replica-design` | feito: `replica/design/` (tokens, componentes, contraste 0 falhas, capturas) e a rota `/design` |
+| `/replica-build` | próximo |
 | `/replica-backend` | |
 | `/replica-lgpd` | |
 | `/replica-test` | |

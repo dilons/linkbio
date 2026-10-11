@@ -1,0 +1,44 @@
+  AAA   17.79:1  text                     on bg                   
+  AAA   16.45:1  text                     on surface              
+  AAA   15.32:1  text                     on surface-2            
+  AA     6.64:1  text-muted               on bg                   
+  AA     6.14:1  text-muted               on surface              
+  AAA    7.90:1  on-accent                on accent               
+  AAA    9.93:1  on-accent                on accent-hover         
+  AAA    7.90:1  accent                   on bg                   
+  AAA    7.31:1  accent                   on surface              
+  AA     6.98:1  accent                   on accent-soft          
+  AA     6.57:1  danger                   on bg                   
+  AA     6.57:1  on-danger                on danger               
+  AA     5.04:1  success                  on bg                   
+  AA     6.17:1  warning                  on bg                   
+  AA     6.65:1  paid                     on paid-soft            
+  AAA   17.79:1  bg                       on text                 
+  AA     5.65:1  warning                  on paid-soft            
+  AA     4.66:1  success                  on surface              
+  PASS   3.72:1  border-input             on bg                   ui
+  PASS   3.44:1  border-input             on surface              ui
+  PASS   7.90:1  focus                    on bg                   ui
+  PASS   7.31:1  focus                    on surface              ui
+  AAA   16.29:1  theme-papel-text         on theme-papel-bg       
+  AA     6.42:1  theme-papel-text-muted   on theme-papel-bg       
+  AAA   17.00:1  theme-papel-button-text  on theme-papel-button-bg 
+  PASS   3.50:1  theme-papel-button-border on theme-papel-bg       ui
+  AAA   16.87:1  theme-noite-text         on theme-noite-bg       
+  AAA    8.06:1  theme-noite-text-muted   on theme-noite-bg       
+  AAA   13.36:1  theme-noite-button-text  on theme-noite-button-bg 
+  PASS   3.76:1  theme-noite-button-border on theme-noite-bg       ui
+  AAA   13.33:1  theme-areia-text         on theme-areia-bg       
+  AA     5.71:1  theme-areia-text-muted   on theme-areia-bg       
+  AAA   13.33:1  theme-areia-button-text  on theme-areia-button-bg 
+  PASS  13.33:1  theme-areia-button-border on theme-areia-bg       ui
+  AAA   11.77:1  theme-oceano-text        on theme-oceano-bg      
+  AAA    8.22:1  theme-oceano-text-muted  on theme-oceano-bg      
+  AAA   11.77:1  theme-oceano-button-text on theme-oceano-button-bg 
+  PASS  11.77:1  theme-oceano-button-border on theme-oceano-bg      ui
+  AAA   21.00:1  theme-contraste-text     on theme-contraste-bg   
+  AAA   14.88:1  theme-contraste-text-muted on theme-contraste-bg   
+  AAA   16.13:1  theme-contraste-button-text on theme-contraste-button-bg 
+  PASS  16.13:1  theme-contraste-button-border on theme-contraste-bg   ui
+
+  42 pairs, 0 failing AA

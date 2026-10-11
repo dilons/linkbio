@@ -1,6 +1,24 @@
+# dependências e build
+/node_modules
+/.pnp
+.pnp.*
+/.next/
+/out/
+/build
+/coverage
+*.tsbuildinfo
+next-env.d.ts
+
+# chaves: nunca no repositório (o .env.example, sem valores, entra)
+.env*
+!.env.example
+
+# Python das skills
 __pycache__/
 *.pyc
-node_modules/
-.env
-.env.local
-.env.*.local
+
+# sistema e logs
+.DS_Store
+*.pem
+npm-debug.log*
+.vercel
