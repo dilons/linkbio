@@ -23,5 +23,9 @@ __pycache__/
 npm-debug.log*
 .vercel
 
-# banco local de desenvolvimento (PGlite)
-/.data/
+# Supabase local (npm run db:start)
+/supabase/.branches/
+/supabase/.temp/
+
+# saída temporária do drizzle-kit pull (npm run db:types)
+/.drizzle-pull/

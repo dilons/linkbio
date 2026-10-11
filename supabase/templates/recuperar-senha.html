@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Crie uma senha nova</title></head>
+<body style="margin:0;padding:24px;background:#f5f6f8;font-family:Arial,Helvetica,sans-serif;color:#15181d">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;margin:0 auto;background:#ffffff;border:1px solid #e2e5ea;border-radius:12px">
+    <tr><td style="padding:32px">
+      <p style="margin:0 0 24px;font-size:18px;font-weight:bold">linkbio</p>
+      <p style="margin:0 0 12px;font-size:15px;line-height:22px">Alguém pediu uma senha nova para a conta {{ .Email }}. Se foi você, é só seguir:</p>
+      <p style="margin:24px 0">
+        <a href="{{ .RedirectTo }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery" style="display:inline-block;padding:12px 20px;background:#4338ca;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:bold">Criar senha nova</a>
+      </p>
+      <p style="margin:0;font-size:13px;line-height:20px;color:#555d6b">Se o botão não abrir, copie este endereço no navegador:<br>{{ .RedirectTo }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery</p>
+      <p style="margin:32px 0 0;font-size:12px;line-height:18px;color:#555d6b">O link vale por uma hora e funciona uma vez. Se não foi você, ignore este email: sua senha continua a mesma.</p>
+    </td></tr>
+  </table>
+</body>
+</html>
