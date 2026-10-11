@@ -36,7 +36,7 @@ export function DataTable<T extends Record<string, ReactNode>>({
           {linhas.map((l, i) => (
             <tr key={i} className="border-t border-border">
               {colunas.map((c) => (
-                <td key={c.chave} className={`px-4 py-2 text-fg ${c.alinhar === "direita" ? "text-right tabular-nums" : ""}`}>
+                <td key={c.chave} className={`px-4 py-2 text-fg wrap-anywhere ${c.alinhar === "direita" ? "text-right tabular-nums" : ""}`}>
                   {l[c.chave]}
                 </td>
               ))}

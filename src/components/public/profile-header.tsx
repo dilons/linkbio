@@ -15,8 +15,9 @@ export function ProfileHeader({ titulo, bio, avatarUrl }: { titulo: string; bio?
           {iniciais}
         </span>
       )}
-      <h1 className="text-xl font-bold text-t-text">{titulo}</h1>
-      {bio && <p className="max-w-[44ch] text-base text-t-muted">{bio}</p>}
+      {/* texto sem espaços (um endereço colado na bio) quebra em vez de estourar a tela */}
+      <h1 className="max-w-full text-xl font-bold text-t-text wrap-anywhere">{titulo}</h1>
+      {bio && <p className="max-w-[44ch] text-base text-t-muted wrap-anywhere">{bio}</p>}
     </header>
   );
 }

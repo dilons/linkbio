@@ -50,7 +50,7 @@ export function PublicLinkButton({
       style={{ minHeight: "var(--layout-public-link-height)" }}
     >
       {travado && <Lock aria-label="Conteúdo com aviso" className="size-4 shrink-0" />}
-      <span className="line-clamp-2">{titulo}</span>
+      <span className="line-clamp-2 wrap-anywhere">{titulo}</span>
     </a>
   );
 }
