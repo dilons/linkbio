@@ -1,89 +1,111 @@
-// Login provisório (email e senha, sessão em cookie httpOnly). A
-// /replica-backend troca por Supabase Auth com confirmação de email e Google;
-// as funções exportadas ficam com a mesma forma.
-import { cookies } from "next/headers";
-import { createHash, randomBytes } from "node:crypto";
-import { db, violouUnico } from "./db";
-import { conferirSenha, hashSenha } from "./senha";
-
-export const COOKIE_SESSAO = "lb_sessao";
-const DURACAO_DIAS = 30;
+// Contas no Supabase Auth: email e senha com confirmação, recuperação de senha,
+// Google, sair deste ou de todos os aparelhos, excluir. A sessão fica em
+// cookies httpOnly gerenciados pelo @supabase/ssr; o proxy a renova.
+import type { AuthError, EmailOtpType } from "@supabase/supabase-js";
+import { supabaseAdmin, supabaseDoPedido } from "@/lib/supabase/server";
 
 export type Sessao = { userId: string; email: string };
-type Resultado = { ok: true; userId: string } | { ok: false; erro: string };
+export type Resultado = { ok: true } | { ok: false; erro: string; naoConfirmado?: boolean };
 
-const hashToken = (t: string) => createHash("sha256").update(t).digest("hex");
+const MENSAGENS: Record<string, string> = {
+  invalid_credentials: "Email ou senha não conferem.",
+  email_not_confirmed: "Falta confirmar o email. Procure o link que enviamos (veja também o spam).",
+  weak_password: "Essa senha é fácil de adivinhar. Tente outra, com pelo menos 8 caracteres.",
+  same_password: "A senha nova precisa ser diferente da atual.",
+  email_address_invalid: "Confira o email.",
+  over_email_send_rate_limit: "Muitos emails em pouco tempo. Espere alguns minutos e tente de novo.",
+  over_request_rate_limit: "Muitas tentativas. Espere alguns minutos e tente de novo.",
+  signup_disabled: "Os cadastros estão fechados agora.",
+  otp_expired: "Esse link expirou ou já foi usado. Peça outro.",
+};
 
-async function abrirSessao(userId: string): Promise<void> {
-  const token = randomBytes(32).toString("base64url");
-  const expira = new Date(Date.now() + DURACAO_DIAS * 86400_000);
-  const conn = await db();
-  await conn.query("insert into auth.sessions (token_hash, user_id, expires_at) values ($1, $2, $3)", [
-    hashToken(token),
-    userId,
-    expira.toISOString(),
-  ]);
-  (await cookies()).set(COOKIE_SESSAO, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    expires: expira,
-  });
+function traduzir(e: AuthError): string {
+  return (e.code && MENSAGENS[e.code]) || "Não deu certo agora. Tente de novo em instantes.";
 }
 
-/** Cria a conta e já abre a sessão. Em desenvolvimento o email vale como confirmado. */
-export async function criarConta(email: string, senha: string): Promise<Resultado> {
-  const conn = await db();
-  try {
-    const id = await conn.transaction(async (tx) => {
-      const { rows } = await tx.query<{ id: string }>(
-        "insert into auth.users (email, password_hash, email_confirmed_at) values ($1, $2, now()) returning id",
-        [email, await hashSenha(senha)],
-      );
-      await tx.query("insert into accounts (id) values ($1)", [rows[0].id]);
-      return rows[0].id;
-    });
-    await abrirSessao(id);
-    return { ok: true, userId: id };
-  } catch (e) {
-    if (violouUnico(e)) return { ok: false, erro: "Já existe uma conta com esse email. Entre por aqui." };
-    throw e;
-  }
+/** A sessão do pedido, conferida (assinatura do token ou consulta ao Auth). */
+export async function sessaoAtual(): Promise<Sessao | null> {
+  const supabase = await supabaseDoPedido();
+  const { data, error } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+  if (error || !claims?.sub) return null;
+  return { userId: claims.sub, email: String(claims.email ?? "") };
+}
+
+/**
+ * Cria a conta e manda o email de confirmação. Para email que já tem conta, o
+ * Supabase responde igual e não manda nada: a tela não revela quem é cliente.
+ */
+export async function criarConta(email: string, senha: string, origem: string): Promise<Resultado> {
+  const supabase = await supabaseDoPedido();
+  const { error } = await supabase.auth.signUp({ email, password: senha, options: { emailRedirectTo: origem } });
+  return error ? { ok: false, erro: traduzir(error) } : { ok: true };
 }
 
 export async function entrar(email: string, senha: string): Promise<Resultado> {
-  const conn = await db();
-  const { rows } = await conn.query<{ id: string; password_hash: string }>(
-    "select id, password_hash from auth.users where email = $1",
-    [email],
-  );
-  // Mesma mensagem para email inexistente e senha errada: não revela quem tem conta.
-  if (!rows[0] || !(await conferirSenha(senha, rows[0].password_hash))) {
-    return { ok: false, erro: "Email ou senha não conferem." };
-  }
-  await abrirSessao(rows[0].id);
-  return { ok: true, userId: rows[0].id };
+  const supabase = await supabaseDoPedido();
+  const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
+  if (!error) return { ok: true };
+  return { ok: false, erro: traduzir(error), naoConfirmado: error.code === "email_not_confirmed" };
 }
 
-export async function sair(): Promise<void> {
-  const jar = await cookies();
-  const token = jar.get(COOKIE_SESSAO)?.value;
-  if (token) {
-    const conn = await db();
-    await conn.query("delete from auth.sessions where token_hash = $1", [hashToken(token)]);
-  }
-  jar.delete(COOKIE_SESSAO);
+export async function reenviarConfirmacao(email: string, origem: string): Promise<Resultado> {
+  const supabase = await supabaseDoPedido();
+  const { error } = await supabase.auth.resend({ type: "signup", email, options: { emailRedirectTo: origem } });
+  return error ? { ok: false, erro: traduzir(error) } : { ok: true };
 }
 
-export async function sessaoAtual(): Promise<Sessao | null> {
-  const token = (await cookies()).get(COOKIE_SESSAO)?.value;
-  if (!token) return null;
-  const conn = await db();
-  const { rows } = await conn.query<{ user_id: string; email: string }>(
-    `select s.user_id, u.email from auth.sessions s join auth.users u on u.id = s.user_id
-      where s.token_hash = $1 and s.expires_at > now()`,
-    [hashToken(token)],
-  );
-  return rows[0] ? { userId: rows[0].user_id, email: rows[0].email } : null;
+/** Manda o link de senha nova. Responde igual exista ou não a conta. */
+export async function pedirNovaSenha(email: string, origem: string): Promise<Resultado> {
+  const supabase = await supabaseDoPedido();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: origem });
+  if (error?.code === "over_email_send_rate_limit" || error?.code === "over_request_rate_limit") {
+    return { ok: false, erro: traduzir(error) };
+  }
+  return { ok: true };
+}
+
+/** O link dos emails (/auth/confirm): valida o token e abre a sessão. */
+export async function confirmarToken(tokenHash: string, tipo: EmailOtpType): Promise<Resultado> {
+  const supabase = await supabaseDoPedido();
+  const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: tipo });
+  return error ? { ok: false, erro: traduzir(error) } : { ok: true };
+}
+
+/** A volta do Google (/auth/callback): troca o código pela sessão. */
+export async function trocarCodigo(codigo: string): Promise<Resultado> {
+  const supabase = await supabaseDoPedido();
+  const { error } = await supabase.auth.exchangeCodeForSession(codigo);
+  return error ? { ok: false, erro: traduzir(error) } : { ok: true };
+}
+
+/** Endereço do Google para onde mandar a pessoa. Só pede email e perfil. */
+export async function urlLoginGoogle(origem: string): Promise<string | null> {
+  const supabase = await supabaseDoPedido();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${origem}/auth/callback`, scopes: "email profile" },
+  });
+  return error ? null : data.url;
+}
+
+export async function trocarSenha(senha: string): Promise<Resultado> {
+  const supabase = await supabaseDoPedido();
+  const { error } = await supabase.auth.updateUser({ password: senha });
+  return error ? { ok: false, erro: traduzir(error) } : { ok: true };
+}
+
+/** "local" sai só deste aparelho; "global" derruba a sessão em todos. */
+export async function sair(escopo: "local" | "global" = "local"): Promise<void> {
+  const supabase = await supabaseDoPedido();
+  await supabase.auth.signOut({ scope: escopo });
+}
+
+/**
+ * Apaga o usuário no Auth. Em cascata some a conta; o gatilho
+ * antes_de_apagar_conta esvazia os perfis na hora (o username fica 14 dias).
+ */
+export async function apagarUsuario(userId: string): Promise<boolean> {
+  const { error } = await supabaseAdmin().auth.admin.deleteUser(userId);
+  return !error;
 }

@@ -1,4 +1,7 @@
-import { db } from "./db";
+import { and, asc, eq, inArray, min } from "drizzle-orm";
+import { donoDoPerfil, perfisDaConta } from "@/lib/authz";
+import { db } from "@/lib/db";
+import { links } from "@/lib/db/schema";
 
 export type Link = {
   id: string;
@@ -12,20 +15,28 @@ export type Link = {
   lock_min_age: number | null;
 };
 
-const COLUNAS = "l.id, l.title, l.url, l.enabled, l.position, l.starts_at, l.ends_at, l.lock, l.lock_min_age";
+const COLUNAS = {
+  id: links.id,
+  title: links.title,
+  url: links.url,
+  enabled: links.enabled,
+  position: links.position,
+  starts_at: links.startsAt,
+  ends_at: links.endsAt,
+  lock: links.lock,
+  lock_min_age: links.lockMinAge,
+};
 
-// Toda consulta passa pelo dono: o link só é visto ou mudado se o perfil dele
-// é da conta da sessão (architecture.md, "Regra de acesso").
+// Toda consulta passa pelo dono (lib/authz.ts): o link só é visto ou mudado se
+// o perfil dele é da conta da sessão.
 
 export async function listarLinks(accountId: string, profileId: string): Promise<Link[]> {
   const conn = await db();
-  const { rows } = await conn.query<Link>(
-    `select ${COLUNAS} from links l join profiles p on p.id = l.profile_id
-      where l.profile_id = $2 and p.account_id = $1 and l.kind = 'link'
-      order by l.position`,
-    [accountId, profileId],
-  );
-  return rows;
+  return conn
+    .select(COLUNAS)
+    .from(links)
+    .where(and(eq(links.profileId, profileId), eq(links.kind, "link"), inArray(links.profileId, perfisDaConta(conn, accountId))))
+    .orderBy(asc(links.position));
 }
 
 /** O link novo entra no topo da lista. */
@@ -35,58 +46,58 @@ export async function adicionarLink(
   dados: { titulo: string; url: string },
 ): Promise<Link | null> {
   const conn = await db();
-  const { rows } = await conn.query<Link>(
-    `insert into links (profile_id, title, url, position)
-     select p.id, $3, $4, coalesce((select min(position) from links where profile_id = p.id), 1) - 1
-       from profiles p where p.id = $2 and p.account_id = $1 and p.deleted_at is null
-     returning id, title, url, enabled, position, starts_at, ends_at, lock, lock_min_age`,
-    [accountId, profileId, dados.titulo, dados.url],
-  );
-  return rows[0] ?? null;
+  return conn.transaction(async (tx) => {
+    if (!(await donoDoPerfil(tx, accountId, profileId))) return null;
+    const [{ topo }] = await tx.select({ topo: min(links.position) }).from(links).where(eq(links.profileId, profileId));
+    const [novo] = await tx
+      .insert(links)
+      .values({ profileId, title: dados.titulo, url: dados.url, position: (topo ?? 1) - 1 })
+      .returning(COLUNAS);
+    return novo;
+  });
 }
+
+const doDono = (conn: Awaited<ReturnType<typeof db>>, accountId: string, linkId: string) =>
+  and(eq(links.id, linkId), inArray(links.profileId, perfisDaConta(conn, accountId)));
 
 export async function editarLink(accountId: string, linkId: string, dados: { titulo: string; url: string }): Promise<boolean> {
   const conn = await db();
-  const r = await conn.query(
-    `update links l set title = $3, url = $4, updated_at = now()
-       from profiles p where l.id = $2 and p.id = l.profile_id and p.account_id = $1`,
-    [accountId, linkId, dados.titulo, dados.url],
-  );
-  return (r.affectedRows ?? 0) > 0;
+  const r = await conn
+    .update(links)
+    .set({ title: dados.titulo, url: dados.url, updatedAt: new Date().toISOString() })
+    .where(doDono(conn, accountId, linkId))
+    .returning({ id: links.id });
+  return r.length > 0;
 }
 
 export async function alternarLink(accountId: string, linkId: string, ativo: boolean): Promise<boolean> {
   const conn = await db();
-  const r = await conn.query(
-    `update links l set enabled = $3, updated_at = now()
-       from profiles p where l.id = $2 and p.id = l.profile_id and p.account_id = $1`,
-    [accountId, linkId, ativo],
-  );
-  return (r.affectedRows ?? 0) > 0;
+  const r = await conn
+    .update(links)
+    .set({ enabled: ativo, updatedAt: new Date().toISOString() })
+    .where(doDono(conn, accountId, linkId))
+    .returning({ id: links.id });
+  return r.length > 0;
 }
 
 export async function excluirLink(accountId: string, linkId: string): Promise<boolean> {
   const conn = await db();
-  const r = await conn.query(
-    `delete from links l using profiles p where l.id = $2 and p.id = l.profile_id and p.account_id = $1`,
-    [accountId, linkId],
-  );
-  return (r.affectedRows ?? 0) > 0;
+  const r = await conn.delete(links).where(doDono(conn, accountId, linkId)).returning({ id: links.id });
+  return r.length > 0;
 }
 
 /** Grava a nova ordem numa transação. Recusa se a lista não for exatamente a do perfil. */
 export async function reordenarLinks(accountId: string, profileId: string, ids: string[]): Promise<boolean> {
   const conn = await db();
   return conn.transaction(async (tx) => {
-    const { rows } = await tx.query<{ id: string }>(
-      `select l.id from links l join profiles p on p.id = l.profile_id
-        where l.profile_id = $2 and p.account_id = $1 and l.kind = 'link'`,
-      [accountId, profileId],
+    if (!(await donoDoPerfil(tx, accountId, profileId))) return false;
+    const atuais = new Set(
+      (await tx.select({ id: links.id }).from(links).where(and(eq(links.profileId, profileId), eq(links.kind, "link")))).map((l) => l.id),
     );
-    const atuais = new Set(rows.map((r) => r.id));
     if (atuais.size !== ids.length || !ids.every((id) => atuais.has(id))) return false;
+    const agora = new Date().toISOString();
     for (const [i, id] of ids.entries()) {
-      await tx.query("update links set position = $2, updated_at = now() where id = $1", [id, i]);
+      await tx.update(links).set({ position: i, updatedAt: agora }).where(eq(links.id, id));
     }
     return true;
   });

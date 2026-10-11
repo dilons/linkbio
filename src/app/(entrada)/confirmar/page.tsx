@@ -1,14 +1,10 @@
-import { EmConstrucao } from "@/components/app/em-construcao";
+import type { Metadata } from "next";
+import { ConfirmeSeuEmail } from "../formularios";
 
-// S02
+export const metadata: Metadata = { title: "Confirme seu email · linkbio" };
+
+// S02, para quem volta depois: o email não vai na URL, então a pessoa digita
+// de novo para receber outro link.
 export default function Confirmar() {
-  return (
-    <EmConstrucao
-      tela="S02"
-      titulo="Confirme seu email"
-      descricao="Vamos mandar um link para o seu email. Por enquanto, em desenvolvimento, a conta já nasce confirmada."
-      etapa="/replica-backend (Supabase Auth)"
-      voltar={{ href: "/comecar", rotulo: "Continuar" }}
-    />
-  );
+  return <ConfirmeSeuEmail />;
 }

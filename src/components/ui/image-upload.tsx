@@ -13,15 +13,19 @@ export function ImageUpload({
   label,
   maxMB,
   redonda = false,
+  atual,
   onArquivo,
 }: {
   label: string;
   maxMB: number;
   redonda?: boolean;
+  /** imagem já salva, mostrada até a pessoa escolher outra */
+  atual?: string;
   onArquivo: (f: File) => void;
 }) {
   const id = useId();
   const [previa, setPrevia] = useState<string | null>(null);
+  const mostrada = previa ?? atual;
   const [erro, setErro] = useState<string | null>(null);
 
   function escolher(f: File | undefined) {
@@ -38,9 +42,9 @@ export function ImageUpload({
       <div
         className={`flex size-20 items-center justify-center overflow-hidden border border-dashed border-input bg-surface ${redonda ? "rounded-pill" : "rounded-md"}`}
       >
-        {previa ? (
+        {mostrada ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={previa} alt="" className="size-full object-cover" />
+          <img src={mostrada} alt="" className="size-full object-cover" />
         ) : (
           <ImagePlus aria-hidden className="size-6 text-muted" />
         )}

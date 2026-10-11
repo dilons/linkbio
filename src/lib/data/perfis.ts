@@ -1,4 +1,8 @@
-import { db, violouUnico } from "./db";
+import { and, asc, eq, gt, isNull, lte, or } from "drizzle-orm";
+import { eDonoDoPerfil } from "@/lib/authz";
+import { assinaturaDaConta, ehPro } from "@/lib/billing";
+import { db, violouUnico } from "@/lib/db";
+import { appearances, links, profiles, reservedUsernames, socialLinks } from "@/lib/db/schema";
 import { normalizarUsername, problemaNoUsername } from "./validacao";
 
 export type Perfil = {
@@ -16,28 +20,38 @@ export type LinkPublico = { id: string; title: string; highlight: string; lock: 
 export type RedePublica = { platform: string; url: string };
 export type PaginaPublica = {
   perfil: Perfil;
+  /** plano pago: a página sai sem a marca do linkbio no rodapé */
+  pro: boolean;
   tema: string;
   links: LinkPublico[];
   redes: RedePublica[];
 };
 
-const COLUNAS = "id, account_id, username::text, title, bio, avatar_path, social_position, sensitive_label";
+const COLUNAS = {
+  id: profiles.id,
+  account_id: profiles.accountId,
+  username: profiles.username,
+  title: profiles.title,
+  bio: profiles.bio,
+  avatar_path: profiles.avatarPath,
+  social_position: profiles.socialPosition,
+  sensitive_label: profiles.sensitiveLabel,
+};
 
 export type Disponibilidade = { livre: boolean; username: string; motivo?: string };
 
-/** Checa formato, lista de reservados e se alguém já usa. */
+/** Checa formato, lista de reservados e se alguém já usa (inclusive perfil excluído há menos de 14 dias). */
 export async function verificarUsername(bruto: string): Promise<Disponibilidade> {
   const username = normalizarUsername(bruto);
   const problema = problemaNoUsername(username);
   if (problema) return { livre: false, username, motivo: problema };
   const conn = await db();
-  const { rows } = await conn.query<{ reservado: boolean; usado: boolean }>(
-    `select exists (select 1 from reserved_usernames where username = $1) as reservado,
-            exists (select 1 from profiles where username = $1) as usado`,
-    [username],
-  );
-  if (rows[0].reservado) return { livre: false, username, motivo: "Esse endereço é reservado. Tente outro." };
-  if (rows[0].usado) return { livre: false, username, motivo: "Alguém já usa esse endereço. Tente outro." };
+  const [reservado, usado] = await Promise.all([
+    conn.select({ u: reservedUsernames.username }).from(reservedUsernames).where(eq(reservedUsernames.username, username)).limit(1),
+    conn.select({ id: profiles.id }).from(profiles).where(eq(profiles.username, username)).limit(1),
+  ]);
+  if (reservado.length) return { livre: false, username, motivo: "Esse endereço é reservado. Tente outro." };
+  if (usado.length) return { livre: false, username, motivo: "Alguém já usa esse endereço. Tente outro." };
   return { livre: true, username };
 }
 
@@ -50,13 +64,12 @@ export async function criarPerfil(
   const conn = await db();
   try {
     const perfil = await conn.transaction(async (tx) => {
-      const { rows } = await tx.query<Perfil>(
-        // username é citext e title é text: o mesmo $n nas duas colunas não passa
-        `insert into profiles (account_id, username, title) values ($1, $2, $3) returning ${COLUNAS}`,
-        [accountId, check.username, check.username],
-      );
-      await tx.query("insert into appearances (profile_id) values ($1)", [rows[0].id]);
-      return rows[0];
+      const [p] = await tx
+        .insert(profiles)
+        .values({ accountId, username: check.username, title: check.username })
+        .returning(COLUNAS);
+      await tx.insert(appearances).values({ profileId: p.id });
+      return p as Perfil;
     });
     return { ok: true, perfil };
   } catch (e) {
@@ -69,11 +82,13 @@ export async function criarPerfil(
 /** O perfil da conta (por enquanto, um por conta). */
 export async function perfilDaConta(accountId: string): Promise<Perfil | null> {
   const conn = await db();
-  const { rows } = await conn.query<Perfil>(
-    `select ${COLUNAS} from profiles where account_id = $1 and deleted_at is null order by created_at limit 1`,
-    [accountId],
-  );
-  return rows[0] ?? null;
+  const [p] = await conn
+    .select(COLUNAS)
+    .from(profiles)
+    .where(and(eq(profiles.accountId, accountId), isNull(profiles.deletedAt)))
+    .orderBy(asc(profiles.createdAt))
+    .limit(1);
+  return (p as Perfil | undefined) ?? null;
 }
 
 export async function atualizarCabecalho(
@@ -82,12 +97,12 @@ export async function atualizarCabecalho(
   dados: { titulo: string; bio: string },
 ): Promise<boolean> {
   const conn = await db();
-  const r = await conn.query(
-    `update profiles set title = nullif($3, ''), bio = nullif($4, ''), updated_at = now()
-      where id = $2 and account_id = $1 and deleted_at is null`,
-    [accountId, profileId, dados.titulo, dados.bio],
-  );
-  return (r.affectedRows ?? 0) > 0;
+  const r = await conn
+    .update(profiles)
+    .set({ title: dados.titulo || null, bio: dados.bio || null, updatedAt: new Date().toISOString() })
+    .where(eDonoDoPerfil(accountId, profileId))
+    .returning({ id: profiles.id });
+  return r.length > 0;
 }
 
 /** O que o visitante vê: só links ligados e dentro da janela de agendamento. */
@@ -95,26 +110,36 @@ export async function paginaPublica(bruto: string): Promise<PaginaPublica | null
   const username = normalizarUsername(bruto);
   if (problemaNoUsername(username)) return null;
   const conn = await db();
-  const { rows } = await conn.query<Perfil & { theme: string }>(
-    `select p.id, p.account_id, p.username::text, p.title, p.bio, p.avatar_path, p.social_position,
-            p.sensitive_label, coalesce(a.theme, 'papel') as theme
-       from profiles p left join appearances a on a.profile_id = p.id
-      where p.username = $1 and p.deleted_at is null`,
-    [username],
-  );
-  const perfil = rows[0];
-  if (!perfil) return null;
-  const links = await conn.query<LinkPublico>(
-    `select id, title, highlight, lock, lock_min_age from links
-      where profile_id = $1 and enabled and kind = 'link'
-        and (starts_at is null or starts_at <= now()) and (ends_at is null or ends_at > now())
-      order by position`,
-    [perfil.id],
-  );
-  const redes = await conn.query<RedePublica>(
-    "select platform, url from social_links where profile_id = $1 order by position",
-    [perfil.id],
-  );
-  const { theme, ...resto } = perfil;
-  return { perfil: resto, tema: theme === "padrao" ? "papel" : theme, links: links.rows, redes: redes.rows };
+  const [linha] = await conn
+    .select({ ...COLUNAS, theme: appearances.theme })
+    .from(profiles)
+    .leftJoin(appearances, eq(appearances.profileId, profiles.id))
+    .where(and(eq(profiles.username, username), isNull(profiles.deletedAt)))
+    .limit(1);
+  if (!linha) return null;
+  const agora = new Date().toISOString();
+  const [ls, redes, assinatura] = await Promise.all([
+    conn
+      .select({ id: links.id, title: links.title, highlight: links.highlight, lock: links.lock, lock_min_age: links.lockMinAge })
+      .from(links)
+      .where(
+        and(
+          eq(links.profileId, linha.id),
+          eq(links.enabled, true),
+          eq(links.kind, "link"),
+          or(isNull(links.startsAt), lte(links.startsAt, agora)),
+          or(isNull(links.endsAt), gt(links.endsAt, agora)),
+        ),
+      )
+      .orderBy(asc(links.position)),
+    conn
+      .select({ platform: socialLinks.platform, url: socialLinks.url })
+      .from(socialLinks)
+      .where(eq(socialLinks.profileId, linha.id))
+      .orderBy(asc(socialLinks.position)),
+    linha.account_id ? assinaturaDaConta(linha.account_id) : null,
+  ]);
+  const { theme, ...perfil } = linha;
+  const tema = !theme || theme === "padrao" ? "papel" : theme;
+  return { perfil: perfil as Perfil, pro: ehPro(assinatura), tema, links: ls, redes };
 }

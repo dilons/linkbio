@@ -1,9 +1,12 @@
 // Visitas e cliques. Sem cookie e sem guardar IP: o visitante único é um hash
 // de (sal do dia + IP + navegador + perfil). O sal é apagado depois de um dia
-// (job da architecture.md), e com ele a chance de ligar o hash a alguém.
+// (job /api/cron/sal), e com ele a chance de ligar o hash a alguém.
 import { createHash, randomBytes } from "node:crypto";
+import { and, asc, count, desc, eq, gt, gte, isNull, lte, or, sql } from "drizzle-orm";
 import { isbot } from "isbot";
-import { db } from "./db";
+import { donoDoPerfil } from "@/lib/authz";
+import { db } from "@/lib/db";
+import { analyticsSalts, events, links, profiles } from "@/lib/db/schema";
 
 export type InfoVisitante = {
   ip: string;
@@ -41,33 +44,36 @@ export function dispositivoDe(ua: string): "mobile" | "tablet" | "desktop" {
 
 export const ehRobo = (ua: string) => !ua || isbot(ua);
 
-async function hashDoVisitante(profileId: string, info: InfoVisitante): Promise<Buffer> {
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** O sal de hoje (UTC). Criado aqui se o job ainda não criou. */
+export async function salDoDia(): Promise<Buffer> {
   const conn = await db();
   const hoje = new Date().toISOString().slice(0, 10);
-  await conn.query("insert into analytics_salts (day, salt) values ($1, $2) on conflict (day) do nothing", [
-    hoje,
-    randomBytes(32),
-  ]);
-  const { rows } = await conn.query<{ salt: Uint8Array }>("select salt from analytics_salts where day = $1", [hoje]);
-  return createHash("sha256").update(rows[0].salt).update(info.ip).update(info.userAgent).update(profileId).digest();
+  await conn.insert(analyticsSalts).values({ day: hoje, salt: randomBytes(32) }).onConflictDoNothing();
+  const [r] = await conn.select({ salt: analyticsSalts.salt }).from(analyticsSalts).where(eq(analyticsSalts.day, hoje));
+  return r.salt;
+}
+
+/** hash(sal do dia + partes). Serve para o visitante único e para as chaves dos limites de uso. */
+export async function hashDoDia(...partes: string[]): Promise<Buffer> {
+  const h = createHash("sha256").update(await salDoDia());
+  for (const p of partes) h.update("\u0000").update(p);
+  return h.digest();
 }
 
 async function gravar(tipo: "view" | "click", profileId: string, linkId: string | null, info: InfoVisitante) {
   const conn = await db();
-  await conn.query(
-    `insert into events (profile_id, link_id, type, visitor_hash, country, city, source, device)
-     values ($1, $2, $3, $4, $5, $6, $7, $8)`,
-    [
-      profileId,
-      linkId,
-      tipo,
-      await hashDoVisitante(profileId, info),
-      info.pais?.slice(0, 2).toUpperCase() ?? null,
-      info.cidade,
-      fonteDe(info.referer),
-      dispositivoDe(info.userAgent),
-    ],
-  );
+  await conn.insert(events).values({
+    profileId,
+    linkId,
+    type: tipo,
+    visitorHash: await hashDoDia(info.ip, info.userAgent, profileId),
+    country: info.pais?.slice(0, 2).toUpperCase() ?? null,
+    city: info.cidade?.slice(0, 100) ?? null,
+    source: fonteDe(info.referer),
+    device: dispositivoDe(info.userAgent),
+  });
 }
 
 /**
@@ -75,26 +81,39 @@ async function gravar(tipo: "view" | "click", profileId: string, linkId: string 
  * redireciona para a URL gravada de um link ligado, dentro da janela, de um
  * perfil que existe: /r/[id] nunca vira redirecionador aberto.
  */
-export async function registrarClique(linkId: string, info: InfoVisitante): Promise<string | null> {
-  if (!/^[0-9a-f-]{36}$/i.test(linkId)) return null;
+export async function registrarClique(linkId: string, info: InfoVisitante, contar = true): Promise<string | null> {
+  if (!UUID.test(linkId)) return null;
   const conn = await db();
-  const { rows } = await conn.query<{ url: string; profile_id: string }>(
-    `select l.url, l.profile_id from links l join profiles p on p.id = l.profile_id
-      where l.id = $1 and l.enabled and l.kind = 'link' and p.deleted_at is null
-        and (l.starts_at is null or l.starts_at <= now()) and (l.ends_at is null or l.ends_at > now())`,
-    [linkId],
-  );
-  const link = rows[0];
+  const agora = new Date().toISOString();
+  const [link] = await conn
+    .select({ url: links.url, profileId: links.profileId })
+    .from(links)
+    .innerJoin(profiles, eq(profiles.id, links.profileId))
+    .where(
+      and(
+        eq(links.id, linkId),
+        eq(links.enabled, true),
+        eq(links.kind, "link"),
+        isNull(profiles.deletedAt),
+        or(isNull(links.startsAt), lte(links.startsAt, agora)),
+        or(isNull(links.endsAt), gt(links.endsAt, agora)),
+      ),
+    )
+    .limit(1);
   if (!link?.url) return null;
-  if (!ehRobo(info.userAgent)) await gravar("click", link.profile_id, linkId, info);
+  if (contar && !ehRobo(info.userAgent)) await gravar("click", link.profileId, linkId, info);
   return link.url;
 }
 
 export async function registrarVisita(profileId: string, info: InfoVisitante): Promise<boolean> {
-  if (!/^[0-9a-f-]{36}$/i.test(profileId) || ehRobo(info.userAgent)) return false;
+  if (!UUID.test(profileId) || ehRobo(info.userAgent)) return false;
   const conn = await db();
-  const { rows } = await conn.query("select 1 from profiles where id = $1 and deleted_at is null", [profileId]);
-  if (!rows[0]) return false;
+  const [p] = await conn
+    .select({ id: profiles.id })
+    .from(profiles)
+    .where(and(eq(profiles.id, profileId), isNull(profiles.deletedAt)))
+    .limit(1);
+  if (!p) return false;
   await gravar("view", profileId, null, info);
   return true;
 }
@@ -106,25 +125,27 @@ export type Totais = {
   porLink: Array<{ id: string; title: string; cliques: number }>;
 };
 
-/** Totais dos últimos N dias, direto dos eventos (a soma diária vem na etapa de insights). */
+/** Totais dos últimos N dias, direto dos eventos (a soma diária fica em daily_stats, pelo job). */
 export async function totais(accountId: string, profileId: string, dias = 7): Promise<Totais | null> {
   const conn = await db();
-  const dono = await conn.query("select 1 from profiles where id = $1 and account_id = $2", [profileId, accountId]);
-  if (!dono.rows[0]) return null;
+  if (!(await donoDoPerfil(conn, accountId, profileId))) return null;
   const desde = new Date(Date.now() - dias * 86400_000).toISOString();
-  const { rows } = await conn.query<{ visitas: number; visitantes: number; cliques: number }>(
-    `select count(*) filter (where type = 'view')::int as visitas,
-            count(distinct visitor_hash) filter (where type = 'view')::int as visitantes,
-            count(*) filter (where type = 'click')::int as cliques
-       from events where profile_id = $1 and occurred_at >= $2`,
-    [profileId, desde],
-  );
-  const porLink = await conn.query<{ id: string; title: string; cliques: number }>(
-    `select l.id, l.title, count(e.id)::int as cliques
-       from links l left join events e on e.link_id = l.id and e.type = 'click' and e.occurred_at >= $2
-      where l.profile_id = $1 and l.kind = 'link'
-      group by l.id, l.title, l.position order by cliques desc, l.position`,
-    [profileId, desde],
-  );
-  return { ...rows[0], porLink: porLink.rows };
+  const doPeriodo = and(eq(events.profileId, profileId), gte(events.occurredAt, desde));
+  const [t] = await conn
+    .select({
+      visitas: sql<number>`count(*) filter (where ${events.type} = 'view')`.mapWith(Number),
+      visitantes: sql<number>`count(distinct ${events.visitorHash}) filter (where ${events.type} = 'view')`.mapWith(Number),
+      cliques: sql<number>`count(*) filter (where ${events.type} = 'click')`.mapWith(Number),
+    })
+    .from(events)
+    .where(doPeriodo);
+  const porLink = await conn
+    .select({ id: links.id, title: links.title, cliques: count(events.id) })
+    .from(links)
+    .leftJoin(events, and(eq(events.linkId, links.id), eq(events.type, "click"), gte(events.occurredAt, desde)))
+    .where(and(eq(links.profileId, profileId), eq(links.kind, "link")))
+    .groupBy(links.id, links.title, links.position)
+    .orderBy(desc(count(events.id)), asc(links.position));
+  return { ...t, porLink };
 }
+

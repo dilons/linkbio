@@ -2,12 +2,13 @@
 
 import { Check, Copy, ExternalLink, Pencil } from "lucide-react";
 import { useActionState, useState } from "react";
-import { apagarLink, ligarDesligarLink, mudarOrdem, novoLink, salvarCabecalho, salvarLink, type Estado } from "@/app/acoes";
+import { apagarLink, ligarDesligarLink, mudarOrdem, novoLink, salvarCabecalho, salvarFoto, salvarLink, type Estado } from "@/app/acoes";
 import { PublicPage } from "@/components/public/public-page";
 import type { Rede } from "@/components/public/social-row";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { TextArea, TextField } from "@/components/ui/field";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { LinkCard } from "@/components/ui/link-card";
 import { PhonePreview } from "@/components/ui/phone-preview";
 import { SortableList } from "@/components/ui/sortable-list";
@@ -19,6 +20,7 @@ type Props = {
   username: string;
   titulo: string;
   bio: string;
+  avatarUrl?: string;
   tema: string;
   redes: Rede[];
   links: LinkEditor[];
@@ -55,7 +57,7 @@ export function Editor(props: Props) {
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto]">
       <div className="flex min-w-0 flex-col gap-6">
         <Endereco username={props.username} />
-        <Cabecalho titulo={props.titulo} bio={props.bio} />
+        <Cabecalho titulo={props.titulo} bio={props.bio} avatarUrl={props.avatarUrl} />
         <NovoLink />
         <section aria-labelledby="titulo-links" className="flex flex-col gap-3">
           <h2 id="titulo-links" className="text-lg font-semibold text-fg">
@@ -92,6 +94,7 @@ export function Editor(props: Props) {
               tema={props.tema}
               titulo={props.titulo || props.username}
               bio={props.bio}
+              avatarUrl={props.avatarUrl}
               redes={props.redes}
               links={itens.filter((l) => l.ativo).map((l) => ({ id: l.id, titulo: l.titulo }))}
             />
@@ -152,7 +155,52 @@ function Endereco({ username }: { username: string }) {
   );
 }
 
-function Cabecalho({ titulo, bio }: { titulo: string; bio: string }) {
+/** Envia a foto direto ao Storage (URL assinada de /api/upload) e grava no perfil. */
+function Foto({ avatarUrl }: { avatarUrl?: string }) {
+  const toast = useToast();
+  const [enviando, setEnviando] = useState(false);
+  async function enviar(f: File) {
+    setEnviando(true);
+    try {
+      const r = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ tipo: f.type, tamanho: f.size }),
+      });
+      const envio = await r.json();
+      if (!r.ok) return toast(envio.erro ?? "Não deu para enviar a foto.", "erro");
+      const up = await fetch(envio.url, { method: "PUT", body: f, headers: { "content-type": f.type, "x-upsert": "false" } });
+      if (!up.ok || !(await salvarFoto(envio.caminho))) return toast("Não deu para enviar a foto.", "erro");
+      toast("Foto salva");
+    } catch {
+      toast("Não deu para enviar a foto.", "erro");
+    } finally {
+      setEnviando(false);
+    }
+  }
+  return (
+    <div className="flex flex-col gap-2" aria-busy={enviando}>
+      <ImageUpload label={avatarUrl ? "Trocar a foto" : "Escolher uma foto"} maxMB={2} redonda atual={avatarUrl} onArquivo={enviar} />
+      {avatarUrl && (
+        <div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={async () => {
+              const ok = await salvarFoto(null);
+              toast(ok ? "Foto removida" : "Não deu para remover.", ok ? "sucesso" : "erro");
+            }}
+          >
+            Tirar a foto
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Cabecalho({ titulo, bio, avatarUrl }: { titulo: string; bio: string; avatarUrl?: string }) {
   const [aberto, setAberto] = useState(false);
   const [estado, acao, enviando] = useActionState(async (anterior: Estado, form: FormData) => {
     const r = await salvarCabecalho(anterior, form);
@@ -177,7 +225,8 @@ function Cabecalho({ titulo, bio }: { titulo: string; bio: string }) {
           </Button>
         }
       >
-        <form action={acao} className="flex flex-col gap-4">
+        <Foto avatarUrl={avatarUrl} />
+        <form action={acao} className="mt-4 flex flex-col gap-4">
           <TextField label="Título" name="titulo" defaultValue={estado.valores?.titulo ?? titulo} maxLength={60} error={estado.erros?.titulo} />
           <TextArea label="Bio" name="bio" value={bioAtual} onChange={(e) => setBioAtual(e.target.value)} maxLength={160} error={estado.erros?.bio} />
           <div className="flex justify-end">

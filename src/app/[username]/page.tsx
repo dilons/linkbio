@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache, Suspense } from "react";
 import { PublicPage } from "@/components/public/public-page";
+import { urlDaFoto } from "@/lib/data/fotos";
 import { paginaPublica } from "@/lib/data/perfis";
 import { ContaVisita } from "./conta-visita";
 
@@ -11,7 +12,9 @@ const carregar = cache(paginaPublica);
 export async function generateMetadata({ params }: PageProps<"/[username]">): Promise<Metadata> {
   const { username } = await params;
   const pagina = await carregar(username);
-  if (!pagina) return { title: "Página não encontrada · linkbio" };
+  // Robôs de prévia (WhatsApp, Facebook) esperam os metadados antes de qualquer
+  // byte: daqui o 404 sai com status 404 de verdade.
+  if (!pagina) notFound();
   const nome = pagina.perfil.title || pagina.perfil.username;
   return {
     title: `${nome} · linkbio`,
@@ -42,6 +45,8 @@ async function Conteudo({ params }: { params: PageProps<"/[username]">["params"]
         tema={pagina.tema}
         titulo={perfil.title || perfil.username}
         bio={perfil.bio ?? undefined}
+        avatarUrl={urlDaFoto(perfil.avatar_path)}
+        comMarca={!pagina.pro}
         redes={pagina.redes.map((r) => ({ plataforma: r.platform, url: r.url }))}
         redesNoTopo={perfil.social_position === "top"}
         links={pagina.links.map((l) => ({ id: l.id, titulo: l.title }))}
