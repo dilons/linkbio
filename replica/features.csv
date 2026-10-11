@@ -11,32 +11,32 @@ Perfil com foto título e bio,editor,must,yes,yes,foto no Supabase Storage por U
 Prévia ao vivo da página no editor,editor,must,yes,yes,no computador ao lado e reage na hora; no celular o botão Prévia abre em tela cheia
 Página pública responsiva em /username,pagina publica,must,yes,yes,404 para perfil inexistente ou excluído: robôs de prévia recebem status 404; navegador recebe a página de 404 com noindex (limite do streaming)
 Temas prontos,aparencia,must,yes,yes,5 temas (papel; noite; areia; oceano; alto contraste); todos passam no axe; prévia muda na hora; todos grátis por enquanto
-Contagem de views e cliques,insights,must,yes,yes,sem cookie e sem guardar IP; robôs (isbot) não contam; visita contada pelo navegador; clique por /r/ sem JavaScript
+Contagem de views e cliques,insights,must,yes,yes,sem cookie e sem guardar IP; robôs (isbot) não contam; visita contada pelo navegador; clique por /r/ sem JavaScript; no original: Free 28 dias de histórico
 Formulário de captura de email na página,audiencia,must,yes,yes,email e nome opcional; o criador escreve o consentimento e ele fica gravado com cada inscrição (LGPD); campo isca e limite por visitante; o mesmo email não duplica; telefone ainda não
-Ver inscritos e exportar CSV,audiencia,must,yes,yes,tabela com os 1000 mais novos e tirar da lista; CSV baixado direto (BOM; ponto e vírgula; fórmulas neutralizadas) no lugar do link por email com senha do original
+Ver inscritos e exportar CSV,audiencia,must,yes,yes,tabela com os 1000 mais novos e tirar da lista; CSV baixado direto (BOM; ponto e vírgula; fórmulas neutralizadas) no lugar do link por email com senha do original; no original: CSV em todos os planos; com senha que a pessoa define e link por email (ajuda 11069074; 2026-10-11)
 Plano pago com assinatura e cancelamento,plano,must,yes,partial,Asaas: Pix; cartão; boleto na página do Asaas; webhook idempotente; cancelar em um clique (Pro até o fim do período). Testado contra um Asaas falso: falta validar no sandbox com a conta do dono
-Tirar a marca do rodapé no plano pago,plano,must,yes,yes,some com o Pro ativo e até o fim do período pago depois de cancelar
+Tirar a marca do rodapé no plano pago,plano,must,yes,yes,some com o Pro ativo e até o fim do período pago depois de cancelar; no original: Pro e Premium (R$ 32 a R$ 42 por mês; preços e ajuda 5434140; 2026-10-11)
 Excluir perfil ou conta,conta,must,yes,yes,excluir a conta: apaga na hora; cancela a assinatura; apaga fotos; confirma por email. Excluir só a página: apaga tudo dela; a conta e o Pro continuam; confirma por email. Nos dois o endereço fica guardado 14 dias (só a mesma conta retoma)
 Login com Google,onboarding,should,yes,partial,código e configuração prontos (escopos email e profile); precisa do app OAuth do dono; não testado
 Modelo de página pela categoria da conta,onboarding,should,yes,no,
-Tema customizável (fundo botões fonte cores),aparencia,should,yes,no,contraste checado
-Fundo com imagem,aparencia,should,yes,no,
+Tema customizável (fundo botões fonte cores),aparencia,should,yes,no,contraste checado; no original: cor sólida de fundo no Free; temas com raio e fundo com imagem só no Pro e Premium (ajuda 8614125 e 5434137; 2026-10-11)
+Fundo com imagem,aparencia,should,yes,no,no original: Pro e Premium; imagem até 10 MB (ajuda 5434177; 2026-10-11)
 Miniatura no link,editor,should,yes,no,
-Agendar link para aparecer e sumir com fuso,editor,should,yes,no,pago no original (Starter ou acima)
+Agendar link para aparecer e sumir com fuso,editor,should,yes,no,pago no original (Starter ou acima); no original: Starter; Pro e Premium (ajuda 5434174; 2026-10-11)
 Views e cliques únicos e taxa de clique,insights,should,yes,partial,visitantes únicos por dia e taxa de clique nos últimos 7 dias; o job diário já soma em daily_stats; a tela ainda lê os eventos e não escolhe período
-Ranking dos links mais clicados,insights,should,yes,yes,tabela na S09
-Fontes de tráfego e locais (país e cidade),insights,should,yes,no,
-Escolher o período dos insights,insights,should,yes,no,período maior nos planos pagos
+Ranking dos links mais clicados,insights,should,yes,yes,tabela na S09; no original: só Pro e Premium (ajuda 5434178; 2026-10-11)
+Fontes de tráfego e locais (país e cidade),insights,should,yes,no,no original: só Pro e Premium (ajuda 5434178; 2026-10-11)
+Escolher o período dos insights,insights,should,yes,no,período maior nos planos pagos; no original: Free 28 dias; Starter 90; Pro 365; Premium todo o período (ajuda 5434178 e 5434140; 2026-10-11)
 QR code da página,compartilhamento,should,yes,no,
 Aviso de conteúdo sensível e trava de idade,pagina publica,should,yes,no,18+ 21+ 25+ ou sensível; data de nascimento
-Trocar username,conta,should,yes,no,uma vez a cada 7 dias no original
+Trocar username,conta,should,yes,no,uma vez a cada 7 dias no original; no original: uma vez a cada 7 dias; a ajuda não diz se o antigo fica guardado (ajuda 5434119; 2026-10-11)
 Coleções para agrupar links,editor,could,yes,no,
 Destacar ou animar um link,editor,could,yes,no,pago no original
 Vídeo do YouTube tocando na página,editor,could,yes,no,
-Fundo com vídeo,aparencia,could,yes,no,
-Layouts de header (clássico e destaque),aparencia,could,yes,no,
+Fundo com vídeo,aparencia,could,yes,no,no original: Pro e Premium; até 50 MB; em loop e sem som (ajuda 5434177; 2026-10-11)
+Layouts de header (clássico e destaque),aparencia,could,yes,no,no original: Classic grátis; Hero; Banner; Cutout e Shape no Pro e Premium (ajuda 9036585; 2026-10-11)
 Vários perfis por conta,conta,could,yes,no,
-Integração com ferramenta de email (Mailchimp e similares),audiencia,could,yes,no,Pro e Premium no original
+Integração com ferramenta de email (Mailchimp e similares),audiencia,could,yes,no,Pro e Premium no original; Pro e Premium no original (ajuda 11069074; 2026-10-11)
 QR code personalizado (cor e logo),compartilhamento,could,yes,no,pago no original
 Marketplace de apps de parceiros,integracoes,could,yes,skip,é a rede de parceiros deles (Spotify; TikTok; Bandsintown...)
 Loja e afiliados e venda de produtos,vendas,could,yes,skip,fora da fatia escolhida

@@ -11,7 +11,8 @@ Data: 2026-10-10
   foi lido, nenhuma API não oficial. Um "Linktree API" de terceiros
   (ScrapeCreators) apareceu na busca e foi descartado: é raspagem.
 - A rede do ambiente bloqueou `linktr.ee`, `help.linktr.ee`, `apps.apple.com` e
-  `play.google.com`. As páginas foram lidas pela busca na web, que traz resumos
+  `play.google.com`. **Em 2026-10-11, com a rede aberta, as páginas oficiais
+  foram lidas e o que mudou está em "Confirmações", no fim.** As páginas foram lidas pela busca na web, que traz resumos
   das páginas públicas. O que só uma fonte de terceiros afirma está marcado como
   **(não confirmado)**.
 - Ainda não há screenshots em `replica/screens/` (ver "Pendências").
@@ -44,9 +45,9 @@ Data: 2026-10-10
 | 22 | Supademo, fluxo de cadastro | https://supademo.com/user-flow-examples/linktree | pergunta o tipo de conta no cadastro; 31 passos até compartilhar o link (análise de terceiros) |
 | 23 | ajuda (espelho Intercom), cadastro | https://intercom.help/linktree-ff524ba1864c/en/articles/5434134-how-to... | email, username que vira a URL, plano, links, tema |
 | 24 | preços (resumo de terceiros; página oficial bloqueada) | https://www.saasworthy.com/product/linktree/pricing | Free, Starter, Pro, Premium; taxas sobre vendas |
-| 25 | preços (resumo de terceiros) | https://www.elev8or.io/blog/bio/linktree-pricing | Starter US$ 8, Pro US$ 15, Premium US$ 35 por mês (não confirmado) |
+| 25 | preços (resumo de terceiros) | https://www.elev8or.io/blog/bio/linktree-pricing | Starter US$ 8, Pro US$ 15, Premium US$ 35 por mês (não confirmado; os valores em dólar não deu para conferir daqui, ver "Confirmações") |
 | 26 | Hypebot, marketplace (2022) | https://www.hypebot.com/hypebot/2022/06/linktree-launches-marketplace-to-showcase-spotify-tiktok-bandsintown-and-30-app-integrations.html | mais de 30 apps integrados (Spotify, Twitch, YouTube...) |
-| 27 | apis.io, servidor MCP | https://apis.io/providers/linktree/ | sem API pública geral; servidor MCP com ferramentas para perfis, links, coleções, aparência e analytics (não confirmado) |
+| 27 | apis.io, servidor MCP | https://apis.io/providers/linktree/ | sem API pública geral; servidor MCP com ferramentas para perfis, links, coleções, aparência e analytics (**confirmado** em 2026-10-11 no próprio servidor, ver "Confirmações") |
 
 ## Ciclo principal
 
@@ -205,7 +206,7 @@ Ver `features.csv`. Must: 18, should: 13, could: 8, skip: 5.
   Bandsintown...): é a rede de parceiros deles.
 - Loja, afiliados e venda de produtos: fora da fatia escolhida.
 - App mobile: a plataforma escolhida é web.
-- Recursos de IA e os quadros de stickers de 2026: fora do núcleo (não confirmado).
+- Recursos de IA e os quadros de stickers de 2026: fora do núcleo. Os de IA estão confirmados no changelog oficial (ver "Confirmações"); os stickers, não conferidos.
 - A marca, o verde, o logotipo, os textos e os modelos de tema do Linktree.
 - Domínio próprio: as fontes se contradizem sobre o original ter ou não. Fica
   como candidato a melhoria na `/replica-entrepreneur`, não como paridade.
@@ -217,10 +218,11 @@ Ver `features.csv`. Must: 18, should: 13, could: 8, skip: 5.
   é controlador dos dados dos criadores e operador dos dados dos visitantes que
   o criador coleta. O aviso de conteúdo sensível e a trava de idade puxam a
   parte de crianças e o ECA Digital. Analytics sem cookie evita o banner.
-- **/replica-entrepreneur:** um blog de terceiros diz que os termos do Linktree
-  de julho de 2026 passaram a prever compartilhamento de dados com a OpenAI
-  (não confirmado). Se as avaliações confirmarem desconforto com isso, vira
-  ângulo de privacidade.
+- **/replica-entrepreneur:** um blog de terceiros dizia que os termos do Linktree
+  de julho de 2026 passaram a prever compartilhamento de dados com a OpenAI.
+  **Confirmado em 2026-10-11** (está no Aviso de Privacidade, com como desligar;
+  ver "Confirmações"). As avaliações mostram o desconforto, mas fraco: 6, todas
+  dos EUA (`replica/fixes.md`).
 - **/replica-backend:** cobrança no Brasil com Pix (Mercado Pago, Pagar.me ou
   Asaas) em vez de só cartão.
 
@@ -244,3 +246,72 @@ lista arrastável acessível com prévia ao vivo; tema customizável que mantém
 contraste; exportação de CSV com link por email; cobrança com Pix.
 Tamanho: **M** (algumas semanas) para o escopo todo. A fatia vertical (conta,
 username, links, página pública, contagem de cliques) cabe num fim de semana.
+
+## Confirmações (2026-10-11)
+
+Feitas com a rede aberta, nas páginas oficiais. Os artigos de ajuda foram
+lidos um a um (as URLs antigas de `help.linktr.ee` redirecionam para
+`linktr.ee/help/...`). Os 31 passos do cadastro (fonte 22) continuam de
+terceiros: confirmar exige uma conta própria.
+
+### Preços e planos
+
+[linktr.ee/s/pricing](https://linktr.ee/s/pricing/), aberta do Brasil em
+2026-10-11. A página mostra a moeda local ("shown in local currency"): daqui
+saem **reais**. Os valores em dólar das fontes 24 e 25 não deu para
+conferir daqui e seguem não confirmados.
+
+| plano | por mês, cobrado por ano | por mês, cobrado por mês | o que acrescenta (na página) |
+| --- | --- | --- | --- |
+| Free | grátis | grátis | links básicos ilimitados; inscrição por email e telefone |
+| Starter | R$ 15 | R$ 22 | página personalizada; links em destaque ilimitados; analytics básico |
+| Pro | R$ 32 | R$ 42 | tirar a marca do rodapé; designs próprios; vender com 0% de taxa; integrações de lista de email; teste grátis de 7 dias |
+| Premium | R$ 94 | R$ 123 | regras de link; integrações de IA; analytics de todo o período; exportar dados; agendar posts; respostas automáticas no Instagram; teste grátis de 7 dias |
+
+O rodapé do site tem "Português (Brasil)". A ficha do app na App Store (API
+de consulta da Apple, 2026-10-11) lista o português entre os idiomas.
+
+### Tabela de fontes, linhas 1 a 16
+
+| # | resultado | precisão ou correção |
+| --- | --- | --- |
+| 1 | corrigido | views, únicos, cliques, taxa e fontes confirmados; "mais clicados" e visitantes (fontes de tráfego, países, cidades, aparelhos) só no Pro e Premium. Histórico: Free 28 dias, Starter 90, Pro 365, Premium todo o período |
+| 2 | corrigido | o formulário é um "Contact Form" adicionado como link, em branco ou de modelo; a página não lista os tipos de campo. Sincronizar com terceiros: Pro e Premium |
+| 3 | corrigido | o CSV é de todos os planos, inclusive o Free; a senha do arquivo é a pessoa quem define, e o email leva só o link. Integrações (Google Sheets, Mailchimp, Kit, Klaviyo, Beehiiv, Flodesk): Pro e Premium |
+| 4 | confirmado | o artigo mudou de endereço (`8614125-customizing-your-linktree-design`). No Free o fundo é cor sólida; imagem ou vídeo, Pro e acima |
+| 5 | confirmado | temas com raio: Pro e Premium (não Starter) |
+| 6 | corrigido em parte | fonte e cor valem para a página toda, mas a cor do texto do botão é à parte, e há uma fonte alternativa para o título, no Pro e Premium |
+| 7 | confirmado | Pro e Premium. Imagem até 10 MB; vídeo até 50 MB, em loop e sem som; Unsplash, Canva e Coverr |
+| 8 | confirmado | um ícone por plataforma, arrastar para reordenar, topo ou rodapé; sem plano citado |
+| 9 | confirmado | cinco layouts de cabeçalho: Classic (grátis), Hero, Banner, Cutout e Shape (Pro e Premium) |
+| 10 | confirmado | aparecer e sumir com data, hora e fuso: Starter, Pro e Premium |
+| 11 | corrigido (precisão) | Insights: Starter 90 dias, Pro 365, Premium todo o período. Pro e Premium: cabeçalho Hero, tirar a marca do rodapé, QR code personalizado, integrações de audiência, Meta Pixel, UTM, Google Analytics |
+| 12 | confirmado | 18+, 21+, 25+ e "Sensitive Content", na página toda ou num link; nenhum plano citado |
+| 13 | confirmado | data de nascimento antes de abrir o link, idade mínima escolhida pelo criador; nenhum plano citado |
+| 14 | confirmado | vários perfis por conta; não dá para desfazer; username e email indisponíveis por 14 dias |
+| 15 | corrigido | uma troca a cada 7 dias, confirmado. "Só na web" a página não diz. Se o username antigo fica guardado, e por quanto tempo, a página não diz |
+| 16 | confirmado | tocar o vídeo na página ou ir para o YouTube; o último vídeo automático e as playlists, Pro e Premium |
+
+### Os quatro "não confirmados"
+
+| item | resultado | fonte | data |
+| --- | --- | --- | --- |
+| preços | confirmados em reais (tabela acima); em dólar, não | [linktr.ee/s/pricing](https://linktr.ee/s/pricing/) | 2026-10-11 |
+| domínio próprio | **não tem**: "We don’t offer the option to use a custom domain to replace the linktr.ee URL" (artigo de 2024-10-15) | [ajuda 6571689](https://linktr.ee/help/en/articles/6571689-can-i-change-the-linktree-url-to-a-custom-domain) | 2026-10-11 |
+| servidor MCP | **existe**, no domínio deles: `mcp.linktr.ee/mcp` responde 401 sem token; o OAuth sai de `ciam.linktr.ee`; a documentação lista 34 ferramentas (perfis, links, coleções, aparência, redes, workspaces, analytics, mensagens) e erro `UPGRADE_REQUIRED` para opções pagas | [mcp.linktr.ee/docs](https://mcp.linktr.ee/docs), [metadados OAuth](https://mcp.linktr.ee/.well-known/oauth-protected-resource) | 2026-10-11 |
+| dados com a OpenAI nos termos de julho de 2026 | **procede, com nuance**. Termos e Aviso de Privacidade em vigor desde 5 de julho de 2026. Termos, seção 14 ("Generative AI"): entradas e saídas dos recursos de IA podem ir para "service providers (including AI model providers)". Aviso de Privacidade: dados do perfil vão para integrações "such as OpenAI" (exemplo: buscar perfis pelo app deles dentro do ChatGPT, com foto, bio resumida e métricas), e não em todas as regiões (não na União Europeia). Dá para desligar o compartilhamento nas configurações da conta, mas o que já foi compartilhado fica com o terceiro. A cláusula está no Aviso de Privacidade, não nos Termos | [Termos](https://linktr.ee/s/terms), [Aviso de Privacidade](https://linktr.ee/s/privacy) | 2026-10-11 |
+
+### Changelog
+
+O oficial fica no Beamer, linkado no rodapé do blog:
+[app.getbeamer.com/linktree/en](https://app.getbeamer.com/linktree/en),
+lido em 2026-10-11. Os lançamentos desde 2024 estão em `replica/fixes.md`
+("O que o original já resolveu"). Os recursos de IA (chatbot, 2024-12;
+design e títulos com IA, 2025-09; Insights Chat, 2026-03) estão
+confirmados.
+
+### Efeito na `features.csv`
+
+Nenhuma linha mudou de `original`. As notas ganharam o plano que cada recurso
+exige no original. Domínio próprio não tem linha (o original não tem, e nas
+avaliações o pedido é fraco: 2).
