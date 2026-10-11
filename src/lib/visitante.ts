@@ -2,8 +2,12 @@ import { headers } from "next/headers";
 import type { InfoVisitante } from "@/lib/data/eventos";
 import { env } from "@/lib/env";
 
+// SÓ NO DEMO (kamino, branch chore/imagem-demo): o único caminho público é o
+// túnel da Cloudflare, que grava o CF-Connecting-IP, e o Traefik do cluster
+// troca o X-Forwarded-For pelo IP do cloudflared (todo visitante viraria um).
+// Não levar para a Vercel: lá qualquer um forja esse cabeçalho.
 function ipDe(h: Headers): string {
-  return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "0.0.0.0";
+  return h.get("cf-connecting-ip")?.trim() || h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "0.0.0.0";
 }
 
 /**

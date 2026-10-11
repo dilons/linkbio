@@ -6,6 +6,10 @@ import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
 
 const porta = Number(process.argv[2] ?? 4010);
+// No demo do kamino o pod expõe a fatura pelo domínio público (o navegador de
+// quem assina abre esse endereço); nos testes, tudo fica em 127.0.0.1.
+const host = process.env.ASAAS_FALSO_HOST ?? "127.0.0.1";
+const fatura = (process.env.ASAAS_FALSO_FATURA ?? `http://127.0.0.1:${porta}/i`).replace(/\/$/, "");
 const chave = process.env.ASAAS_API_KEY ?? "chave-do-asaas-falso";
 const clientes = new Map();
 const assinaturas = new Map();
@@ -52,7 +56,7 @@ createServer(async (req, res) => {
       dueDate: corpo.nextDueDate,
       value: corpo.value,
       subscription: id,
-      invoiceUrl: `http://127.0.0.1:${porta}/i/${id}`,
+      invoiceUrl: `${fatura}/${id}`,
     };
     assinaturas.set(id, { ...corpo, id, status: "ACTIVE", cobrancas: [cobranca] });
     return responder(res, 200, { id, status: "ACTIVE" });
@@ -67,4 +71,4 @@ createServer(async (req, res) => {
     }
   }
   responder(res, 404, { errors: [{ code: "not_found" }] });
-}).listen(porta, "127.0.0.1", () => console.log(`Asaas falso em http://127.0.0.1:${porta}/v3`));
+}).listen(porta, host, () => console.log(`Asaas falso em http://${host}:${porta}/v3`));

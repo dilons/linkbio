@@ -7,7 +7,7 @@ import { modelos } from "@/lib/email/modelos";
 import { supabaseAdmin, supabaseDoPedido } from "@/lib/supabase/server";
 
 export type Sessao = { userId: string; email: string };
-export type Resultado = { ok: true } | { ok: false; erro: string; naoConfirmado?: boolean };
+export type Resultado = { ok: true; logado?: boolean } | { ok: false; erro: string; naoConfirmado?: boolean };
 
 const MENSAGENS: Record<string, string> = {
   invalid_credentials: "Email ou senha não conferem.",
@@ -41,7 +41,10 @@ export async function sessaoAtual(): Promise<Sessao | null> {
  */
 export async function criarConta(email: string, senha: string, origem: string): Promise<Resultado> {
   const supabase = await supabaseDoPedido();
-  const { error } = await supabase.auth.signUp({ email, password: senha, options: { emailRedirectTo: origem } });
+  const { data, error } = await supabase.auth.signUp({ email, password: senha, options: { emailRedirectTo: origem } });
+  // Auth sem confirmação de email (o demo, sem SMTP): o cadastro já volta com
+  // sessão, e não há link nenhum a caminho.
+  if (!error && data.session) return { ok: true, logado: true };
   if (error?.code === "user_already_exists") {
     await enviarEmail(modelos.jaTemConta(email, origem), `ja-tem-conta-${email}-${new Date().toISOString().slice(0, 10)}`);
     return { ok: true };
