@@ -14,9 +14,9 @@ import { definirFoto } from "@/lib/data/fotos";
 import { adicionarFormulario, editarFormulario, formularioSchema, removerInscrito } from "@/lib/data/formularios";
 import { dentroDosLimites } from "@/lib/data/limites";
 import { adicionarLink, alternarLink, editarLink, excluirLink, reordenarLinks } from "@/lib/data/links";
-import { atualizarCabecalho, criarPerfil, perfilDaConta } from "@/lib/data/perfis";
+import { AVISOS_DA_PAGINA, atualizarCabecalho, criarPerfil, definirAvisoDaPagina, perfilDaConta } from "@/lib/data/perfis";
 import { IDS_DAS_REDES, normalizarRede, posicionarRedes, removerRede, reordenarRedes, salvarRede } from "@/lib/data/redes";
-import { cabecalhoSchema, credenciaisSchema, linkSchema } from "@/lib/data/validacao";
+import { cabecalhoSchema, credenciaisSchema, linkSchema, travaSchema } from "@/lib/data/validacao";
 import { exigirConta, exigirPerfil } from "@/lib/sessao";
 import { ipAtual, origemDoPedido } from "@/lib/visitante";
 
@@ -234,9 +234,10 @@ const idsSchema = z.array(z.uuid()).max(500);
 export async function salvarLink(_: Estado, form: FormData): Promise<Estado> {
   const { sessao } = await exigirPerfil();
   const dados = linkSchema.safeParse({ titulo: form.get("titulo"), url: form.get("url") });
-  if (!dados.success) return { erros: errosDe(dados.error.issues), valores: valoresDe(form, ["titulo", "url"]) };
+  if (!dados.success) return { erros: errosDe(dados.error.issues), valores: valoresDe(form, ["titulo", "url", "trava"]) };
   const id = idSchema.safeParse(form.get("id"));
-  const ok = id.success && (await editarLink(sessao.userId, id.data, dados.data));
+  const trava = form.has("trava") ? travaSchema.parse(form.get("trava")) : undefined;
+  const ok = id.success && (await editarLink(sessao.userId, id.data, { ...dados.data, trava }));
   if (!ok) return { erro: "Esse link não existe mais." };
   refresh();
   return { ok: true };
@@ -369,4 +370,16 @@ export async function lugarDasRedes(posicao: unknown): Promise<boolean> {
   const ok = await posicionarRedes(sessao.userId, perfil.id, p.data);
   refresh();
   return ok;
+}
+
+// ------------------------------------------------------------------ configurações
+
+/** S12: aviso de conteúdo da página toda (sensível ou idade mínima). */
+export async function salvarAvisoDaPagina(_: Estado, form: FormData): Promise<Estado> {
+  const { sessao, perfil } = await exigirPerfil();
+  const aviso = z.enum(AVISOS_DA_PAGINA).safeParse(form.get("aviso"));
+  if (!aviso.success) return { erro: "Escolha uma das opções." };
+  if (!(await definirAvisoDaPagina(sessao.userId, perfil.id, aviso.data))) return { erro: "Não deu para salvar. Tente de novo." };
+  refresh();
+  return { ok: true, aviso: aviso.data === "none" ? "Pronto, a página abre sem aviso." : "Pronto, quem abrir a página vê o aviso antes." };
 }

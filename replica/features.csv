@@ -28,7 +28,7 @@ Ranking dos links mais clicados,insights,should,yes,yes,tabela na S09; no origin
 Fontes de tráfego e locais (país e cidade),insights,should,yes,no,no original: só Pro e Premium (ajuda 5434178; 2026-10-11)
 Escolher o período dos insights,insights,should,yes,no,período maior nos planos pagos; no original: Free 28 dias; Starter 90; Pro 365; Premium todo o período (ajuda 5434178 e 5434140; 2026-10-11)
 QR code da página,compartilhamento,should,yes,no,
-Aviso de conteúdo sensível e trava de idade,pagina publica,should,yes,no,18+ 21+ 25+ ou sensível; data de nascimento
+Aviso de conteúdo sensível e trava de idade,pagina publica,should,yes,yes,S16 na página toda (S12) ou num link (S07): sensível; 18; 21 ou 25 anos. Formulário comum (funciona sem o JS do app); a idade é conferida no servidor no dia de Brasília e a data não é gravada; cookie de sessão por alvo; menor de idade fica negado na sessão; /r/ direto passa pelo aviso; prévia nas redes sem a bio. 18+ 21+ 25+ ou sensível; data de nascimento
 Trocar username,conta,should,yes,no,uma vez a cada 7 dias no original; no original: uma vez a cada 7 dias; a ajuda não diz se o antigo fica guardado (ajuda 5434119; 2026-10-11)
 Coleções para agrupar links,editor,could,yes,no,
 Destacar ou animar um link,editor,could,yes,no,pago no original

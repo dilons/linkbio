@@ -28,9 +28,9 @@ sobre o esqueleto e os Tabs passavam antes de haver um link. Agora o
 
 | | casos | passaram | falharam |
 | --- | --- | --- | --- |
-| ponta a ponta (Playwright) | 87 | 87 | 0 |
-| backend (node:test) | 37 | 37 | 0 |
-| bloqueados (fluxo não construído) | 9 | | |
+| ponta a ponta (Playwright) | 95 | 95 | 0 |
+| backend (node:test) | 42 | 42 | 0 |
+| bloqueados (fluxo não construído) | 7 | | |
 | manuais (precisam de conta real) | 7 | | pendentes |
 
 Na primeira rodada, 12 de 61 falharam: 6 por defeito do app (BUG-002 a
@@ -130,6 +130,14 @@ no `Dialog`).
 | F10-E3 | exclui a conta | borda | recadastro com o mesmo email depois de excluir: conta nova, endereço antigo ainda reservado | e2e `f10-conta.spec.ts` | passou |
 | F10-H2 | exclui a conta ou a página | feliz | excluir só a página: tudo dela apagado, email, a conta continua e o endereço pode ser retomado por ela | e2e `f10-conta.spec.ts` | passou |
 | F10-E5 | exclui a conta ou a página | borda | com o Pro ativo, excluir só a página não mexe na assinatura | e2e `f10-conta.spec.ts` | passou |
+| F11-H1 | marca como sensível | feliz | a página marcada como 18+ na S12 pede a data antes; adulto vê os links e a visita só conta depois | e2e `f11-aviso.spec.ts` | passou |
+| F11-E1 | marca como sensível | borda | idade insuficiente: não vê os links, recarregar continua negado e o /r/ direto volta ao aviso | e2e `f11-aviso.spec.ts` | passou |
+| F11-E2 | marca como sensível | borda | link com aviso, marcado na S07: cadeado na página, aviso antes do destino, clique contado uma vez | e2e `f11-aviso.spec.ts` | passou |
+| F11-E3 | marca como sensível | borda | link com idade: data inválida avisa na tela do aviso, e voltar leva à página | e2e `f11-aviso.spec.ts` | passou (achou a volta com erro indo para o /r/, que perdia o aviso) |
+| F11-E4 | marca como sensível | borda | sem o JavaScript do app (antes de hidratar ou se ele não carregar): o aviso funciona | e2e `f11-aviso.spec.ts` | passou |
+| F11-E5 | marca como sensível | borda | só teclado, a 390 px: escolher o aviso na S12 e passar por ele na página | e2e `f11-aviso.spec.ts` | passou |
+| F11-E6 | marca como sensível | borda | a prévia no WhatsApp de uma página com aviso não mostra a bio | e2e `f11-aviso.spec.ts` | passou |
+| F11-N1 | marca como sensível | negativo | a rota do aviso recusa alvo inválido e não grava nada para página sem aviso | e2e `f11-aviso.spec.ts` | passou |
 | F12-H1 | acesso (derivado) | feliz | entrar e sair deste aparelho | e2e `f12-acesso.spec.ts` | passou (achou BUG-008) |
 | F12-E1 | acesso (derivado) | borda | recuperar a senha: resposta neutra, link abre em outro navegador, senha nova vale e avisa por email | e2e `f12-acesso.spec.ts` | passou |
 | F12-E2 | acesso (derivado) | borda | sair de todos os aparelhos derruba a outra sessão na hora | e2e `f12-acesso.spec.ts` | passou |
@@ -163,8 +171,6 @@ outra conta não pega o endereço guardado e a dona retoma; redes sociais
 | F08-H1 | agenda ou destaca um link | agendar no editor com fuso (o lado público já é testado em F04-E8) |
 | F08-E1 | | fim antes do começo é recusado; recurso pago no grátis |
 | F10-E4 | troca o username | uma vez a cada 7 dias; o antigo segurado por 14 dias |
-| F11-H1 | marca como sensível | aviso S16 antes da página ou do link |
-| F11-E1 | | idade insuficiente |
 
 Construído e ainda sem caso: lista grande na Audiência (mais de 1000: a tela
 mostra os 1000 mais novos e o CSV traz todos).

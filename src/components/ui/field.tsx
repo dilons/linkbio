@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from "react";
+import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 type Base = {
@@ -102,6 +102,39 @@ export function TextArea({
         className={cn(caixa, "min-h-24 px-3 py-2", error ? "border-danger" : "border-input")}
         {...rest}
       />
+      <Mensagens id={id} hint={hint} error={error} />
+    </div>
+  );
+}
+
+/** Lista de opções com rótulo, dica e erro. */
+export function SelectField({
+  label,
+  hint,
+  error,
+  opcoes,
+  className,
+  ...rest
+}: Base & { opcoes: ReadonlyArray<readonly [string, string]> } & SelectHTMLAttributes<HTMLSelectElement>) {
+  const id = useId();
+  return (
+    <div className={cn("flex flex-col gap-1.5", className)}>
+      <label htmlFor={id} className="text-sm font-medium text-fg">
+        {label}
+      </label>
+      <select
+        id={id}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={descritoPor(id, hint, error)}
+        className={cn(caixa, "h-11 px-3", error ? "border-danger" : "border-input")}
+        {...rest}
+      >
+        {opcoes.map(([valor, rotulo]) => (
+          <option key={valor} value={valor}>
+            {rotulo}
+          </option>
+        ))}
+      </select>
       <Mensagens id={id} hint={hint} error={error} />
     </div>
   );

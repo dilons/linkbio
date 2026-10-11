@@ -22,7 +22,7 @@ import { PublicPage } from "@/components/public/public-page";
 import { IconeDaRede, type Rede } from "@/components/public/social-row";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { TextArea, TextField } from "@/components/ui/field";
+import { SelectField, TextArea, TextField } from "@/components/ui/field";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { LinkCard } from "@/components/ui/link-card";
 import { PhonePreview } from "@/components/ui/phone-preview";
@@ -34,7 +34,17 @@ import { REDES, type Plataforma } from "@/lib/plataformas";
 import { MARCA } from "@/lib/marca";
 
 export type ConfigFormulario = { pedirNome: boolean; consentimento: string; sucesso: string };
-export type LinkEditor = { id: string; titulo: string; url: string; ativo: boolean; formulario: ConfigFormulario | null };
+export type Trava = "none" | "sensitive" | "18" | "21" | "25";
+export type LinkEditor = { id: string; titulo: string; url: string; ativo: boolean; trava?: Trava; formulario: ConfigFormulario | null };
+
+const TRAVAS: ReadonlyArray<readonly [Trava, string]> = [
+  ["none", "Sem aviso"],
+  ["sensitive", "Conteúdo sensível"],
+  ["18", "Maiores de 18 anos"],
+  ["21", "Maiores de 21 anos"],
+  ["25", "Maiores de 25 anos"],
+];
+const seloDaTrava = (t?: Trava) => (!t || t === "none" ? undefined : t === "sensitive" ? "Aviso" : `Aviso ${t}+`);
 
 const novoLinkSeguro = semQuebrar(novoLink);
 const salvarLinkSeguro = semQuebrar(salvarLink);
@@ -102,7 +112,7 @@ export function Editor(props: Props) {
       avatarUrl={props.avatarUrl}
       redes={redes}
       redesNoTopo={redesNoTopo}
-      links={itens.filter((l) => l.ativo).map((l) => ({ id: l.id, titulo: l.titulo, formulario: l.formulario }))}
+      links={itens.filter((l) => l.ativo).map((l) => ({ id: l.id, titulo: l.titulo, travado: !!seloDaTrava(l.trava), formulario: l.formulario }))}
     />
   );
 
@@ -127,7 +137,12 @@ export function Editor(props: Props) {
               onReorder={reordenar}
               render={(link, alca, arrastando) => (
                 <LinkCard
-                  link={{ ...link, url: link.formulario ? undefined : link.url, selo: link.formulario ? "Formulário de email" : undefined }}
+                  link={{
+                    ...link,
+                    url: link.formulario ? undefined : link.url,
+                    selo: link.formulario ? "Formulário de email" : undefined,
+                    travado: seloDaTrava(link.trava),
+                  }}
                   alca={alca}
                   arrastando={arrastando}
                   onToggle={(ativo) => alternar(link, ativo)}
@@ -664,8 +679,18 @@ function EditarLink({ link, onFechar }: { link: LinkEditor; onFechar: () => void
     <Dialog open onOpenChange={(v) => !v && onFechar()} title="Editar link">
       <form action={acao} className="flex flex-col gap-4" noValidate>
         <input type="hidden" name="id" value={link.id} />
-        <TextField label="Título" name="titulo" defaultValue={estado.valores?.titulo ?? link.titulo} error={estado.erros?.titulo} />
-        <TextField label="Endereço" name="url" inputMode="url" defaultValue={estado.valores?.url ?? link.url} error={estado.erros?.url} />
+        {/* travado enquanto envia: a resposta de um envio não apaga o que foi digitado depois (BUG-010) */}
+        <fieldset disabled={enviando} className="flex flex-col gap-4">
+          <TextField label="Título" name="titulo" defaultValue={estado.valores?.titulo ?? link.titulo} error={estado.erros?.titulo} />
+          <TextField label="Endereço" name="url" inputMode="url" defaultValue={estado.valores?.url ?? link.url} error={estado.erros?.url} />
+          <SelectField
+            label="Aviso antes de abrir"
+            name="trava"
+            opcoes={TRAVAS}
+            defaultValue={estado.valores?.trava ?? link.trava ?? "none"}
+            hint="Com idade mínima, quem clica informa a data de nascimento antes de ir ao link."
+          />
+        </fieldset>
         {estado.erro && (
           <p role="alert" className="text-sm font-medium text-danger">
             {estado.erro}

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache, Suspense } from "react";
+import { TelaDeAviso } from "@/components/public/gate-screen";
 import { PublicPage } from "@/components/public/public-page";
+import { estadoDoAviso, rotuloDaPagina } from "@/lib/data/aviso";
 import { urlDaFoto } from "@/lib/data/fotos";
 import { paginaPublica } from "@/lib/data/perfis";
 import { ContaVisita } from "./conta-visita";
@@ -16,9 +18,11 @@ export async function generateMetadata({ params }: PageProps<"/[username]">): Pr
   // byte: daqui o 404 sai com status 404 de verdade.
   if (!pagina) notFound();
   const nome = pagina.perfil.title || pagina.perfil.username;
+  // com aviso de conteúdo, a prévia nas redes não mostra a bio
+  const comAviso = rotuloDaPagina(pagina.perfil.sensitive_label) !== null;
   return {
     title: nome,
-    description: pagina.perfil.bio ?? `Os links de ${nome}.`,
+    description: comAviso ? "Esta página tem um aviso de conteúdo." : (pagina.perfil.bio ?? `Os links de ${nome}.`),
   };
 }
 
@@ -26,19 +30,38 @@ export async function generateMetadata({ params }: PageProps<"/[username]">): Pr
 // Suspense. Endereço livre: robôs de prévia (WhatsApp, Facebook) recebem 404
 // de verdade, porque o Next não faz streaming para eles; navegadores recebem a
 // página de 404 com noindex, já que o status sai com o primeiro pedaço.
-export default function PaginaDoPerfil({ params }: PageProps<"/[username]">) {
+export default function PaginaDoPerfil({ params, searchParams }: PageProps<"/[username]">) {
   return (
     <Suspense fallback={<Esqueleto />}>
-      <Conteudo params={params} />
+      <Conteudo params={params} searchParams={searchParams} />
     </Suspense>
   );
 }
 
-async function Conteudo({ params }: { params: PageProps<"/[username]">["params"] }) {
+async function Conteudo({ params, searchParams }: Pick<PageProps<"/[username]">, "params" | "searchParams">) {
   const { username } = await params;
   const pagina = await carregar(username);
   if (!pagina) notFound();
   const { perfil } = pagina;
+  // S16: com aviso na página, os links só saem depois da resposta (e a visita
+  // só conta quando a página aparece)
+  const rotulo = rotuloDaPagina(perfil.sensitive_label);
+  if (rotulo) {
+    const alvo = { tipo: "p", id: perfil.id } as const;
+    const estado = await estadoDoAviso(alvo);
+    if (estado !== "ok") {
+      return (
+        <TelaDeAviso
+          tema={pagina.tema}
+          rotulo={rotulo}
+          alvo={`p:${perfil.id}`}
+          titulo={perfil.title || perfil.username}
+          negado={estado === "negado"}
+          erroData={(await searchParams).aviso === "data"}
+        />
+      );
+    }
+  }
   return (
     <>
       <PublicPage
@@ -49,7 +72,7 @@ async function Conteudo({ params }: { params: PageProps<"/[username]">["params"]
         comMarca={!pagina.pro}
         redes={pagina.redes.map((r) => ({ plataforma: r.platform, url: r.url }))}
         redesNoTopo={perfil.social_position === "top"}
-        links={pagina.links.map((l) => ({ id: l.id, titulo: l.title, formulario: l.formulario }))}
+        links={pagina.links.map((l) => ({ id: l.id, titulo: l.title, travado: l.lock !== "none", formulario: l.formulario }))}
       />
       <ContaVisita perfil={perfil.id} />
     </>

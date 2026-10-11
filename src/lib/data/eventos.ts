@@ -76,17 +76,34 @@ async function gravar(tipo: "view" | "click", profileId: string, linkId: string 
   });
 }
 
+export type LinkDoClique = {
+  url: string;
+  profileId: string;
+  username: string;
+  /** aviso da página toda (`sensitive_label`) */
+  label: string;
+  lock: string;
+  idade: number | null;
+};
+
 /**
- * Conta o clique (se não for robô) e devolve a URL para redirecionar. Só
- * redireciona para a URL gravada de um link ligado, dentro da janela, de um
- * perfil que existe: /r/[id] nunca vira redirecionador aberto.
+ * O destino de /r/[id]: só a URL gravada de um link ligado, dentro da janela,
+ * de um perfil que existe. Assim /r/[id] nunca vira redirecionador aberto.
+ * Traz também os avisos (página e link), que a rota confere antes de contar.
  */
-export async function registrarClique(linkId: string, info: InfoVisitante, contar = true): Promise<string | null> {
+export async function linkDoClique(linkId: string): Promise<LinkDoClique | null> {
   if (!UUID.test(linkId)) return null;
   const conn = await db();
   const agora = new Date().toISOString();
   const [link] = await conn
-    .select({ url: links.url, profileId: links.profileId })
+    .select({
+      url: links.url,
+      profileId: links.profileId,
+      username: profiles.username,
+      label: profiles.sensitiveLabel,
+      lock: links.lock,
+      idade: links.lockMinAge,
+    })
     .from(links)
     .innerJoin(profiles, eq(profiles.id, links.profileId))
     .where(
@@ -100,9 +117,12 @@ export async function registrarClique(linkId: string, info: InfoVisitante, conta
       ),
     )
     .limit(1);
-  if (!link?.url) return null;
-  if (contar && !ehRobo(info.userAgent)) await gravar("click", link.profileId, linkId, info);
-  return link.url;
+  return link?.url ? (link as LinkDoClique) : null;
+}
+
+/** Conta o clique, se não for robô. */
+export async function contarClique(link: Pick<LinkDoClique, "profileId">, linkId: string, info: InfoVisitante): Promise<void> {
+  if (!ehRobo(info.userAgent)) await gravar("click", link.profileId, linkId, info);
 }
 
 /** O endereço da página dona do link, se ela ainda existe (para a tela de link indisponível). */

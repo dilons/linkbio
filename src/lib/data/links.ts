@@ -3,6 +3,7 @@ import { donoDoPerfil, perfisDaConta } from "@/lib/authz";
 import { db } from "@/lib/db";
 import { forms, links } from "@/lib/db/schema";
 import { pedeNome, type ConfigFormulario } from "./formularios";
+import { travaParaBanco, type Trava } from "./validacao";
 
 export type Link = {
   id: string;
@@ -71,11 +72,15 @@ export async function adicionarLink(
 const doDono = (conn: Awaited<ReturnType<typeof db>>, accountId: string, linkId: string) =>
   and(eq(links.id, linkId), inArray(links.profileId, perfisDaConta(conn, accountId)));
 
-export async function editarLink(accountId: string, linkId: string, dados: { titulo: string; url: string }): Promise<boolean> {
+export async function editarLink(
+  accountId: string,
+  linkId: string,
+  dados: { titulo: string; url: string; trava?: Trava },
+): Promise<boolean> {
   const conn = await db();
   const r = await conn
     .update(links)
-    .set({ title: dados.titulo, url: dados.url, updatedAt: new Date().toISOString() })
+    .set({ title: dados.titulo, url: dados.url, ...(dados.trava ? travaParaBanco(dados.trava) : {}), updatedAt: new Date().toISOString() })
     .where(and(doDono(conn, accountId, linkId), eq(links.kind, "link")))
     .returning({ id: links.id });
   return r.length > 0;

@@ -1,4 +1,6 @@
-import { registrarClique, usernameDoLink } from "@/lib/data/eventos";
+import { cookies } from "next/headers";
+import { nomeDoCookie, rotuloDaPagina, rotuloDoLink } from "@/lib/data/aviso";
+import { contarClique, linkDoClique, usernameDoLink } from "@/lib/data/eventos";
 import { dentroDosLimites } from "@/lib/data/limites";
 import { infoDoPedido } from "@/lib/visitante";
 import { MARCA } from "@/lib/marca";
@@ -6,14 +8,23 @@ import { CORES } from "@/lib/cores";
 
 // Clique num link da página pública: conta e redireciona para a URL gravada.
 // O redirecionamento sai sempre; acima do limite, o clique só não é contado.
+// Com aviso (S16), antes passa pela resposta da pessoa: o da página toda (quem
+// chega direto pelo /r/ volta para a página) e o do link. O clique só conta
+// quando ela de fato vai para o destino.
 export async function GET(req: Request, ctx: RouteContext<"/r/[linkId]">) {
   const { linkId } = await ctx.params;
+  const link = await linkDoClique(linkId);
+  if (!link) return indisponivel(await usernameDoLink(linkId));
+  const jar = await cookies();
+  const respondeu = (tipo: "p" | "l", id: string) => jar.get(nomeDoCookie({ tipo, id }))?.value === "ok";
+  if (rotuloDaPagina(link.label) && !respondeu("p", link.profileId)) return irPara(`/${link.username}`);
+  if (rotuloDoLink(link.lock, link.idade) && !respondeu("l", linkId.toLowerCase())) return irPara(`/r/${linkId}/aviso`);
   const info = infoDoPedido(req);
-  const contar = await dentroDosLimites([["clique:ip", info.ip, 60, 60]]);
-  const destino = await registrarClique(linkId, info, contar);
-  if (destino) return new Response(null, { status: 302, headers: { location: destino, "cache-control": "no-store" } });
-  return indisponivel(await usernameDoLink(linkId));
+  if (await dentroDosLimites([["clique:ip", info.ip, 60, 60]])) await contarClique(link, linkId, info);
+  return irPara(link.url, 302);
 }
+
+const irPara = (location: string, status = 303) => new Response(null, { status, headers: { location, "cache-control": "no-store" } });
 
 const escapar = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 

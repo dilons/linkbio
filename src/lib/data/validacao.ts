@@ -54,6 +54,22 @@ export const linkSchema = z.object({
     }),
 });
 
+/** Aviso antes de abrir um link (S07, S16): nenhum, sensível ou idade mínima. */
+export const TRAVAS = ["none", "sensitive", "18", "21", "25"] as const;
+export type Trava = (typeof TRAVAS)[number];
+export const travaSchema = z.enum(TRAVAS).catch("none");
+
+/** Colunas `lock` e `lock_min_age` para o valor único da tela, e de volta. */
+export function travaDoBanco(lock: string, idade: number | null): Trava {
+  if (lock === "sensitive") return "sensitive";
+  if (lock === "age" && (idade === 18 || idade === 21 || idade === 25)) return String(idade) as Trava;
+  return "none";
+}
+export function travaParaBanco(t: Trava): { lock: "none" | "sensitive" | "age"; lockMinAge: number | null } {
+  if (t === "none" || t === "sensitive") return { lock: t, lockMinAge: null };
+  return { lock: "age", lockMinAge: Number(t) };
+}
+
 export const cabecalhoSchema = z.object({
   titulo: z.string().trim().max(60, "Use no máximo 60 caracteres."),
   bio: z.string().trim().max(160, "Use no máximo 160 caracteres."),

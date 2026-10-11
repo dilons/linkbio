@@ -129,6 +129,20 @@ export async function atualizarCabecalho(
   return r.length > 0;
 }
 
+export const AVISOS_DA_PAGINA = ["none", "sensitive", "18", "21", "25"] as const;
+export type AvisoDaPagina = (typeof AVISOS_DA_PAGINA)[number];
+
+/** S12: o aviso de conteúdo da página toda (S16 mostra antes do conteúdo). */
+export async function definirAvisoDaPagina(accountId: string, profileId: string, aviso: AvisoDaPagina): Promise<boolean> {
+  const conn = await db();
+  const r = await conn
+    .update(profiles)
+    .set({ sensitiveLabel: aviso, updatedAt: new Date().toISOString() })
+    .where(eDonoDoPerfil(accountId, profileId))
+    .returning({ id: profiles.id });
+  return r.length > 0;
+}
+
 /** O que o visitante vê: só links ligados e dentro da janela de agendamento. */
 export async function paginaPublica(bruto: string): Promise<PaginaPublica | null> {
   const username = normalizarUsername(bruto);

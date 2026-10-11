@@ -17,16 +17,16 @@ axe 0 violações em 17 telas; console sem erros). Capturas em
 | S04 modelo por categoria | 2026-10-11 | stub | tudo (should-have, etapa 6) | |
 | S05 plano no onboarding | 2026-10-11 | stub | tudo (etapa 5) | |
 | S06 editor de links | 2026-10-11 | feito | coleções (could-have) | o editor guarda o estado local para a prévia reagir na hora e remonta quando o servidor muda (chave pelos dados); reordenar pelo teclado anuncia em português. Redes: o endereço tem que ser do domínio da rede, senão um ícone do Instagram levaria a qualquer site. Prévia no celular em tela cheia: o Dialog do Radix só devolvia o foco a quem abriu quando havia `trigger` |
-| S07 editar link | 2026-10-11 | parcial | miniatura, agendamento com fuso, trava, destaque, selo de recurso pago | |
+| S07 editar link | 2026-10-11 | parcial | miniatura, agendamento com fuso, destaque, selo de recurso pago | 2026-10-11 (WSL): ganhou o aviso antes de abrir (sensível ou idade), com o selo no cartão do link |
 | S08 aparência | 2026-10-11 | parcial | tema customizado e fundo com imagem (should, etapa 6) | pouco: os 5 temas já estavam nos tokens desde a /replica-design, com contraste conferido |
 | S09 insights | 2026-10-11 | parcial | gráfico por dia, período, fontes e locais, soma diária (`daily_stats`) | o Chromium headless se apresenta como "HeadlessChrome" e o isbot (certo) não conta; o teste usa um user-agent comum |
 | S10 audiência | 2026-10-11 | feito | | CSV que abre certo no Excel em português: BOM, ponto e vírgula, horário de Brasília e fórmulas neutralizadas (`=`, `+`, `-`, `@` no começo) |
 | S11 editor do formulário | 2026-10-11 | feito | campo de telefone | o bloco entrou na lista dos links (`kind = 'form'`): ordenar, ligar e excluir vieram de graça, mas toda consulta de link passou a dizer quais tipos aceita |
-| S12 configurações | 2026-10-11 | stub | conteúdo sensível e QR code (etapa 6) | |
+| S12 configurações | 2026-10-11 | parcial | QR code (S19) | aviso da página toda; os campos travam enquanto salva (BUG-010) |
 | S13 conta | 2026-10-11 | parcial | troca de username, baixar os dados (LGPD) | sair de todos os aparelhos só valeu na hora com getUser no proxy. Excluir só a página: o endereço fica guardado 14 dias e só a mesma conta retoma (a linha vazia sai na mesma transação) |
 | S14 assinatura | 2026-10-11 | parcial (backend) | validar no sandbox real do Asaas | o sandbox está bloqueado pela rede daqui: testado contra um Asaas falso que segue a documentação |
-| S15 página pública | 2026-10-11 | parcial | aviso de conteúdo sensível, cache da página | o 404: com streaming o status sai no primeiro pedaço. Robôs de prévia (WhatsApp, Facebook) recebem 404 de verdade; navegadores recebem a página de 404 com `noindex` |
-| S16 aviso de conteúdo sensível | | não começou | tudo (etapa 6); o componente `GateScreen` já existe | |
+| S15 página pública | 2026-10-11 | parcial | cache da página | o 404: com streaming o status sai no primeiro pedaço. Robôs de prévia (WhatsApp, Facebook) recebem 404 de verdade; navegadores recebem a página de 404 com `noindex` |
+| S16 aviso de conteúdo sensível | 2026-10-11 | feito | | o `GateScreen` era um componente do navegador que só escondia: virou formulário no servidor, para os links não irem no HTML antes da resposta. Sem JavaScript nenhum, o conteúdo em streaming do Suspense não aparece (vale para a página pública toda); sem o JS do app, o aviso funciona. O `/r/` precisou conferir os dois avisos antes de contar o clique |
 | S17 inscrição enviada | 2026-10-11 | feito | | o React 19 revela o conteúdo do streaming uns 300 ms depois do load, e antes de hidratar o navegador mandaria o formulário sozinho, com o email na URL: o form é POST e o botão só liga depois da hidratação |
 | S18 entrar | 2026-10-11 | parcial | Google (pronto, falta testar) | o limite de login por email barrou os próprios testes repetidos: os testes zeram a tabela de limites |
 | S19 QR code | | não começou | tudo (etapa 6) | |
@@ -92,3 +92,14 @@ sociais e prévia no celular (S06, `17eae68`) e excluir só a página (S13,
 
 - `npm audit --omit=dev`: 0 vulnerabilidades. As 5 "high" do `npm audit` são
   só de desenvolvimento, pela cadeia `eslint-config-next` → `micromatch`.
+
+## Terceira /replica-build (2026-10-11, no WSL)
+
+As capturas de `replica/clone-screens/` passaram a ser feitas no WSL: o
+desenho é o mesmo, a fonte sai rasterizada um pouco diferente da nuvem
+(layout 95 a 98 contra as antigas).
+
+- **S16 aviso de conteúdo e trava de idade** (F11, S12, S07). Ver a linha da
+  S16. Decisão: cookie de sessão, estritamente funcional, só "ok" ou
+  "negado" por alvo; a data de nascimento não é gravada (LGPD e ECA
+  Digital, para a `/replica-lgpd`).

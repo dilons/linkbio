@@ -249,10 +249,11 @@ function Conteudo() {
         <div data-theme="papel" className="grid gap-6 rounded-lg bg-t-bg p-6 md:grid-cols-3">
           <FormBlock titulo="Receba as novidades" consentimento="Aceito receber emails. Posso sair quando quiser." estadoInicial="erro" />
           <FormBlock titulo="Receba as novidades" consentimento="x" estadoInicial="enviado" />
-          <GateScreen rotulo="18" onLiberar={() => toast("Liberado")} />
+          <GateScreen nivel={2} rotulo="18" alvo="p:00000000-0000-0000-0000-000000000000" titulo="Doces da Ana" erroData />
         </div>
-        <div data-theme="noite" className="rounded-lg bg-t-bg">
-          <GateScreen rotulo="sensivel" onLiberar={() => toast("Liberado")} />
+        <div data-theme="noite" className="grid gap-6 rounded-lg bg-t-bg md:grid-cols-2">
+          <GateScreen nivel={2} rotulo="sensivel" alvo="l:00000000-0000-0000-0000-000000000000" titulo="Doces da Ana" doLink />
+          <GateScreen nivel={2} rotulo="21" alvo="p:00000000-0000-0000-0000-000000000000" titulo="Doces da Ana" negado />
         </div>
       </Secao>
     </main>
