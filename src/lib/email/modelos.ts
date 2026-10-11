@@ -65,6 +65,17 @@ export const modelos = {
       { href: `${site}/admin/plano`, texto: "Assinar de novo" },
     ),
 
+  jaTemConta: (para: string, site: string) =>
+    montar(
+      para,
+      "Você já tem conta no linkbio",
+      [
+        "Alguém, talvez você, tentou criar uma conta no linkbio com este email. Ele já tem conta, então nada foi criado.",
+        "Para entrar, use a senha de sempre. Se não lembra, peça uma nova pela tela de entrar. Se não foi você, pode ignorar este email.",
+      ],
+      { href: `${site}/entrar`, texto: "Entrar no linkbio" },
+    ),
+
   contaExcluida: (para: string) =>
     montar(para, "Sua conta do linkbio foi excluída", [
       "Como você pediu, excluímos sua conta. Links, inscritos, estatísticas, foto e textos da página foram apagados agora.",

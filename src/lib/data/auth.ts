@@ -2,6 +2,8 @@
 // Google, sair deste ou de todos os aparelhos, excluir. A sessão fica em
 // cookies httpOnly gerenciados pelo @supabase/ssr; o proxy a renova.
 import type { AuthError, EmailOtpType } from "@supabase/supabase-js";
+import { enviarEmail } from "@/lib/email";
+import { modelos } from "@/lib/email/modelos";
 import { supabaseAdmin, supabaseDoPedido } from "@/lib/supabase/server";
 
 export type Sessao = { userId: string; email: string };
@@ -33,12 +35,17 @@ export async function sessaoAtual(): Promise<Sessao | null> {
 }
 
 /**
- * Cria a conta e manda o email de confirmação. Para email que já tem conta, o
- * Supabase responde igual e não manda nada: a tela não revela quem é cliente.
+ * Cria a conta e manda o email de confirmação. Email que já tem conta: a tela
+ * responde igual (não revela quem é cliente) e o dono do email recebe um aviso
+ * com o caminho para entrar (BUG-007; antes aparecia um erro genérico).
  */
 export async function criarConta(email: string, senha: string, origem: string): Promise<Resultado> {
   const supabase = await supabaseDoPedido();
   const { error } = await supabase.auth.signUp({ email, password: senha, options: { emailRedirectTo: origem } });
+  if (error?.code === "user_already_exists") {
+    await enviarEmail(modelos.jaTemConta(email, origem), `ja-tem-conta-${email}-${new Date().toISOString().slice(0, 10)}`);
+    return { ok: true };
+  }
   return error ? { ok: false, erro: traduzir(error) } : { ok: true };
 }
 
