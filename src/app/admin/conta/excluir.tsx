@@ -5,6 +5,7 @@ import { excluirMinhaConta, excluirMinhaPagina, type Estado } from "@/app/acoes"
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { TextField } from "@/components/ui/field";
+import { Travado } from "@/components/ui/travado";
 import { semQuebrar } from "@/lib/acao-segura";
 
 const excluirContaSeguro = semQuebrar(excluirMinhaConta);
@@ -58,27 +59,29 @@ function Confirmar({
   return (
     <Dialog open={aberto} onOpenChange={setAberto} title={titulo} description={descricao} trigger={<Button variant="danger">{abrir}</Button>}>
       <form action={acao} className="flex flex-col gap-4" noValidate>
-        {estado.erro && (
-          <p role="alert" className="text-sm font-medium text-danger">
-            {estado.erro}
-          </p>
-        )}
-        <TextField
-          label={`Para confirmar, digite ${confirmacao}`}
-          name="confirmacao"
-          autoComplete="off"
-          autoCapitalize="none"
-          spellCheck={false}
-          error={estado.erros?.confirmacao}
-        />
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => setAberto(false)}>
-            Cancelar
-          </Button>
-          <Button type="submit" variant="danger" loading={enviando}>
-            {confirmar}
-          </Button>
-        </div>
+        <Travado enviando={enviando} estado={estado}>
+          {estado.erro && (
+            <p role="alert" className="text-sm font-medium text-danger">
+              {estado.erro}
+            </p>
+          )}
+          <TextField
+            label={`Para confirmar, digite ${confirmacao}`}
+            name="confirmacao"
+            autoComplete="off"
+            autoCapitalize="none"
+            spellCheck={false}
+            error={estado.erros?.confirmacao}
+          />
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="secondary" onClick={() => setAberto(false)}>
+              Cancelar
+            </Button>
+            <Button type="submit" variant="danger" loading={enviando}>
+              {confirmar}
+            </Button>
+          </div>
+        </Travado>
       </form>
     </Dialog>
   );

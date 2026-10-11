@@ -17,6 +17,7 @@ import {
 import { useChecagemDeUsername } from "@/components/app/checagem-username";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/field";
+import { Travado } from "@/components/ui/travado";
 import { semQuebrar } from "@/lib/acao-segura";
 import { MARCA } from "@/lib/marca";
 
@@ -84,16 +85,18 @@ export function ConfirmeSeuEmail({ email }: { email?: string }) {
         .
       </p>
       <form action={acao} className="flex flex-col gap-3" noValidate>
-        {estado.aviso && <Aviso>{estado.aviso}</Aviso>}
-        <ErroGeral estado={estado} />
-        {email ? (
-          <input type="hidden" name="email" value={email} />
-        ) : (
-          <TextField label="Email" name="email" type="email" autoComplete="email" defaultValue={estado.valores?.email} />
-        )}
-        <Button type="submit" variant="secondary" loading={enviando}>
-          Mandar o link de novo
-        </Button>
+        <Travado enviando={enviando} estado={estado}>
+          {estado.aviso && <Aviso>{estado.aviso}</Aviso>}
+          <ErroGeral estado={estado} />
+          {email ? (
+            <input type="hidden" name="email" value={email} />
+          ) : (
+            <TextField label="Email" name="email" type="email" autoComplete="email" defaultValue={estado.valores?.email} />
+          )}
+          <Button type="submit" variant="secondary" loading={enviando}>
+            Mandar o link de novo
+          </Button>
+        </Travado>
       </form>
     </div>
   );
@@ -107,35 +110,37 @@ export function FormCadastro() {
     <div className="flex flex-col gap-4">
       <BotaoGoogle />
       <form action={acao} className="flex flex-col gap-4" noValidate>
-        <ErroGeral estado={estado} />
-        <TextField
-          label="Email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          defaultValue={estado.valores?.email}
-          error={estado.erros?.email}
-        />
-        <TextField
-          label="Senha"
-          name="senha"
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          hint="Pelo menos 8 caracteres."
-          error={estado.erros?.senha}
-        />
-        <Button type="submit" size="lg" loading={enviando}>
-          Criar minha página
-        </Button>
-        <p className="text-sm text-muted">
-          Já tem conta?{" "}
-          <Link href="/entrar" className="font-semibold text-accent underline">
-            Entrar
-          </Link>
-        </p>
+        <Travado enviando={enviando} estado={estado}>
+          <ErroGeral estado={estado} />
+          <TextField
+            label="Email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            defaultValue={estado.valores?.email}
+            error={estado.erros?.email}
+          />
+          <TextField
+            label="Senha"
+            name="senha"
+            type="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            hint="Pelo menos 8 caracteres."
+            error={estado.erros?.senha}
+          />
+          <Button type="submit" size="lg" loading={enviando}>
+            Criar minha página
+          </Button>
+          <p className="text-sm text-muted">
+            Já tem conta?{" "}
+            <Link href="/entrar" className="font-semibold text-accent underline">
+              Entrar
+            </Link>
+          </p>
+        </Travado>
       </form>
     </div>
   );
@@ -181,20 +186,22 @@ export function FormLogin() {
     <div className="flex flex-col gap-4">
       <BotaoGoogle />
       <form action={acao} className="flex flex-col gap-4" noValidate>
-        <ErroGeral estado={estado} />
-        <TextField label="Email" name="email" type="email" autoComplete="email" required defaultValue={estado.valores?.email} />
-        <TextField label="Senha" name="senha" type="password" autoComplete="current-password" required />
-        <Button type="submit" size="lg" loading={enviando}>
-          Entrar
-        </Button>
-        <div className="flex flex-wrap justify-between gap-2 text-sm">
-          <Link href="/entrar/recuperar" className="font-semibold text-accent underline">
-            Esqueci a senha
-          </Link>
-          <Link href="/cadastro" className="font-semibold text-accent underline">
-            Criar conta
-          </Link>
-        </div>
+        <Travado enviando={enviando} estado={estado}>
+          <ErroGeral estado={estado} />
+          <TextField label="Email" name="email" type="email" autoComplete="email" required defaultValue={estado.valores?.email} />
+          <TextField label="Senha" name="senha" type="password" autoComplete="current-password" required />
+          <Button type="submit" size="lg" loading={enviando}>
+            Entrar
+          </Button>
+          <div className="flex flex-wrap justify-between gap-2 text-sm">
+            <Link href="/entrar/recuperar" className="font-semibold text-accent underline">
+              Esqueci a senha
+            </Link>
+            <Link href="/cadastro" className="font-semibold text-accent underline">
+              Criar conta
+            </Link>
+          </div>
+        </Travado>
       </form>
     </div>
   );
@@ -215,22 +222,24 @@ export function FormRecuperar() {
   }
   return (
     <form action={acao} className="flex flex-col gap-4" noValidate>
-      <ErroGeral estado={estado} />
-      <TextField
-        label="Email da conta"
-        name="email"
-        type="email"
-        autoComplete="email"
-        required
-        defaultValue={estado.valores?.email}
-        error={estado.erros?.email}
-      />
-      <Button type="submit" size="lg" loading={enviando}>
-        Mandar o link
-      </Button>
-      <Link href="/entrar" className="text-sm font-semibold text-accent underline">
-        Voltar para o login
-      </Link>
+      <Travado enviando={enviando} estado={estado}>
+        <ErroGeral estado={estado} />
+        <TextField
+          label="Email da conta"
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          defaultValue={estado.valores?.email}
+          error={estado.erros?.email}
+        />
+        <Button type="submit" size="lg" loading={enviando}>
+          Mandar o link
+        </Button>
+        <Link href="/entrar" className="text-sm font-semibold text-accent underline">
+          Voltar para o login
+        </Link>
+      </Travado>
     </form>
   );
 }
@@ -240,21 +249,23 @@ export function FormSenhaNova() {
   const [estado, acao, enviando] = useActionState(acoes.salvarSenhaNova, {});
   return (
     <form action={acao} className="flex flex-col gap-4" noValidate>
-      <ErroGeral estado={estado} />
-      <TextField
-        label="Senha nova"
-        name="senha"
-        type="password"
-        autoComplete="new-password"
-        required
-        minLength={8}
-        hint="Pelo menos 8 caracteres."
-        error={estado.erros?.senha}
-      />
-      <TextField label="Repita a senha nova" name="repetir" type="password" autoComplete="new-password" required error={estado.erros?.repetir} />
-      <Button type="submit" size="lg" loading={enviando}>
-        Salvar e entrar
-      </Button>
+      <Travado enviando={enviando} estado={estado}>
+        <ErroGeral estado={estado} />
+        <TextField
+          label="Senha nova"
+          name="senha"
+          type="password"
+          autoComplete="new-password"
+          required
+          minLength={8}
+          hint="Pelo menos 8 caracteres."
+          error={estado.erros?.senha}
+        />
+        <TextField label="Repita a senha nova" name="repetir" type="password" autoComplete="new-password" required error={estado.erros?.repetir} />
+        <Button type="submit" size="lg" loading={enviando}>
+          Salvar e entrar
+        </Button>
+      </Travado>
     </form>
   );
 }
@@ -276,26 +287,28 @@ export function FormUsername() {
 
   return (
     <form action={acao} className="flex flex-col gap-4" noValidate>
-      <ErroGeral estado={estado} />
-      <TextField
-        label="Seu endereço"
-        name="username"
-        prefix={`${MARCA.dominio}/`}
-        autoComplete="off"
-        autoCapitalize="none"
-        spellCheck={false}
-        required
-        value={valor}
-        onChange={(e) => {
-          setValor(e.target.value);
-          setEditou(true);
-        }}
-        hint={<span aria-live="polite">{dica}</span>}
-        error={erro}
-      />
-      <Button type="submit" size="lg" loading={enviando}>
-        Continuar
-      </Button>
+      <Travado enviando={enviando} estado={estado}>
+        <ErroGeral estado={estado} />
+        <TextField
+          label="Seu endereço"
+          name="username"
+          prefix={`${MARCA.dominio}/`}
+          autoComplete="off"
+          autoCapitalize="none"
+          spellCheck={false}
+          required
+          value={valor}
+          onChange={(e) => {
+            setValor(e.target.value);
+            setEditou(true);
+          }}
+          hint={<span aria-live="polite">{dica}</span>}
+          error={erro}
+        />
+        <Button type="submit" size="lg" loading={enviando}>
+          Continuar
+        </Button>
+      </Travado>
     </form>
   );
 }

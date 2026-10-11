@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { assinarPro, cancelarPro } from "@/app/acoes";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/field";
+import { Travado } from "@/components/ui/travado";
 import { semQuebrar } from "@/lib/acao-segura";
 import { MARCA } from "@/lib/marca";
 
@@ -22,42 +23,44 @@ export function FormAssinar({ pedeDocumento }: { pedeDocumento: boolean }) {
   const forma = estado.valores?.forma ?? "pix";
   return (
     <form action={acao} className="flex flex-col gap-4" noValidate>
-      {estado.erro && (
-        <p role="alert" className="rounded-md bg-surface px-3 py-2 text-sm font-medium text-danger">
-          {estado.erro}
-        </p>
-      )}
-      <fieldset className="flex flex-col gap-2">
-        <legend className="mb-1 text-sm font-semibold text-fg">Como quer pagar</legend>
-        {FORMAS.map((f) => (
-          <label key={f.valor} className="flex cursor-pointer items-start gap-3 rounded-md border border-input bg-bg p-3 has-[:checked]:border-accent has-[:checked]:bg-accent-soft">
-            <input type="radio" name="forma" value={f.valor} defaultChecked={f.valor === forma} className="mt-1 accent-accent" />
-            <span>
-              <span className="block text-sm font-semibold text-fg">{f.rotulo}</span>
-              <span className="block text-xs text-muted">{f.detalhe}</span>
-            </span>
-          </label>
-        ))}
-      </fieldset>
-      {pedeDocumento && (
-        <div className="grid gap-3 md:grid-cols-2">
-          <TextField label="Nome de quem paga" name="nome" autoComplete="name" defaultValue={estado.valores?.nome} />
-          <TextField
-            label="CPF ou CNPJ"
-            name="documento"
-            inputMode="numeric"
-            autoComplete="off"
-            defaultValue={estado.valores?.documento}
-            error={estado.erros?.documento}
-            hint={`Exigido para emitir a cobrança. Vai direto para o Asaas; o ${MARCA.nome} não guarda.`}
-          />
+      <Travado enviando={enviando} estado={estado}>
+        {estado.erro && (
+          <p role="alert" className="rounded-md bg-surface px-3 py-2 text-sm font-medium text-danger">
+            {estado.erro}
+          </p>
+        )}
+        <fieldset className="flex flex-col gap-2">
+          <legend className="mb-1 text-sm font-semibold text-fg">Como quer pagar</legend>
+          {FORMAS.map((f) => (
+            <label key={f.valor} className="flex cursor-pointer items-start gap-3 rounded-md border border-input bg-bg p-3 has-[:checked]:border-accent has-[:checked]:bg-accent-soft">
+              <input type="radio" name="forma" value={f.valor} defaultChecked={f.valor === forma} className="mt-1 accent-accent" />
+              <span>
+                <span className="block text-sm font-semibold text-fg">{f.rotulo}</span>
+                <span className="block text-xs text-muted">{f.detalhe}</span>
+              </span>
+            </label>
+          ))}
+        </fieldset>
+        {pedeDocumento && (
+          <div className="grid gap-3 md:grid-cols-2">
+            <TextField label="Nome de quem paga" name="nome" autoComplete="name" defaultValue={estado.valores?.nome} />
+            <TextField
+              label="CPF ou CNPJ"
+              name="documento"
+              inputMode="numeric"
+              autoComplete="off"
+              defaultValue={estado.valores?.documento}
+              error={estado.erros?.documento}
+              hint={`Exigido para emitir a cobrança. Vai direto para o Asaas; o ${MARCA.nome} não guarda.`}
+            />
+          </div>
+        )}
+        <div>
+          <Button type="submit" size="lg" loading={enviando}>
+            Assinar e ir para o pagamento
+          </Button>
         </div>
-      )}
-      <div>
-        <Button type="submit" size="lg" loading={enviando}>
-          Assinar e ir para o pagamento
-        </Button>
-      </div>
+      </Travado>
     </form>
   );
 }

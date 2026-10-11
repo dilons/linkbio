@@ -28,7 +28,7 @@ sobre o esqueleto e os Tabs passavam antes de haver um link. Agora o
 
 | | casos | passaram | falharam |
 | --- | --- | --- | --- |
-| ponta a ponta (Playwright) | 114 | 114 | 0 |
+| ponta a ponta (Playwright) | 115 | 115 | 0 |
 | backend (node:test) | 53 | 53 | 0 |
 | bloqueados (fluxo não construído) | 3 | | |
 | manuais (precisam de conta real) | 7 | | pendentes |
@@ -80,6 +80,7 @@ no `Dialog`).
 | F02-E9 | adiciona e organiza links | borda | duas abas: excluído numa, editar na outra avisa que o link não existe mais | e2e `f02-links.spec.ts` | passou |
 | F02-E10 | adiciona e organiza links | borda | título e bio longos: limites respeitados e nada vaza a 390 px | e2e `f02-links.spec.ts` | passou (achou BUG-004) |
 | F02-N1 | adiciona e organiza links | negativo | sessão perdida no meio: salvar leva ao login sem perder o painel dos outros | e2e `f02-links.spec.ts` | passou (achou BUG-002) |
+| F02-E13 | adiciona e organiza links | borda | enviando, os campos travam; com erro, o foco volta ao campo e o que se digita depois fica | e2e `f02-links.spec.ts` | passou (BUG-010; falha sem a correção) |
 | F02-H3 | adiciona e organiza links | feliz | redes sociais: pôr pelo @ e pelo número, reordenar com teclado, mudar para o rodapé e tirar, com a prévia e a página acompanhando | e2e `f02-redes.spec.ts` | passou |
 | F02-E11 | adiciona e organiza links | borda | endereço de outro site, @ inválido ou número sem DDD são recusados e nada é gravado | e2e `f02-redes.spec.ts` | passou |
 | F02-E12 | adiciona e organiza links | borda | a 390 px a prévia abre em tela cheia, acompanha o que mudou e devolve o foco ao fechar | e2e `f02-redes.spec.ts` | passou (achou o foco perdido nos modais) |

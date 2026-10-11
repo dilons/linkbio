@@ -6,6 +6,7 @@ import { useChecagemDeUsername } from "@/components/app/checagem-username";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/field";
 import { useToast } from "@/components/ui/toast";
+import { Travado } from "@/components/ui/travado";
 import { semQuebrar } from "@/lib/acao-segura";
 import { normalizarUsername } from "@/lib/data/validacao";
 import { MARCA } from "@/lib/marca";
@@ -48,12 +49,11 @@ export function TrocarEndereco({ atual, liberaEm }: { atual: string; liberaEm: s
         <p className="text-sm text-muted">Você trocou o endereço há pouco. A próxima troca fica liberada em {liberaEm}.</p>
       ) : (
         <form action={acao} className="flex flex-col gap-3" noValidate>
-          <p className="text-sm text-muted">
-            Dá para trocar uma vez a cada 7 dias. Por 14 dias, quem abrir o endereço antigo vai para o novo, e o antigo fica guardado só para você.
-            Depois disso, ele fica livre: atualize a bio e o que mais tiver o endereço impresso.
-          </p>
-          {/* travado enquanto envia (BUG-010) */}
-          <fieldset disabled={enviando} className="flex flex-col gap-3">
+          <Travado enviando={enviando} estado={estado}>
+            <p className="text-sm text-muted">
+              Dá para trocar uma vez a cada 7 dias. Por 14 dias, quem abrir o endereço antigo vai para o novo, e o antigo fica guardado só para você.
+              Depois disso, ele fica livre: atualize a bio e o que mais tiver o endereço impresso.
+            </p>
             <TextField
               label="Endereço novo"
               name="username"
@@ -69,17 +69,18 @@ export function TrocarEndereco({ atual, liberaEm }: { atual: string; liberaEm: s
               hint={<span aria-live="polite">{dica}</span>}
               error={erro}
             />
-          </fieldset>
-          {estado.erro && (
-            <p role="alert" className="text-sm font-medium text-danger">
-              {estado.erro}
-            </p>
-          )}
-          <div>
-            <Button type="submit" variant="secondary" loading={enviando}>
-              Trocar o endereço
-            </Button>
-          </div>
+
+            {estado.erro && (
+              <p role="alert" className="text-sm font-medium text-danger">
+                {estado.erro}
+              </p>
+            )}
+            <div>
+              <Button type="submit" variant="secondary" loading={enviando}>
+                Trocar o endereço
+              </Button>
+            </div>
+          </Travado>
         </form>
       )}
     </section>

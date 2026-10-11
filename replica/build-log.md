@@ -111,3 +111,6 @@ desenho é o mesmo, a fonte sai rasterizada um pouco diferente da nuvem
 - **S19 QR code**, na S12. Ver a linha da S19. Dependências novas:
   `qrcode` (MIT) no app; `jsqr` e `pngjs` só nos testes.
 - **S09 insights.** Ver a linha da S09. Componente novo: `GraficoColunas`.
+- **BUG-010** nos 15 formulários com campos: componente `Travado`
+  (`fieldset disabled` com `display: contents`, para não mudar o layout, e o
+  foco no primeiro campo inválido quando a resposta volta com erro).

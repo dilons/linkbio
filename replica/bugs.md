@@ -9,7 +9,7 @@ aqui o que foi reproduzido; o resto está em "A conferir", no fim.
 | S1 | 1 | 1 |
 | S2 | 0 | 0 |
 | S3 | 7 | 7 |
-| S4 | 4 | 2 (1 não vai ser corrigido, 1 aberto) |
+| S4 | 4 | 3 (1 não vai ser corrigido) |
 
 Nenhum S1 aberto.
 
@@ -178,7 +178,7 @@ Expected: o título digitado continua.
 Actual: quando a resposta chega, o React 19 reinicia o formulário e o campo volta ao valor anterior.
 Evidence: primeira rodada da F02-E3: o campo título estava vazio e o erro era "Dê um título ao link." depois de digitar 101 caracteres.
 Suspected cause: reinício automático do formulário depois de uma ação, no React 19.
-Status: open. Janela curta, difícil para uma pessoa; mitigação possível: travar os campos (`fieldset disabled`) enquanto envia.
+Status: fixed (2026-10-11, WSL). Os 15 formulários com campos usam o `Travado`: `fieldset disabled` enquanto envia e, se a resposta vier com erro, o foco vai para o primeiro campo inválido (travar tirava o foco de quem apertou Enter). F02-E13, com a resposta atrasada de propósito, falha sem a correção.
 
 ### BUG-011: errar a senha de outra pessoa de propósito tranca a conta dela
 

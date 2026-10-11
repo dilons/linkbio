@@ -29,6 +29,7 @@ import { LinkCard } from "@/components/ui/link-card";
 import { PhonePreview } from "@/components/ui/phone-preview";
 import { SortableList } from "@/components/ui/sortable-list";
 import { useToast } from "@/components/ui/toast";
+import { Travado } from "@/components/ui/travado";
 import { SEM_CONEXAO, semQuebrar, tentar } from "@/lib/acao-segura";
 import { cn } from "@/lib/cn";
 import { FUSO_PADRAO } from "@/lib/fuso";
@@ -333,18 +334,20 @@ function Cabecalho({ titulo, bio, avatarUrl }: { titulo: string; bio: string; av
       >
         <Foto avatarUrl={avatarUrl} />
         <form action={acao} className="mt-4 flex flex-col gap-4">
-          <TextField label="Título" name="titulo" defaultValue={estado.valores?.titulo ?? titulo} maxLength={60} error={estado.erros?.titulo} />
-          <TextArea label="Bio" name="bio" value={bioAtual} onChange={(e) => setBioAtual(e.target.value)} maxLength={160} error={estado.erros?.bio} />
-          {estado.erro && (
-            <p role="alert" className="text-sm font-medium text-danger">
-              {estado.erro}
-            </p>
-          )}
-          <div className="flex justify-end">
-            <Button type="submit" loading={enviando}>
-              Salvar
-            </Button>
-          </div>
+          <Travado enviando={enviando} estado={estado}>
+            <TextField label="Título" name="titulo" defaultValue={estado.valores?.titulo ?? titulo} maxLength={60} error={estado.erros?.titulo} />
+            <TextArea label="Bio" name="bio" value={bioAtual} onChange={(e) => setBioAtual(e.target.value)} maxLength={160} error={estado.erros?.bio} />
+            {estado.erro && (
+              <p role="alert" className="text-sm font-medium text-danger">
+                {estado.erro}
+              </p>
+            )}
+            <div className="flex justify-end">
+              <Button type="submit" loading={enviando}>
+                Salvar
+              </Button>
+            </div>
+          </Travado>
         </form>
       </Dialog>
     </section>
@@ -530,48 +533,50 @@ function EditarRede({
   return (
     <Dialog open onOpenChange={(v) => !v && onFechar()} title={trocando ? `Editar ${rede.nome}` : "Adicionar rede"}>
       <form action={acao} className="flex flex-col gap-4" noValidate>
-        {trocando ? (
-          <input type="hidden" name="plataforma" value={plataforma} />
-        ) : (
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor={idRede} className="text-sm font-medium text-fg">
-              Rede
-            </label>
-            <select
-              id={idRede}
-              name="plataforma"
-              value={plataforma}
-              onChange={(e) => setPlataforma(e.target.value as Plataforma)}
-              className="h-11 rounded-md border border-input bg-bg px-3 text-base text-fg"
-            >
-              {livres.map((id) => (
-                <option key={id} value={id}>
-                  {nomeDaRede(id)}
-                </option>
-              ))}
-            </select>
+        <Travado enviando={enviando} estado={estado}>
+          {trocando ? (
+            <input type="hidden" name="plataforma" value={plataforma} />
+          ) : (
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor={idRede} className="text-sm font-medium text-fg">
+                Rede
+              </label>
+              <select
+                id={idRede}
+                name="plataforma"
+                value={plataforma}
+                onChange={(e) => setPlataforma(e.target.value as Plataforma)}
+                className="h-11 rounded-md border border-input bg-bg px-3 text-base text-fg"
+              >
+                {livres.map((id) => (
+                  <option key={id} value={id}>
+                    {nomeDaRede(id)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <TextField
+            key={plataforma}
+            label={rede.rotulo}
+            name="endereco"
+            placeholder={rede.exemplo}
+            autoComplete="off"
+            inputMode={plataforma === "whatsapp" ? "tel" : undefined}
+            defaultValue={estado.valores?.plataforma === plataforma ? estado.valores.endereco : inicial.url}
+            error={estado.valores?.plataforma === plataforma ? estado.erros?.endereco : undefined}
+          />
+          {estado.erro && (
+            <p role="alert" className="text-sm font-medium text-danger">
+              {estado.erro}
+            </p>
+          )}
+          <div className="flex justify-end">
+            <Button type="submit" loading={enviando}>
+              Salvar
+            </Button>
           </div>
-        )}
-        <TextField
-          key={plataforma}
-          label={rede.rotulo}
-          name="endereco"
-          placeholder={rede.exemplo}
-          autoComplete="off"
-          inputMode={plataforma === "whatsapp" ? "tel" : undefined}
-          defaultValue={estado.valores?.plataforma === plataforma ? estado.valores.endereco : inicial.url}
-          error={estado.valores?.plataforma === plataforma ? estado.erros?.endereco : undefined}
-        />
-        {estado.erro && (
-          <p role="alert" className="text-sm font-medium text-danger">
-            {estado.erro}
-          </p>
-        )}
-        <div className="flex justify-end">
-          <Button type="submit" loading={enviando}>
-            Salvar
-          </Button>
-        </div>
+        </Travado>
       </form>
     </Dialog>
   );
@@ -588,30 +593,32 @@ function NovoLink() {
   }, {});
   return (
     <form action={acao} className="flex flex-col gap-3 rounded-lg border border-border bg-bg p-4 shadow-card" noValidate>
-      <h2 className="text-lg font-semibold text-fg">Adicionar link</h2>
-      <div className="grid gap-3 md:grid-cols-2">
-        <TextField
-          label="Título"
-          name="titulo"
-          placeholder="Ex.: Faça sua encomenda"
-          defaultValue={estado.valores?.titulo}
-          error={estado.erros?.titulo}
-        />
-        <TextField
-          label="Endereço"
-          name="url"
-          inputMode="url"
-          placeholder="exemplo.com.br"
-          defaultValue={estado.valores?.url}
-          error={estado.erros?.url}
-        />
-      </div>
-      <div className="flex flex-wrap items-center gap-3">
-        <Button type="submit" loading={enviando}>
-          Adicionar
-        </Button>
-        <NovoFormulario />
-      </div>
+      <Travado enviando={enviando} estado={estado}>
+        <h2 className="text-lg font-semibold text-fg">Adicionar link</h2>
+        <div className="grid gap-3 md:grid-cols-2">
+          <TextField
+            label="Título"
+            name="titulo"
+            placeholder="Ex.: Faça sua encomenda"
+            defaultValue={estado.valores?.titulo}
+            error={estado.erros?.titulo}
+          />
+          <TextField
+            label="Endereço"
+            name="url"
+            inputMode="url"
+            placeholder="exemplo.com.br"
+            defaultValue={estado.valores?.url}
+            error={estado.erros?.url}
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="submit" loading={enviando}>
+            Adicionar
+          </Button>
+          <NovoFormulario />
+        </div>
+      </Travado>
     </form>
   );
 }
@@ -646,43 +653,45 @@ function EditarFormulario({ link, formulario, onFechar }: { link: LinkEditor; fo
   return (
     <Dialog open onOpenChange={(v) => !v && onFechar()} title="Formulário de email" description="Quem visitar sua página deixa o email para receber suas novidades.">
       <form action={acao} className="flex flex-col gap-4" noValidate>
-        <input type="hidden" name="id" value={link.id} />
-        <TextField label="Título" name="titulo" maxLength={100} defaultValue={estado.valores?.titulo ?? link.titulo} error={estado.erros?.titulo} />
-        <label className="flex items-start gap-2 text-sm text-fg">
-          <input
-            type="checkbox"
-            name="pedirNome"
-            defaultChecked={estado.valores ? estado.valores.pedirNome === "on" : formulario.pedirNome}
-            className="mt-0.5 size-4 accent-accent"
+        <Travado enviando={enviando} estado={estado}>
+          <input type="hidden" name="id" value={link.id} />
+          <TextField label="Título" name="titulo" maxLength={100} defaultValue={estado.valores?.titulo ?? link.titulo} error={estado.erros?.titulo} />
+          <label className="flex items-start gap-2 text-sm text-fg">
+            <input
+              type="checkbox"
+              name="pedirNome"
+              defaultChecked={estado.valores ? estado.valores.pedirNome === "on" : formulario.pedirNome}
+              className="mt-0.5 size-4 accent-accent"
+            />
+            <span>Pedir o nome também (opcional para quem se inscreve)</span>
+          </label>
+          <TextArea
+            label="Texto de consentimento"
+            name="consentimento"
+            maxLength={300}
+            value={consentimento}
+            onChange={(e) => setConsentimento(e.target.value)}
+            hint="Diz para que o email vai ser usado. A pessoa marca que aceita, e o texto fica guardado com a inscrição."
+            error={estado.erros?.consentimento}
           />
-          <span>Pedir o nome também (opcional para quem se inscreve)</span>
-        </label>
-        <TextArea
-          label="Texto de consentimento"
-          name="consentimento"
-          maxLength={300}
-          value={consentimento}
-          onChange={(e) => setConsentimento(e.target.value)}
-          hint="Diz para que o email vai ser usado. A pessoa marca que aceita, e o texto fica guardado com a inscrição."
-          error={estado.erros?.consentimento}
-        />
-        <TextField
-          label="Mensagem depois do envio"
-          name="sucesso"
-          maxLength={200}
-          defaultValue={estado.valores?.sucesso ?? formulario.sucesso}
-          error={estado.erros?.sucesso}
-        />
-        {estado.erro && (
-          <p role="alert" className="text-sm font-medium text-danger">
-            {estado.erro}
-          </p>
-        )}
-        <div className="flex justify-end">
-          <Button type="submit" loading={enviando}>
-            Salvar
-          </Button>
-        </div>
+          <TextField
+            label="Mensagem depois do envio"
+            name="sucesso"
+            maxLength={200}
+            defaultValue={estado.valores?.sucesso ?? formulario.sucesso}
+            error={estado.erros?.sucesso}
+          />
+          {estado.erro && (
+            <p role="alert" className="text-sm font-medium text-danger">
+              {estado.erro}
+            </p>
+          )}
+          <div className="flex justify-end">
+            <Button type="submit" loading={enviando}>
+              Salvar
+            </Button>
+          </div>
+        </Travado>
       </form>
     </Dialog>
   );
@@ -698,12 +707,11 @@ function EditarLink({ link, onFechar }: { link: LinkEditor; onFechar: () => void
   return (
     <Dialog open onOpenChange={(v) => !v && onFechar()} title="Editar link">
       <form action={acao} className="flex flex-col gap-4" noValidate>
-        <input type="hidden" name="id" value={link.id} />
-        <input type="hidden" name="inicio" value={agenda.inicio} />
-        <input type="hidden" name="fim" value={agenda.fim} />
-        <input type="hidden" name="fuso" value={agenda.fuso} />
-        {/* travado enquanto envia: a resposta de um envio não apaga o que foi digitado depois (BUG-010) */}
-        <fieldset disabled={enviando} className="flex flex-col gap-4">
+        <Travado enviando={enviando} estado={estado}>
+          <input type="hidden" name="id" value={link.id} />
+          <input type="hidden" name="inicio" value={agenda.inicio} />
+          <input type="hidden" name="fim" value={agenda.fim} />
+          <input type="hidden" name="fuso" value={agenda.fuso} />
           <TextField label="Título" name="titulo" defaultValue={estado.valores?.titulo ?? link.titulo} error={estado.erros?.titulo} />
           <TextField label="Endereço" name="url" inputMode="url" defaultValue={estado.valores?.url ?? link.url} error={estado.erros?.url} />
           <SelectField
@@ -729,17 +737,17 @@ function EditarLink({ link, onFechar }: { link: LinkEditor; onFechar: () => void
               </p>
             )}
           </div>
-        </fieldset>
-        {estado.erro && (
-          <p role="alert" className="text-sm font-medium text-danger">
-            {estado.erro}
-          </p>
-        )}
-        <div className="flex justify-end">
-          <Button type="submit" loading={enviando}>
-            Salvar
-          </Button>
-        </div>
+          {estado.erro && (
+            <p role="alert" className="text-sm font-medium text-danger">
+              {estado.erro}
+            </p>
+          )}
+          <div className="flex justify-end">
+            <Button type="submit" loading={enviando}>
+              Salvar
+            </Button>
+          </div>
+        </Travado>
       </form>
     </Dialog>
   );

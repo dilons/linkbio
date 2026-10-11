@@ -233,4 +233,24 @@ test.describe("F02 adiciona e organiza links", () => {
     await page.waitForURL("**/entrar");
     expect(await linksNoBanco(c.perfil)).toHaveLength(0);
   });
+
+  test("F02-E13 enviando: os campos travam; com erro, o foco volta ao campo e o que se digita depois fica (BUG-010)", async ({ page }) => {
+    const c = await contaPronta("travado");
+    await entrarNoPainel(page, c);
+    // a resposta da ação demora: é a janela em que o React 19 apagava o que foi digitado
+    await page.route("**/admin", async (r) => {
+      if (r.request().method() === "POST") await new Promise((ok) => setTimeout(ok, 800));
+      await r.continue();
+    });
+    const form = page.locator("form").filter({ has: page.getByRole("heading", { name: "Adicionar link" }) });
+    const titulo = form.getByLabel("Título");
+    await form.getByLabel("Endereço").fill("exemplo.com.br");
+    await form.getByRole("button", { name: "Adicionar", exact: true }).click();
+    await expect(titulo).toBeDisabled();
+    await expect(titulo).toBeEnabled();
+    await expect(form.getByText("Dê um título ao link.")).toBeVisible();
+    await expect(titulo).toBeFocused();
+    await page.keyboard.type("Digitado depois do erro");
+    await expect(titulo).toHaveValue("Digitado depois do erro");
+  });
 });
