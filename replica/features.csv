@@ -13,7 +13,7 @@ Página pública responsiva em /username,pagina publica,must,yes,yes,404 para pe
 Temas prontos,aparencia,must,yes,yes,5 temas (papel; noite; areia; oceano; alto contraste); todos passam no axe; prévia muda na hora; todos grátis por enquanto
 Contagem de views e cliques,insights,must,yes,yes,sem cookie e sem guardar IP; robôs (isbot) não contam; visita contada pelo navegador; clique por /r/ sem JavaScript
 Formulário de captura de email na página,audiencia,must,yes,yes,email e nome opcional; o criador escreve o consentimento e ele fica gravado com cada inscrição (LGPD); campo isca e limite por visitante; o mesmo email não duplica; telefone ainda não
-Ver inscritos e exportar CSV,audiencia,must,yes,no,original manda link por email com senha
+Ver inscritos e exportar CSV,audiencia,must,yes,yes,tabela com os 1000 mais novos e tirar da lista; CSV baixado direto (BOM; ponto e vírgula; fórmulas neutralizadas) no lugar do link por email com senha do original
 Plano pago com assinatura e cancelamento,plano,must,yes,partial,Asaas: Pix; cartão; boleto na página do Asaas; webhook idempotente; cancelar em um clique (Pro até o fim do período). Testado contra um Asaas falso: falta validar no sandbox com a conta do dono
 Tirar a marca do rodapé no plano pago,plano,must,yes,yes,some com o Pro ativo e até o fim do período pago depois de cancelar
 Excluir perfil ou conta,conta,must,yes,partial,excluir a conta: apaga na hora; cancela a assinatura; apaga fotos; segura o username 14 dias; confirma por email. Excluir só a página (sem a conta) ainda sem tela
