@@ -105,6 +105,19 @@ export async function registrarClique(linkId: string, info: InfoVisitante, conta
   return link.url;
 }
 
+/** O endereço da página dona do link, se ela ainda existe (para a tela de link indisponível). */
+export async function usernameDoLink(linkId: string): Promise<string | null> {
+  if (!UUID.test(linkId)) return null;
+  const conn = await db();
+  const [r] = await conn
+    .select({ username: profiles.username })
+    .from(links)
+    .innerJoin(profiles, eq(profiles.id, links.profileId))
+    .where(and(eq(links.id, linkId), isNull(profiles.deletedAt)))
+    .limit(1);
+  return r?.username ?? null;
+}
+
 export async function registrarVisita(profileId: string, info: InfoVisitante): Promise<boolean> {
   if (!UUID.test(profileId) || ehRobo(info.userAgent)) return false;
   const conn = await db();
