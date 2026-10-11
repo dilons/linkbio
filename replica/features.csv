@@ -10,7 +10,7 @@ Perfil com foto título e bio,editor,must,yes,yes,foto no Supabase Storage por U
 Ícones de redes sociais no topo ou no rodapé,editor,must,yes,partial,aparecem na página pública e na prévia (topo ou rodapé); falta o editor das redes
 Prévia ao vivo da página no editor,editor,must,yes,partial,no computador reage na hora; no celular só o botão Abrir
 Página pública responsiva em /username,pagina publica,must,yes,yes,404 para perfil inexistente ou excluído: robôs de prévia recebem status 404; navegador recebe a página de 404 com noindex (limite do streaming)
-Temas prontos,aparencia,must,yes,no,tema papel fixo; galeria na S08 (etapa 2)
+Temas prontos,aparencia,must,yes,yes,5 temas (papel; noite; areia; oceano; alto contraste); todos passam no axe; prévia muda na hora; todos grátis por enquanto
 Contagem de views e cliques,insights,must,yes,yes,sem cookie e sem guardar IP; robôs (isbot) não contam; visita contada pelo navegador; clique por /r/ sem JavaScript
 Formulário de captura de email na página,audiencia,must,yes,no,consentimento e finalidade na hora da coleta (LGPD)
 Ver inscritos e exportar CSV,audiencia,must,yes,no,original manda link por email com senha

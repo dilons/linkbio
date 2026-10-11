@@ -8,6 +8,7 @@ import { z } from "zod";
 import { cancelarAssinatura, iniciarAssinatura, type Forma } from "@/lib/billing";
 import { documentoValido } from "@/lib/billing/cpf";
 import { criarConta, entrar, pedirNovaSenha, reenviarConfirmacao, sair, trocarSenha, urlLoginGoogle } from "@/lib/data/auth";
+import { definirTema, IDS_DOS_TEMAS } from "@/lib/data/aparencia";
 import { excluirConta } from "@/lib/data/conta";
 import { definirFoto } from "@/lib/data/fotos";
 import { dentroDosLimites } from "@/lib/data/limites";
@@ -260,6 +261,16 @@ export async function salvarFoto(caminho: unknown): Promise<boolean> {
   const { sessao, perfil } = await exigirPerfil();
   if (caminho !== null && (typeof caminho !== "string" || caminho.length > 200)) return false;
   const ok = await definirFoto(sessao.userId, perfil.id, caminho);
+  refresh();
+  return ok;
+}
+
+/** S08: troca o tema da página. */
+export async function escolherTema(tema: unknown): Promise<boolean> {
+  const { sessao, perfil } = await exigirPerfil();
+  const escolhido = z.enum(IDS_DOS_TEMAS).safeParse(tema);
+  if (!escolhido.success) return false;
+  const ok = await definirTema(sessao.userId, perfil.id, escolhido.data);
   refresh();
   return ok;
 }

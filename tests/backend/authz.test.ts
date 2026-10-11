@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
 import { fecharBanco } from "@/lib/db";
+import { definirTema } from "@/lib/data/aparencia";
 import { totais } from "@/lib/data/eventos";
 import { adicionarLink, alternarLink, editarLink, excluirLink, listarLinks, reordenarLinks } from "@/lib/data/links";
 import { atualizarCabecalho, criarPerfil, perfilDaConta } from "@/lib/data/perfis";
@@ -56,6 +57,11 @@ test("outra conta não muda o cabeçalho nem vê os insights", async () => {
   assert.equal(await atualizarCabecalho(bia.id, perfilAna, { titulo: "invadido", bio: "" }), false);
   assert.equal(await totais(bia.id, perfilAna), null);
   assert.ok(await totais(ana.id, perfilAna));
+});
+
+test("outra conta não troca o tema", async () => {
+  assert.equal(await definirTema(bia.id, perfilAna, "noite"), false);
+  assert.equal(await definirTema(ana.id, perfilAna, "areia"), true);
 });
 
 test("o dono consegue tudo", async () => {
