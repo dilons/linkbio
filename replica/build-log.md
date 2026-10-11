@@ -22,14 +22,14 @@ axe 0 violações em 17 telas; console sem erros). Capturas em
 | S09 insights | 2026-10-11 | parcial | gráfico por dia, período, fontes e locais, soma diária (`daily_stats`) | o Chromium headless se apresenta como "HeadlessChrome" e o isbot (certo) não conta; o teste usa um user-agent comum |
 | S10 audiência | 2026-10-11 | feito | | CSV que abre certo no Excel em português: BOM, ponto e vírgula, horário de Brasília e fórmulas neutralizadas (`=`, `+`, `-`, `@` no começo) |
 | S11 editor do formulário | 2026-10-11 | feito | campo de telefone | o bloco entrou na lista dos links (`kind = 'form'`): ordenar, ligar e excluir vieram de graça, mas toda consulta de link passou a dizer quais tipos aceita |
-| S12 configurações | 2026-10-11 | parcial | QR code (S19) | aviso da página toda; os campos travam enquanto salva (BUG-010) |
+| S12 configurações | 2026-10-11 | feito | | QR code (S19) e aviso da página toda; os campos travam enquanto salva (BUG-010) |
 | S13 conta | 2026-10-11 | parcial | baixar os dados (LGPD) | sair de todos os aparelhos só valeu na hora com getUser no proxy. Excluir só a página: o endereço fica guardado 14 dias e só a mesma conta retoma (a linha vazia sai na mesma transação). Troca de endereço (2026-10-11, WSL): o antigo vira uma linha já excluída da conta, como na exclusão, com `moved_to` para o redirecionamento de 14 dias; a checagem dentro da transação usa a mesma conexão (pedir outra ao pool com uma presa pode travar o pool). |
 | S14 assinatura | 2026-10-11 | parcial (backend) | validar no sandbox real do Asaas | o sandbox está bloqueado pela rede daqui: testado contra um Asaas falso que segue a documentação |
 | S15 página pública | 2026-10-11 | parcial | cache da página | o 404: com streaming o status sai no primeiro pedaço. Robôs de prévia (WhatsApp, Facebook) recebem 404 de verdade; navegadores recebem a página de 404 com `noindex` |
 | S16 aviso de conteúdo sensível | 2026-10-11 | feito | | o `GateScreen` era um componente do navegador que só escondia: virou formulário no servidor, para os links não irem no HTML antes da resposta. Sem JavaScript nenhum, o conteúdo em streaming do Suspense não aparece (vale para a página pública toda); sem o JS do app, o aviso funciona. O `/r/` precisou conferir os dois avisos antes de contar o clique |
 | S17 inscrição enviada | 2026-10-11 | feito | | o React 19 revela o conteúdo do streaming uns 300 ms depois do load, e antes de hidratar o navegador mandaria o formulário sozinho, com o email na URL: o form é POST e o botão só liga depois da hidratação |
 | S18 entrar | 2026-10-11 | parcial | Google (pronto, falta testar) | o limite de login por email barrou os próprios testes repetidos: os testes zeram a tabela de limites |
-| S19 QR code | | não começou | tudo (etapa 6) | |
+| S19 QR code | 2026-10-11 | feito | QR com cor e logo (could-have, pago no original) | virou seção da S12, não um modal. Para o insight saber que veio do QR, a coluna `source` dos eventos ganhou `qr` (migração) e o `?origem=qr` sai da barra depois de contar. O teste decodifica o PNG baixado (jsqr) para conferir o endereço |
 
 Placar depois da /replica-backend: 2 feitas, 8 parciais, 5 stubs, 4 por
 começar, de 19. Must-haves: 11 sim e 4 parciais de 18.
@@ -108,3 +108,5 @@ desenho é o mesmo, a fonte sai rasterizada um pouco diferente da nuvem
 - **S13 trocar o endereço.** Ver a linha da S13. O teste da reserva de 14
   dias mostrou o BUG-012 (erro antigo na frente da checagem nova), corrigido
   também na S03.
+- **S19 QR code**, na S12. Ver a linha da S19. Dependências novas:
+  `qrcode` (MIT) no app; `jsqr` e `pngjs` só nos testes.

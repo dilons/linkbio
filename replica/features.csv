@@ -27,7 +27,7 @@ Views e cliques únicos e taxa de clique,insights,should,yes,partial,visitantes 
 Ranking dos links mais clicados,insights,should,yes,yes,tabela na S09; no original: só Pro e Premium (ajuda 5434178; 2026-10-11)
 Fontes de tráfego e locais (país e cidade),insights,should,yes,no,no original: só Pro e Premium (ajuda 5434178; 2026-10-11)
 Escolher o período dos insights,insights,should,yes,no,período maior nos planos pagos; no original: Free 28 dias; Starter 90; Pro 365; Premium todo o período (ajuda 5434178 e 5434140; 2026-10-11)
-QR code da página,compartilhamento,should,yes,no,
+QR code da página,compartilhamento,should,yes,yes,S19 na S12: gerado pelo próprio app (biblioteca qrcode; nenhum serviço de fora); PNG 1024 px e SVG para gráfica; preto no branco; leva a /usuario?origem=qr e a visita conta com a origem qr (o parâmetro sai da barra de endereço). 
 Aviso de conteúdo sensível e trava de idade,pagina publica,should,yes,yes,S16 na página toda (S12) ou num link (S07): sensível; 18; 21 ou 25 anos. Formulário comum (funciona sem o JS do app); a idade é conferida no servidor no dia de Brasília e a data não é gravada; cookie de sessão por alvo; menor de idade fica negado na sessão; /r/ direto passa pelo aviso; prévia nas redes sem a bio. 18+ 21+ 25+ ou sensível; data de nascimento
 Trocar username,conta,should,yes,yes,S13: uma troca a cada 7 dias (conferida no servidor com a linha travada); o antigo fica guardado 14 dias só para a conta e leva ao novo nesse tempo (307; robôs de prévia também); os links /r/ seguem valendo. uma vez a cada 7 dias no original; no original: uma vez a cada 7 dias; a ajuda não diz se o antigo fica guardado (ajuda 5434119; 2026-10-11)
 Coleções para agrupar links,editor,could,yes,no,

@@ -28,7 +28,7 @@ sobre o esqueleto e os Tabs passavam antes de haver um link. Agora o
 
 | | casos | passaram | falharam |
 | --- | --- | --- | --- |
-| ponta a ponta (Playwright) | 106 | 106 | 0 |
+| ponta a ponta (Playwright) | 110 | 110 | 0 |
 | backend (node:test) | 51 | 51 | 0 |
 | bloqueados (fluxo não construído) | 4 | | |
 | manuais (precisam de conta real) | 7 | | pendentes |
@@ -149,6 +149,10 @@ no `Dialog`).
 | F10-E7 | troca o endereço | borda | a própria conta retoma o endereço antigo (depois dos 7 dias), sem sobrar linha guardada | e2e `f10-endereco.spec.ts` | passou |
 | F10-E8 | troca o endereço | negativo | o mesmo endereço, um reservado ou um inválido: avisa e não troca | e2e `f10-endereco.spec.ts` | passou |
 | F10-E9 | troca o endereço | borda | só teclado, a 390 px: troca o endereço | e2e `f10-endereco.spec.ts` | passou |
+| S19-H1 | QR code (S12) | feliz | a S12 mostra o QR; o PNG baixado leva à página com ?origem=qr (decodificado no teste) e o SVG baixa com nome | e2e `s19-qr.spec.ts` | passou |
+| S19-E1 | QR code (S12) | borda | quem chega pelo QR conta com a origem "qr" e o ?origem some do endereço | e2e `s19-qr.spec.ts` | passou |
+| S19-E2 | QR code (S12) | negativo | endereço que não existe não ganha QR | e2e `s19-qr.spec.ts` | passou |
+| S19-E3 | QR code (S12) | borda | a 390 px o QR e os botões cabem e dá para baixar só com teclado | e2e `s19-qr.spec.ts` | passou |
 | F12-H1 | acesso (derivado) | feliz | entrar e sair deste aparelho | e2e `f12-acesso.spec.ts` | passou (achou BUG-008) |
 | F12-E1 | acesso (derivado) | borda | recuperar a senha: resposta neutra, link abre em outro navegador, senha nova vale e avisa por email | e2e `f12-acesso.spec.ts` | passou |
 | F12-E2 | acesso (derivado) | borda | sair de todos os aparelhos derruba a outra sessão na hora | e2e `f12-acesso.spec.ts` | passou |

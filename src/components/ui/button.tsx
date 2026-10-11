@@ -15,6 +15,10 @@ const tamanhos = {
   lg: "h-12 px-5 text-base gap-2",
 } as const;
 
+/** A mesma cara do botão, para um link (ex.: baixar um arquivo). */
+export const estiloDeBotao = (variant: keyof typeof variantes = "primary", size: keyof typeof tamanhos = "md") =>
+  cn("inline-flex items-center justify-center rounded-md font-semibold transition-colors duration-150", variantes[variant], tamanhos[size]);
+
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: keyof typeof variantes;
   size?: keyof typeof tamanhos;

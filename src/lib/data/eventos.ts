@@ -14,6 +14,8 @@ export type InfoVisitante = {
   referer: string | null;
   pais: string | null;
   cidade: string | null;
+  /** quem chegou pelo QR code da página (S19): vale mais que o referer */
+  origem?: "qr";
 };
 
 const FONTES: Array<[RegExp, string]> = [
@@ -71,7 +73,7 @@ async function gravar(tipo: "view" | "click", profileId: string, linkId: string 
     visitorHash: await hashDoDia(info.ip, info.userAgent, profileId),
     country: info.pais?.slice(0, 2).toUpperCase() ?? null,
     city: info.cidade?.slice(0, 100) ?? null,
-    source: fonteDe(info.referer),
+    source: info.origem ?? fonteDe(info.referer),
     device: dispositivoDe(info.userAgent),
   });
 }

@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { exigirPerfil } from "@/lib/sessao";
 import { AvisoDaPagina } from "./aviso";
+import { QrDaPagina } from "./qr";
 
 export const metadata: Metadata = { title: "Configurações" };
 
-// S12: aviso de conteúdo da página toda (S16). O QR code da página (S19) entra aqui também.
+// S12: o QR code da página (S19) e o aviso de conteúdo da página toda (S16).
 export default function Configuracoes() {
   return (
     <div className="flex max-w-2xl flex-col gap-6">
@@ -19,5 +20,10 @@ export default function Configuracoes() {
 
 async function Dados() {
   const { perfil } = await exigirPerfil();
-  return <AvisoDaPagina atual={perfil.sensitive_label} />;
+  return (
+    <>
+      <QrDaPagina username={perfil.username} />
+      <AvisoDaPagina atual={perfil.sensitive_label} />
+    </>
+  );
 }

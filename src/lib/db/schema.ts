@@ -1,6 +1,6 @@
 // Gerado por `npm run db:types` a partir do banco migrado (supabase/migrations).
 // Não edite à mão: mude o SQL numa migração nova e gere de novo.
-import { pgTable, foreignKey, uuid, timestamp, index, check, text, integer, unique, jsonb, bigint, char, date, uniqueIndex, boolean, smallint, primaryKey, customType, pgSchema } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, uuid, timestamp, index, check, text, integer, unique, jsonb, date, uniqueIndex, char, boolean, bigint, smallint, primaryKey, customType, pgSchema } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 // Tipos que o drizzle-kit não reconhece sozinho.
@@ -119,37 +119,6 @@ export const submissions = pgTable("submissions", {
 	check("submissions_email_check", sql`email ~ '^[^@\s]+@[^@\s]+\.[^@\s]+$'::citext`),
 	check("submissions_name_check", sql`char_length(name) <= 100`),
 	check("submissions_phone_check", sql`char_length(phone) <= 30`),
-]);
-
-export const events = pgTable("events", {
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity({ name: "events_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
-	profileId: uuid("profile_id").notNull(),
-	linkId: uuid("link_id"),
-	type: text().notNull(),
-	occurredAt: timestamp("occurred_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-	visitorHash: bytea("visitor_hash").notNull(),
-	country: char({ length: 2 }),
-	city: text(),
-	source: text().default('direct').notNull(),
-	device: text().default('mobile').notNull(),
-}, (table) => [
-	index("events_link_idx").using("btree", table.linkId.asc().nullsLast().op("timestamptz_ops"), table.occurredAt.asc().nullsLast().op("uuid_ops")),
-	index("events_profile_idx").using("btree", table.profileId.asc().nullsLast().op("uuid_ops"), table.occurredAt.asc().nullsLast().op("uuid_ops")),
-	index("events_time_idx").using("btree", table.occurredAt.asc().nullsLast().op("timestamptz_ops")),
-	foreignKey({
-			columns: [table.linkId],
-			foreignColumns: [links.id],
-			name: "events_link_id_fkey"
-		}).onDelete("set null"),
-	foreignKey({
-			columns: [table.profileId],
-			foreignColumns: [profiles.id],
-			name: "events_profile_id_fkey"
-		}).onDelete("cascade"),
-	check("events_device_check", sql`device = ANY (ARRAY['mobile'::text, 'desktop'::text, 'tablet'::text])`),
-	check("events_source_check", sql`source = ANY (ARRAY['instagram'::text, 'tiktok'::text, 'whatsapp'::text, 'youtube'::text, 'x'::text, 'facebook'::text, 'search'::text, 'direct'::text, 'other'::text])`),
-	check("events_type_check", sql`type = ANY (ARRAY['view'::text, 'click'::text, 'signup'::text])`),
 ]);
 
 export const analyticsSalts = pgTable("analytics_salts", {
@@ -334,6 +303,37 @@ export const profiles = pgTable("profiles", {
 	check("profiles_social_position_check", sql`social_position = ANY (ARRAY['top'::text, 'bottom'::text])`),
 	check("profiles_title_check", sql`char_length(title) <= 60`),
 	check("profiles_username_check", sql`(username ~ '^[a-z0-9._]{3,30}$'::citext) AND (username !~ '^[._]|[._]$'::citext)`),
+]);
+
+export const events = pgTable("events", {
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity({ name: "events_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
+	profileId: uuid("profile_id").notNull(),
+	linkId: uuid("link_id"),
+	type: text().notNull(),
+	occurredAt: timestamp("occurred_at", { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+	visitorHash: bytea("visitor_hash").notNull(),
+	country: char({ length: 2 }),
+	city: text(),
+	source: text().default('direct').notNull(),
+	device: text().default('mobile').notNull(),
+}, (table) => [
+	index("events_link_idx").using("btree", table.linkId.asc().nullsLast().op("timestamptz_ops"), table.occurredAt.asc().nullsLast().op("uuid_ops")),
+	index("events_profile_idx").using("btree", table.profileId.asc().nullsLast().op("uuid_ops"), table.occurredAt.asc().nullsLast().op("uuid_ops")),
+	index("events_time_idx").using("btree", table.occurredAt.asc().nullsLast().op("timestamptz_ops")),
+	foreignKey({
+			columns: [table.linkId],
+			foreignColumns: [links.id],
+			name: "events_link_id_fkey"
+		}).onDelete("set null"),
+	foreignKey({
+			columns: [table.profileId],
+			foreignColumns: [profiles.id],
+			name: "events_profile_id_fkey"
+		}).onDelete("cascade"),
+	check("events_device_check", sql`device = ANY (ARRAY['mobile'::text, 'desktop'::text, 'tablet'::text])`),
+	check("events_source_check", sql`source = ANY (ARRAY['instagram'::text, 'tiktok'::text, 'whatsapp'::text, 'youtube'::text, 'x'::text, 'facebook'::text, 'search'::text, 'qr'::text, 'direct'::text, 'other'::text])`),
+	check("events_type_check", sql`type = ANY (ARRAY['view'::text, 'click'::text, 'signup'::text])`),
 ]);
 
 export const rateLimits = pgTable("rate_limits", {
